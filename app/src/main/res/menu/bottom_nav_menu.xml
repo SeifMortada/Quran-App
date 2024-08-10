@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/readersFragment"
+        android:icon="@drawable/ic_imam"
+        android:title="@string/quran_readers"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/mainFragment"
+        android:icon="@drawable/ic_quran"
+        android:title="@string/quran"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"
+        app:showAsAction="always" />
+</menu>

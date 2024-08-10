@@ -1,0 +1,29 @@
+<!-- res/layout/item_ayah.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvAyatText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"
+        android:textSize="18sp"
+        android:fontFamily="@font/quran_font_amiri"
+        android:gravity="start"
+        android:textColor="@android:color/black"
+        android:layout_weight="1" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvAyatNumber"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="1"-->
+<!--        android:textSize="14sp"-->
+<!--        android:gravity="end"-->
+<!--        android:paddingEnd="8dp"-->
+<!--        android:textColor="@color/md_theme_onPrimaryContainer" />-->
+</LinearLayout>
