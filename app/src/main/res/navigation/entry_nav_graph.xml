@@ -6,16 +6,37 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/quranFragment"
-        android:name="com.seifmortada.applications.quran.ui.fragment.quran_fragment.QuranFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.all_surahs.AllSurahsFragment"
         android:label="fragment_quran"
-        tools:layout="@layout/fragment_quran" />
+        tools:layout="@layout/fragment_all_surahs" >
+        <action
+            android:id="@+id/action_quranFragment_to_surahFragment"
+            app:destination="@id/surahFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.seifmortada.applications.quran.ui.fragment.main_fagment.MainFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_mainFragment_to_quranFragment"
             app:destination="@id/quranFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_recitersFragment"
+            app:destination="@id/recitersFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/surahFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.surah.SurahFragment"
+        android:label="SurahFragment"
+        tools:layout="@layout/fragment_surah">
+        <argument
+            android:name="surah"
+            app:argType="com.seifmortada.applications.quran.data.model.quran.Surah" />
+    </fragment>
+    <fragment
+        android:id="@+id/recitersFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.reciters.RecitersFragment"
+        android:label="fragment_reciters"
+        tools:layout="@layout/fragment_reciters" />
 </navigation>

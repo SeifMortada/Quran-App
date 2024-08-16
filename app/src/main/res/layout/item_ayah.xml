@@ -1,29 +1,102 @@
-<!-- res/layout/item_ayah.xml -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingBottom="8dp">
+    android:layout_gravity="end">
 
-    <TextView
-        android:id="@+id/tvAyatText"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"
-        android:textSize="18sp"
-        android:fontFamily="@font/quran_font_amiri"
-        android:gravity="start"
-        android:textColor="@android:color/black"
-        android:layout_weight="1" />
+        android:layout_gravity="bottom"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@color/md_theme_inverseSurface"
+        android:padding="10dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-<!--    <TextView-->
-<!--        android:id="@+id/tvAyatNumber"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="1"-->
-<!--        android:textSize="14sp"-->
-<!--        android:gravity="end"-->
-<!--        android:paddingEnd="8dp"-->
-<!--        android:textColor="@color/md_theme_onPrimaryContainer" />-->
-</LinearLayout>
+        <FrameLayout
+            android:id="@+id/ayahNumberLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:maxWidth="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ayah"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_ayah" />
+
+            <TextView
+                android:id="@+id/ayahNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="1"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/shareBtn"
+            android:layout_width="30dp"
+            android:layout_height="45dp"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="120dp"
+            android:src="@drawable/ic_share" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="45dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_bookmark" />
+
+        <ImageView
+            android:id="@+id/playBtn"
+            android:layout_width="30dp"
+            android:layout_height="45dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="70dp"
+            android:src="@drawable/ic_play" />
+
+        <TextView
+            android:id="@+id/ayah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/md_theme_background_mediumContrast"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="الفاتحة" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:backgroundTint="@color/md_theme_onSecondaryContainer"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card2">
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

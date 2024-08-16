@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
     android:layout_margin="5dp"
-    android:backgroundTint="@color/md_theme_onSecondaryContainer"
+    android:backgroundTint="@color/md_theme_inverseSurface"
     app:cardCornerRadius="20dp">
 
-    <TextView
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="{1}"
-        android:textColor="@color/md_theme_onError"
-        android:textSize="35sp"
-        android:textStyle="bold" />
+        android:layout_gravity="center_vertical|end">
+
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_ayah" />
+
+        <TextView
+            android:id="@+id/surahNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="1"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/surahName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="60dp"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="80dp"
         android:text="الفاتحة"
-        android:textColor="#ffffff"
+        android:textColor="@color/md_theme_background_mediumContrast"
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/surahNzol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="25dp"
-        android:text="مكية"
-        android:textColor="@color/md_theme_background"
-        android:textSize="25sp"
-        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/surahVerses"
+        android:id="@+id/surahNozol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="35dp"
-        android:text="7 ايات"
+        android:layout_gravity="start|center_vertical"
         android:textColor="@color/md_theme_background"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:layout_marginStart="40dp"
+        android:textStyle="bold"
+        tools:text="مكية - 7 آيات" />
 
 </androidx.cardview.widget.CardView>

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/readersFragment"
+        android:id="@+id/recitersFragment"
         android:icon="@drawable/ic_imam"
         android:title="@string/quran_readers"
         app:showAsAction="ifRoom" />
