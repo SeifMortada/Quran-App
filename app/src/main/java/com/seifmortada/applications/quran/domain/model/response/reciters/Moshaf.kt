@@ -1,10 +1,18 @@
 package com.seifmortada.applications.quran.domain.model.response.reciters
 
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Moshaf(
     val id: Int,
-    val moshaf_type: Int,
+    @SerializedName("moshaf_type")
+    val moshafType: Int,
     val name: String,
     val server: String,
-    val surah_list: String,
-    val surah_total: Int
-)
+    @SerializedName("surah_list")
+    val surahList: String,
+    @SerializedName("surah_total")
+    val surahTotal: Int
+):Parcelable

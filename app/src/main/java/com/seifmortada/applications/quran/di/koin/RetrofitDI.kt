@@ -15,7 +15,7 @@ fun provideBaseUrl(): String = "http://api.alquran.cloud/v1/"
 fun provideOkHttpClient(): OkHttpClient {
     val interceptor = HttpLoggingInterceptor()
     interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-    val timeoutSeconds = 120L // Set my desired timeout in seconds
+    val timeoutSeconds = 120L
     return OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .connectTimeout(timeoutSeconds, TimeUnit.SECONDS)

@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.ui.fragment.reciters
+package com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

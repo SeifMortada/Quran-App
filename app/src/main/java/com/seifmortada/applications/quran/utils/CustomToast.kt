@@ -16,7 +16,7 @@ class CustomToast(context: Context, message: String) : Toast(context) {
         val textView: TextView = layout.findViewById(R.id.toast_text)
         textView.text = message
 
-        setView(layout)
+        view = layout
         duration = LENGTH_SHORT
     }
 

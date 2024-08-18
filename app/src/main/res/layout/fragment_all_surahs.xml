@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.all_surahs.AllSurahsFragment">
+    tools:context=".ui.fragment.quran.all_surahs.AllSurahsFragment">
 
     <SearchView
         android:id="@+id/searchSurahView"
@@ -31,6 +31,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:layout_marginStart="20dp"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_koran" />
 
         <TextView

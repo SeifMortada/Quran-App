@@ -80,4 +80,12 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp-urlconnection:4.10.0")
 
     implementation ("com.tazkiyatech:quran-sdk:1.3.0")
+
+    // Media3 ExoPlayer and UI dependencies
+    implementation("androidx.media3:media3-exoplayer:1.0.2")
+    implementation ("androidx.media3:media3-ui:1.0.2")
+
+    //Timber
+    implementation ("com.jakewharton.timber:timber:5.0.1")
+
 }

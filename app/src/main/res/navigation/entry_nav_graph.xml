@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/quranFragment"
-        android:name="com.seifmortada.applications.quran.ui.fragment.all_surahs.AllSurahsFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.quran.all_surahs.AllSurahsFragment"
         android:label="fragment_quran"
         tools:layout="@layout/fragment_all_surahs" >
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/surahFragment"
-        android:name="com.seifmortada.applications.quran.ui.fragment.surah.SurahFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.quran.surah.SurahFragment"
         android:label="SurahFragment"
         tools:layout="@layout/fragment_surah">
         <argument
@@ -36,7 +36,32 @@
     </fragment>
     <fragment
         android:id="@+id/recitersFragment"
-        android:name="com.seifmortada.applications.quran.ui.fragment.reciters.RecitersFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters.RecitersFragment"
         android:label="fragment_reciters"
-        tools:layout="@layout/fragment_reciters" />
+        tools:layout="@layout/fragment_reciters" >
+        <action
+            android:id="@+id/action_recitersFragment_to_reciterMoshafFragment"
+            app:destination="@id/reciterMoshafFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reciterMoshafFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.reciters.reciter_moshaf.ReciterMoshafFragment"
+        android:label="fragment_reciter_moshaf"
+        tools:layout="@layout/fragment_reciter_moshaf" >
+        <argument
+            android:name="reciter_moshaf"
+            app:argType="com.seifmortada.applications.quran.domain.model.response.reciters.Reciter" />
+        <action
+            android:id="@+id/action_reciterMoshafFragment_to_reciterAllSurahsFragment"
+            app:destination="@id/reciterAllSurahsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reciterAllSurahsFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.reciters.reciter_moshaf_surahs.ReciterAllSurahsFragment"
+        android:label="fragment_reciter_moshaf_surahs"
+        tools:layout="@layout/fragment_reciter_moshaf_surahs" >
+        <argument
+            android:name="moshaf"
+            app:argType="com.seifmortada.applications.quran.domain.model.response.reciters.Moshaf" />
+    </fragment>
 </navigation>

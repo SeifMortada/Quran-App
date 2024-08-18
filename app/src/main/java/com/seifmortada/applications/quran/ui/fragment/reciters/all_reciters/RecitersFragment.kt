@@ -1,37 +1,28 @@
-package com.seifmortada.applications.quran.ui.fragment.reciters
+package com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
-import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.data.remote.utils.NetworkResult
 import com.seifmortada.applications.quran.databinding.FragmentRecitersBinding
-import com.seifmortada.applications.quran.domain.model.response.reciters.Reciter
+import com.seifmortada.applications.quran.ui.fragment.main.BaseFragment
 import com.seifmortada.applications.quran.utils.CustomToast
 import org.koin.android.ext.android.inject
 
 
-class RecitersFragment : Fragment() {
-    private lateinit var binding: FragmentRecitersBinding
+class RecitersFragment : BaseFragment<FragmentRecitersBinding>() {
     private val recitersAdapter = RecitersAdapter()
     private val recitersViewMode: RecitersViewModel by inject()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        // Inflate the layout for this fragment
-        binding = FragmentRecitersBinding.inflate(inflater)
-        return binding.root
+    override fun initializeViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentRecitersBinding {
+        return FragmentRecitersBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,7 +77,7 @@ class RecitersFragment : Fragment() {
     private fun showSearchViewAndSearchLogic() {
         binding.apply {
             searchView.visibility = View.VISIBLE
-            searchBtn.visibility=View.INVISIBLE
+            searchBtn.visibility = View.INVISIBLE
             searchView.isIconified = false // Ensure the search view is not collapsed
             searchView.requestFocus() // Request focus to show the keyboard
 

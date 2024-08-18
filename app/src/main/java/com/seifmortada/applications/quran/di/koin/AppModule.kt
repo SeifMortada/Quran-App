@@ -7,8 +7,8 @@ import com.seifmortada.applications.quran.data.repository.reciters.RecitersRepos
 import com.seifmortada.applications.quran.data.repository.surah.SurahRepository
 import com.seifmortada.applications.quran.data.repository.surah.SurahRepositoryImpl
 import com.seifmortada.applications.quran.ui.activity.MainViewModel
-import com.seifmortada.applications.quran.ui.fragment.reciters.RecitersViewModel
-import com.seifmortada.applications.quran.ui.fragment.surah.SurahViewModel
+import com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters.RecitersViewModel
+import com.seifmortada.applications.quran.ui.fragment.quran.surah.SurahViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -29,9 +29,9 @@ val appModule = module {
     factory<RecitersRepository> { RecitersRepositoryImpl(get()) }
 
     //===============ViewModel===========//
-    viewModel() { MainViewModel(get()) }
-    viewModel() { SurahViewModel(get()) }
-    viewModel() { RecitersViewModel(get()) }
+    viewModel { MainViewModel(get()) }
+    viewModel { SurahViewModel(get()) }
+    viewModel { RecitersViewModel(get()) }
 
 
 }

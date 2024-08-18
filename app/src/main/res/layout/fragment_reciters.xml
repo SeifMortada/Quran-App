@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.reciters.RecitersFragment">
+    tools:context=".ui.fragment.reciters.all_reciters.RecitersFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolBar"
@@ -20,6 +20,7 @@
             android:id="@+id/backBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_back" />
 
         <TextView
@@ -36,6 +37,7 @@
             android:layout_height="50dp"
             android:layout_gravity="end|center"
             android:layout_marginEnd="4dp"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_search" />
     </com.google.android.material.appbar.MaterialToolbar>
 

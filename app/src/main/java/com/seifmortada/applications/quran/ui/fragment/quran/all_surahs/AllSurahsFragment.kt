@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.ui.fragment.all_surahs
+package com.seifmortada.applications.quran.ui.fragment.quran.all_surahs
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,22 +9,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.seifmortada.applications.quran.data.model.quran.Surah
 import com.seifmortada.applications.quran.databinding.FragmentAllSurahsBinding
 import com.seifmortada.applications.quran.ui.activity.MainViewModel
+import com.seifmortada.applications.quran.ui.fragment.main.BaseFragment
 import org.koin.android.ext.android.inject
 
 
-class AllSurahsFragment : Fragment() {
-    private lateinit var binding: FragmentAllSurahsBinding
+class AllSurahsFragment : BaseFragment<FragmentAllSurahsBinding>() {
+    override fun initializeViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentAllSurahsBinding {
+        return FragmentAllSurahsBinding.inflate(inflater, container, false)
+    }
+
     private val mainViewModel: MainViewModel by inject()
     private val adapter = AllSurahsAdapter()
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
-        binding = FragmentAllSurahsBinding.inflate(inflater)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,16 +39,12 @@ class AllSurahsFragment : Fragment() {
     }
 
     private fun observeAllSurahs() {
-        val surahList = mainViewModel.quranData
-        if (surahList.isNotEmpty()) {
-            updateRecyclerView(surahList.toMutableList())
-        }
+            updateRecyclerView()
     }
 
 
 
-    private fun updateRecyclerView(surahs: MutableList<Surah>) {
-        adapter.setData(surahs)
+    private fun updateRecyclerView() {
         hideProgressBar()
 
     }

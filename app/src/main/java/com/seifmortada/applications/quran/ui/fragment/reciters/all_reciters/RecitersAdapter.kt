@@ -1,14 +1,15 @@
-package com.seifmortada.applications.quran.ui.fragment.reciters
+package com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.seifmortada.applications.quran.databinding.ItemRecitersBinding
 import com.seifmortada.applications.quran.domain.model.response.reciters.Reciter
 
-class RecitersAdapter : RecyclerView.Adapter<RecitersAdapter.RecitersViewHolder>(),Filterable {
+class RecitersAdapter : RecyclerView.Adapter<RecitersAdapter.RecitersViewHolder>(), Filterable {
 
     private var recitersList: List<Reciter> = listOf()
     private var filteredRecitersList: List<Reciter> = listOf()
@@ -36,11 +37,18 @@ class RecitersAdapter : RecyclerView.Adapter<RecitersAdapter.RecitersViewHolder>
             reciterName.text = currentReciter.name
             moushafNumber.text = currentReciter.moshaf.size.toString()
         }
+        holder.itemView.setOnClickListener {
+            it.findNavController().navigate(
+                RecitersFragmentDirections.actionRecitersFragmentToReciterMoshafFragment(
+                    currentReciter
+                )
+            )
+        }
     }
 
     fun submitList(reciters: List<Reciter>) {
-       this.recitersList = reciters
-        filteredRecitersList = reciters // Initially, filtered list is the same as the full list
+        this.recitersList = reciters
+        filteredRecitersList = reciters
         notifyDataSetChanged()
 
     }
