@@ -9,7 +9,7 @@ import com.seifmortada.applications.quran.databinding.FragmentReciterMoshafBindi
 import com.seifmortada.applications.quran.ui.fragment.main.BaseFragment
 
 
-class ReciterMoshafFragment : BaseFragment<FragmentReciterMoshafBinding>() {
+class ReciterMoshafFragment : BaseFragment<FragmentReciterMoshafBinding,Nothing?>() {
     private val args = navArgs<ReciterMoshafFragmentArgs>()
     private val moshafAdapter=ReciterMoshafAdapter()
     override fun initializeViewBinding(

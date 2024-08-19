@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.data.repository.reciters
+package com.seifmortada.applications.quran.data.repository.reciters.all_reciters
 
 import com.seifmortada.applications.quran.data.remote.service.RecitersApiService
 import com.seifmortada.applications.quran.data.remote.utils.NetworkResult

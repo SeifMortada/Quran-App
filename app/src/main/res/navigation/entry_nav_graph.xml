@@ -63,5 +63,17 @@
         <argument
             android:name="moshaf"
             app:argType="com.seifmortada.applications.quran.domain.model.response.reciters.Moshaf" />
+        <action
+            android:id="@+id/action_reciterAllSurahsFragment_to_surahRecitationFragment"
+            app:destination="@id/surahRecitationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/surahRecitationFragment"
+        android:name="com.seifmortada.applications.quran.ui.fragment.reciters.surah_recitation.SurahRecitationFragment"
+        android:label="fragment_surah_recitation"
+        tools:layout="@layout/fragment_surah_recitation" >
+        <argument
+            android:name="SurahMoshaf"
+            app:argType="com.seifmortada.applications.quran.data.model.reciter_surah_moshaf.SurahMoshafReciter" />
     </fragment>
 </navigation>

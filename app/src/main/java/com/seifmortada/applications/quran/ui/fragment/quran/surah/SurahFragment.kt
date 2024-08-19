@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.seifmortada.applications.quran.data.remote.utils.NetworkResult
 import com.seifmortada.applications.quran.databinding.FragmentSurahBinding
 import com.seifmortada.applications.quran.ui.fragment.main.BaseFragment
-import com.seifmortada.applications.quran.utils.CustomToast
-import org.koin.android.ext.android.inject
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -22,11 +20,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
-class SurahFragment : BaseFragment<FragmentSurahBinding>() {
+class SurahFragment : BaseFragment<FragmentSurahBinding,SurahViewModel>() {
 
     private val args by navArgs<SurahFragmentArgs>()
-    private val surahViewModel: SurahViewModel by inject()
+    override val viewModel: SurahViewModel by inject()
+
     private val surahAdapter = SurahAdapter()
     private var exoPlayer: ExoPlayer? = null
 
@@ -38,6 +38,7 @@ class SurahFragment : BaseFragment<FragmentSurahBinding>() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         initializeAdapter()
         initializeRv()
         initializeClickListeners()
@@ -51,19 +52,19 @@ class SurahFragment : BaseFragment<FragmentSurahBinding>() {
                 addListener(object : Player.Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         if (playbackState == Player.STATE_ENDED) {
-                            surahViewModel.ayahEnded.value = true
+                            viewModel.ayahEnded.value = true
                         }
                     }
                 })
             }
-        surahViewModel.exoPlayer = exoPlayer!!
+        viewModel.exoPlayer = exoPlayer!!
 
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initializeAdapter() {
         surahAdapter.apply {
-            viewModel = surahViewModel
+            surahviewModel = viewModel
             currentSurah = args.surah
             lifecycleOwner = viewLifecycleOwner
         }
@@ -115,13 +116,13 @@ private fun showSearchViwAndSearchLogic() {
     }
 }
     private fun observeStates() {
-        observeErrorState()
-        observeLoadingState()
+        observeErrorState(viewModel.errorState)
+        observeLoadingState(viewModel.loadingState)
         observePausingState()
     }
 
     private fun observeAyahRecitationResponse() {
-        surahViewModel.ayahRecitation.observe(viewLifecycleOwner) { response ->
+        viewModel.ayahRecitation.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkResult.Success -> {
                     val url = response.data
@@ -130,16 +131,16 @@ private fun showSearchViwAndSearchLogic() {
                         CoroutineScope(Dispatchers.IO).launch {
                             playVoice(url)
                         }
-                        surahViewModel.resetLoadingState()
+                        hideProgressBar()
                     }
                 }
 
                 is NetworkResult.Error -> {
-                    surahViewModel.errorState.value = Pair(true, response.errorMessage)
+                    viewModel.errorState.value = Pair(true, response.errorMessage)
                 }
 
                 is NetworkResult.Loading -> {
-                    surahViewModel.loadingState.value = true
+                    viewModel.loadingState.value = true
                 }
             }
         }
@@ -158,7 +159,7 @@ private fun showSearchViwAndSearchLogic() {
 
 
     private fun observePausingState() {
-        surahViewModel.pauseState.observe(viewLifecycleOwner) {
+        viewModel.pauseState.observe(viewLifecycleOwner) {
             if (it) {
                 pause()
             } else {
@@ -197,36 +198,15 @@ private fun showSearchViwAndSearchLogic() {
         }
     }
 
-    private fun observeLoadingState() {
-        surahViewModel.loadingState.observe(viewLifecycleOwner) {
-            if (it) showProgressBar() else hideProgressBar()
-        }
-    }
-
-    private fun observeErrorState() {
-        surahViewModel.errorState.observe(viewLifecycleOwner) {
-            if (it.first) {
-                CustomToast.makeText(requireContext().applicationContext, it.second).show()
-                surahViewModel.resetErrorState()
-                surahViewModel.resetLoadingState()
-                surahViewModel.ayahEnded.value=true
-            }
-        }
-    }
-
-    private fun hideProgressBar() {
-        binding.progressBar.visibility = View.INVISIBLE
-    }
-
-    private fun showProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE
-    }
-
     private fun releaseExoPlayer() {
         exoPlayer?.release()
         exoPlayer = null
     }
-
+    override fun resetStates() {
+        viewModel.resetErrorState()
+        viewModel.resetLoadingState()
+        viewModel.ayahEnded.value = true
+    }
     override fun onDestroyView() {
         releaseExoPlayer()
         super.onDestroyView()

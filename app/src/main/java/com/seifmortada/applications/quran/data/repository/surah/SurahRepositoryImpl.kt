@@ -11,7 +11,9 @@ class SurahRepositoryImpl(private val recitersApiService: RecitersApiService) : 
         val url = "https://cdn.islamic.network/quran/audio/64/ar.husary/$ayahNumber.mp3"
         return try {
             val response = recitersApiService.getAyahRecitation(url)
-            NetworkResult.Success(url)
+            if (response.isSuccessful && response.body() != null)
+                NetworkResult.Success(url)
+            else NetworkResult.Error("خطأ")
         } catch (e: Exception) {
             NetworkResult.Error(e.message.toString())
         }

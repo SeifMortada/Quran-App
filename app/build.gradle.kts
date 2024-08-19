@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("androidx.navigation.safeargs")
     id("kotlin-parcelize")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -62,6 +63,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.okhttp.urlconnection)
 
     // Koin
     implementation(libs.koin.core)
@@ -69,23 +72,20 @@ dependencies {
 
     // Room
     implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
     // ViewPager2
-    implementation ("androidx.viewpager2:viewpager2:1.1.0")
+    implementation(libs.androidx.viewpager2)
 
-    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
-    implementation ("com.squareup.okhttp3:okhttp-urlconnection:4.10.0")
-
-    implementation ("com.tazkiyatech:quran-sdk:1.3.0")
+    // Quran SDK
+    implementation(libs.quran.sdk)
 
     // Media3 ExoPlayer and UI dependencies
-    implementation("androidx.media3:media3-exoplayer:1.0.2")
-    implementation ("androidx.media3:media3-ui:1.0.2")
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
 
-    //Timber
-    implementation ("com.jakewharton.timber:timber:5.0.1")
+    // Timber
+    implementation(libs.timber)
 
 }

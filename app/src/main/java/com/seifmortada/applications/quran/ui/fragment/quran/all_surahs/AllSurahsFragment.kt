@@ -10,10 +10,12 @@ import com.seifmortada.applications.quran.data.model.quran.Surah
 import com.seifmortada.applications.quran.databinding.FragmentAllSurahsBinding
 import com.seifmortada.applications.quran.ui.activity.MainViewModel
 import com.seifmortada.applications.quran.ui.fragment.main.BaseFragment
+import com.seifmortada.applications.quran.ui.fragment.quran.surah.SurahViewModel
 import org.koin.android.ext.android.inject
 
 
-class AllSurahsFragment : BaseFragment<FragmentAllSurahsBinding>() {
+class AllSurahsFragment : BaseFragment<FragmentAllSurahsBinding,MainViewModel>() {
+    override val viewModel: MainViewModel by inject()
     override fun initializeViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -21,41 +23,19 @@ class AllSurahsFragment : BaseFragment<FragmentAllSurahsBinding>() {
         return FragmentAllSurahsBinding.inflate(inflater, container, false)
     }
 
-    private val mainViewModel: MainViewModel by inject()
     private val adapter = AllSurahsAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showProgressBar()
         initializeRv()
-        observeAllSurahs()
     }
 
     private fun initializeRv() {
         binding.surahsRv.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@AllSurahsFragment.adapter // Avoid reassigning adapter to `this.adapter`
+            adapter = this@AllSurahsFragment.adapter
+            hideProgressBar()
         }
     }
-
-    private fun observeAllSurahs() {
-            updateRecyclerView()
-    }
-
-
-
-    private fun updateRecyclerView() {
-        hideProgressBar()
-
-    }
-
-    private fun hideProgressBar() {
-        binding.progressBar.visibility = View.GONE
-    }
-
-    private fun showProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE
-    }
-
-
 }

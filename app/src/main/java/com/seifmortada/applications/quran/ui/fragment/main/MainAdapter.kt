@@ -9,7 +9,7 @@ import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.data.model.main.MainItem
 import com.seifmortada.applications.quran.databinding.ItemMainBinding
 
-class MainAdapter() :
+class MainAdapter :
     RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     private val items: MutableList<MainItem> = mutableListOf()

@@ -13,7 +13,7 @@ import com.seifmortada.applications.quran.ui.fragment.quran.all_surahs.AllSurahs
 import timber.log.Timber
 
 
-class ReciterAllSurahsFragment : BaseFragment<FragmentReciterMoshafSurahsBinding>() {
+class ReciterAllSurahsFragment : BaseFragment<FragmentReciterMoshafSurahsBinding,Nothing?>() {
     private val args = navArgs<ReciterAllSurahsFragmentArgs>()
     private lateinit var  allSurahsAdapter : ReciterAllSurahsAdapter
 
@@ -25,7 +25,6 @@ class ReciterAllSurahsFragment : BaseFragment<FragmentReciterMoshafSurahsBinding
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         val moshaf=args.value.moshaf
         allSurahsAdapter= ReciterAllSurahsAdapter(moshaf)
         initializeRv()

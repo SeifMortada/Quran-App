@@ -52,7 +52,7 @@
             android:layout_width="30dp"
             android:layout_height="45dp"
             android:layout_gravity="end|top"
-            android:layout_marginEnd="120dp"
+            android:layout_marginEnd="70dp"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_share" />
 
@@ -64,27 +64,6 @@
             android:layout_marginEnd="20dp"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_bookmark" />
-
-        <ImageView
-            android:id="@+id/playBtn"
-            android:layout_width="30dp"
-            android:layout_height="45dp"
-            android:layout_gravity="end"
-            android:backgroundTint="@color/md_theme_inverseSurface"
-            android:layout_marginEnd="70dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_play" />
-        <ImageView
-            android:id="@+id/pauseBtn"
-            android:layout_width="30dp"
-            android:layout_height="45dp"
-            android:layout_gravity="end"
-            android:importantForAccessibility="no"
-            android:visibility="invisible"
-            android:backgroundTint="@color/md_theme_inverseSurface"
-
-            android:layout_marginEnd="70dp"
-            android:src="@drawable/ic_pause" />
 
         <TextView
             android:id="@+id/ayah"

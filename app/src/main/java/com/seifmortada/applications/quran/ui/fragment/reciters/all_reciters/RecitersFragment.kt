@@ -15,9 +15,9 @@ import com.seifmortada.applications.quran.utils.CustomToast
 import org.koin.android.ext.android.inject
 
 
-class RecitersFragment : BaseFragment<FragmentRecitersBinding>() {
+class RecitersFragment : BaseFragment<FragmentRecitersBinding, RecitersViewModel>() {
     private val recitersAdapter = RecitersAdapter()
-    private val recitersViewMode: RecitersViewModel by inject()
+    override val viewModel: RecitersViewModel by inject()
     override fun initializeViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -34,7 +34,7 @@ class RecitersFragment : BaseFragment<FragmentRecitersBinding>() {
     }
 
     private fun observeReciters() {
-        recitersViewMode.recitersResponse.observe(viewLifecycleOwner) {
+        viewModel.recitersResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> {
                     recitersAdapter.submitList(it.data.reciters)
@@ -42,21 +42,14 @@ class RecitersFragment : BaseFragment<FragmentRecitersBinding>() {
                 }
 
                 is NetworkResult.Error -> {
+                    CustomToast.makeText(requireContext().applicationContext, it.errorMessage)
+                        .show()
                     hideProgressBar()
-                    CustomToast.makeText(requireContext(), it.errorMessage)
                 }
 
                 is NetworkResult.Loading -> showProgressBar()
             }
         }
-    }
-
-    private fun hideProgressBar() {
-        binding.progressBar.visibility = View.INVISIBLE
-    }
-
-    private fun showProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE
     }
 
     private fun initializeRv() {

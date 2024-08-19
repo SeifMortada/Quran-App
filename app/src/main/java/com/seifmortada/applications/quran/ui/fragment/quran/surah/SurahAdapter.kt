@@ -20,7 +20,7 @@ class SurahAdapter : RecyclerView.Adapter<SurahAdapter.AyahViewHolder>() ,Filter
     private var ayahs: List<Verse> = listOf()
     private var filteredAyahList: List<Verse> = listOf()
 
-    lateinit var viewModel: SurahViewModel
+    lateinit var surahviewModel: SurahViewModel
     lateinit var currentSurah: Surah
     lateinit var lifecycleOwner: LifecycleOwner
     private var pasued = false
@@ -57,22 +57,22 @@ class SurahAdapter : RecyclerView.Adapter<SurahAdapter.AyahViewHolder>() ,Filter
             playBtn.setOnClickListener {
                 showPauseButton(this)
                 if (pasued) {
-                    viewModel.resumeAyahRecitation()
+                    surahviewModel.resumeAyahRecitation()
                     pasued = false
                 } else {
-                    viewModel.getAyahRecitation(
+                    surahviewModel.getAyahRecitation(
                         currentSurah.id.toString(),
                         currentAyah.id.toString()
                     )
                 }
             }
             pauseBtn.setOnClickListener {
-                viewModel.pauseAyahRecitation()
+                surahviewModel.pauseAyahRecitation()
                 showPlayButton(this)
                 pasued = true
 
             }
-            viewModel.ayahEnded.observe(lifecycleOwner) {
+            surahviewModel.ayahEnded.observe(lifecycleOwner) {
                 if (it) {
                     showPlayButton(this)
                 }
