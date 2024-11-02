@@ -1,15 +1,16 @@
 package com.seifmortada.applications.quran.data.repository.reciters.all_reciters
 
-import com.seifmortada.applications.quran.data.remote.service.RecitersApiService
-import com.seifmortada.applications.quran.data.remote.utils.NetworkResult
-import com.seifmortada.applications.quran.domain.model.response.reciters.RecitersResponse
+import com.seifmortada.applications.quran.data.rest.apis.RecitersApi
+import com.seifmortada.applications.quran.data.rest.utils.NetworkResult
+import com.seifmortada.applications.quran.data.rest.response.reciters.RecitersResponse
+import com.seifmortada.applications.quran.data.rest.utils.ApiConstant.URL_Fetch_All_Reciters
+import com.seifmortada.applications.quran.domain.repository.reciters.all_reciters.RecitersRepository
 
-class RecitersRepositoryImpl(private val recitersApiService: RecitersApiService) :
+class RecitersRepositoryImpl(private val recitersApiService: RecitersApi) :
     RecitersRepository {
     override suspend fun getAllReciters(): NetworkResult<RecitersResponse> {
-        val url = "https://mp3quran.net/api/v3/reciters"
         try {
-            val response = recitersApiService.getAllReciters(url)
+            val response = recitersApiService.getAllReciters(URL_Fetch_All_Reciters)
             if (response.isSuccessful && response.body() != null) {
                 return NetworkResult.Success(response.body()!!)
             } else {

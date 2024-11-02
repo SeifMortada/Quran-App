@@ -1,17 +1,16 @@
 package com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.navigation.fragment.findNavController
-import com.seifmortada.applications.quran.data.remote.utils.NetworkResult
+import com.seifmortada.applications.quran.R
+import com.seifmortada.applications.quran.data.rest.utils.NetworkResult
 import com.seifmortada.applications.quran.databinding.FragmentRecitersBinding
-import com.seifmortada.applications.quran.ui.fragment.main.BaseFragment
-import com.seifmortada.applications.quran.utils.CustomToast
+import com.seifmortada.applications.quran.ui.core.BaseFragment
+import com.seifmortada.applications.quran.ui.custom_views.CustomToast
+import com.seifmortada.applications.quran.utils.SearchUtils
 import org.koin.android.ext.android.inject
 
 
@@ -29,7 +28,7 @@ class RecitersFragment : BaseFragment<FragmentRecitersBinding, RecitersViewModel
         initializeClickListeners()
         initializeRv()
         observeReciters()
-
+        initializeViews()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -57,52 +56,30 @@ class RecitersFragment : BaseFragment<FragmentRecitersBinding, RecitersViewModel
             adapter = recitersAdapter
         }
     }
+     private fun initializeViews(){
+        binding.searchLayout.surahItemName.setText(R.string.quran_readers)
+    }
 
     private fun initializeClickListeners() {
         binding.apply {
-            backBtn.setOnClickListener { findNavController().navigateUp() }
-            searchBtn.setOnClickListener {
-                showSearchViewAndSearchLogic()
+          searchLayout.backItemBtn.setOnClickListener { findNavController().navigateUp() }
+            searchLayout.searchItemBtn.setOnClickListener {
+                searchUiAndLogic()
             }
         }
     }
 
-    private fun showSearchViewAndSearchLogic() {
+    private fun searchUiAndLogic() {
         binding.apply {
-            searchView.visibility = View.VISIBLE
-            searchBtn.visibility = View.INVISIBLE
-            searchView.isIconified = false // Ensure the search view is not collapsed
-            searchView.requestFocus() // Request focus to show the keyboard
-
-            // Show the keyboard manually
-            val imm =
-                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(searchView.findFocus(), InputMethodManager.SHOW_IMPLICIT)
-
-
-            searchView.setOnQueryTextListener(object : OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    searchView.clearFocus()
-                    searchView.visibility = View.INVISIBLE
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    recitersAdapter.filter.filter(newText)
-                    // Hide the SearchView if the text is cleared
-                    if (newText.isNullOrEmpty()) {
-                        searchView.visibility = View.GONE
-                        searchBtn.visibility = View.VISIBLE
-                    }
-                    return true
-                }
-            })
-            searchView.setOnCloseListener {
-                searchView.visibility = View.GONE
-                searchBtn.visibility = View.VISIBLE
-                false
-            }
+            SearchUtils.setupSearchView(
+                searchView =   searchLayout.searchItemView,
+                searchButton =   searchLayout.searchItemBtn,
+                title = searchLayout.surahItemName,
+                backBtn =   searchLayout.backItemBtn,
+                adapter = recitersAdapter,
+                context = requireContext()
+            )
         }
-    }
 
+    }
 }

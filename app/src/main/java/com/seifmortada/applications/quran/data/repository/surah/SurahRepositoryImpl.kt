@@ -1,14 +1,17 @@
 package com.seifmortada.applications.quran.data.repository.surah
 
-import com.seifmortada.applications.quran.data.remote.service.RecitersApiService
-import com.seifmortada.applications.quran.data.remote.utils.NetworkResult
-import java.io.InputStream
+import com.seifmortada.applications.quran.data.rest.apis.RecitersApi
+import com.seifmortada.applications.quran.data.rest.utils.ApiConstant
+import com.seifmortada.applications.quran.data.rest.utils.NetworkResult
+import com.seifmortada.applications.quran.domain.repository.surah.SurahRepository
 
-class SurahRepositoryImpl(private val recitersApiService: RecitersApiService) : SurahRepository {
+class SurahRepositoryImpl(
+    private val recitersApiService: RecitersApi
+) : SurahRepository {
     override suspend fun getAyahRecitation(
         ayahNumber: String
     ): NetworkResult<String> {
-        val url = "https://cdn.islamic.network/quran/audio/64/ar.husary/$ayahNumber.mp3"
+        val url = "${ApiConstant.URL_Ayah_Recitation}$ayahNumber.mp3"
         return try {
             val response = recitersApiService.getAyahRecitation(url)
             if (response.isSuccessful && response.body() != null)

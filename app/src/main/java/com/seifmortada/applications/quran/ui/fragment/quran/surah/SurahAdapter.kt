@@ -4,30 +4,83 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.seifmortada.applications.quran.data.model.quran.Surah
-import com.seifmortada.applications.quran.data.model.quran.Verse
 import com.seifmortada.applications.quran.databinding.ItemAyahBinding
-import com.seifmortada.applications.quran.domain.model.response.reciters.Reciter
-import java.text.Normalizer
-import java.util.regex.Pattern
+import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
+import com.seifmortada.applications.quran.data.local.room.entities.quran.Verse
+import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
+import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 
-class SurahAdapter : RecyclerView.Adapter<SurahAdapter.AyahViewHolder>() ,Filterable {
+class SurahAdapter(
+    private val surahViewModel: SurahViewModel,
+    private val currentSurah: Surah,
+    private val lifecycleOwner: LifecycleOwner
+) : BaseRecyclerAdapter<Verse, SurahAdapter.AyahViewHolder>() {
 
-    private var ayahs: List<Verse> = listOf()
-    private var filteredAyahList: List<Verse> = listOf()
+    private var paused: Boolean = false
 
-    lateinit var surahviewModel: SurahViewModel
-    lateinit var currentSurah: Surah
-    lateinit var lifecycleOwner: LifecycleOwner
-    private var pasued = false
+    inner class AyahViewHolder(val binding: ItemAyahBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Verse) {
+            binding.apply {
+                ayah.text = item.text
+                ayahNumber.text = item.id.toString()
 
-    inner class AyahViewHolder(val binding: ItemAyahBinding) : RecyclerView.ViewHolder(binding.root)
+                shareBtn.setOnClickListener {
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "${item.text} (${item.id})")
+                    }
+                    it.context.startActivity(Intent.createChooser(shareIntent, "Share Ayah"))
+                }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AyahViewHolder {
+                playBtn.setOnClickListener {
+                    showPauseButton()
+                    if (paused) {
+                        surahViewModel.resumeAyahRecitation()
+                        paused = false
+                    } else {
+                        surahViewModel.getAyahRecitation(
+                            currentSurah.id.toString(),
+                            item.id.toString()
+                        )
+                    }
+                }
+
+                pauseBtn.setOnClickListener {
+                    surahViewModel.pauseAyahRecitation()
+                    showPlayButton()
+                    paused = true
+                }
+
+                surahViewModel.ayahEnded.observe(lifecycleOwner) {
+                    if (it) showPlayButton()
+                }
+            }
+        }
+
+
+        private fun showPlayButton() {
+            binding.apply {
+                playBtn.isEnabled = true
+                playBtn.visibility = View.VISIBLE
+                pauseBtn.isEnabled = false
+                pauseBtn.visibility = View.INVISIBLE
+            }
+        }
+
+        private fun showPauseButton() {
+            binding.apply {
+                playBtn.isEnabled = false
+                playBtn.visibility = View.INVISIBLE
+                pauseBtn.isEnabled = true
+                pauseBtn.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun onCreateCustomViewHolder(parent: ViewGroup, viewType: Int): AyahViewHolder {
         return AyahViewHolder(
             ItemAyahBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -37,105 +90,11 @@ class SurahAdapter : RecyclerView.Adapter<SurahAdapter.AyahViewHolder>() ,Filter
         )
     }
 
-    override fun getItemCount(): Int = filteredAyahList.size
-
-    override fun onBindViewHolder(holder: AyahViewHolder, position: Int) {
-        val currentAyah = filteredAyahList[position]
-        holder.binding.apply {
-            ayah.text = currentAyah.text
-            ayahNumber.text = currentAyah.id.toString()
-            // Set up the share button click listener
-            shareBtn.setOnClickListener {
-                // Create an intent to share the verse
-                val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "${currentAyah.text} (${currentAyah.id})")
-                }
-                // Start the sharing activity
-                it.context.startActivity(Intent.createChooser(shareIntent, "الآايه إالي نشر "))
-            }
-            playBtn.setOnClickListener {
-                showPauseButton(this)
-                if (pasued) {
-                    surahviewModel.resumeAyahRecitation()
-                    pasued = false
-                } else {
-                    surahviewModel.getAyahRecitation(
-                        currentSurah.id.toString(),
-                        currentAyah.id.toString()
-                    )
-                }
-            }
-            pauseBtn.setOnClickListener {
-                surahviewModel.pauseAyahRecitation()
-                showPlayButton(this)
-                pasued = true
-
-            }
-            surahviewModel.ayahEnded.observe(lifecycleOwner) {
-                if (it) {
-                    showPlayButton(this)
-                }
-            }
-        }
+    override fun onBindCustomViewHolder(holder: AyahViewHolder, position: Int) {
+        holder.bind(filteredItems[position])
     }
 
-    private fun showPlayButton(itemAyahBinding: ItemAyahBinding) {
-        itemAyahBinding.apply {
-            playBtn.isEnabled = true
-            playBtn.visibility = View.VISIBLE
-            pauseBtn.isEnabled = false
-            pauseBtn.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun showPauseButton(itemAyahBinding: ItemAyahBinding) {
-        itemAyahBinding.apply {
-            playBtn.isEnabled = false
-            playBtn.visibility = View.INVISIBLE
-            pauseBtn.isEnabled = true
-            pauseBtn.visibility = View.VISIBLE
-        }
-    }
-
-    fun submitList(verses: List<Verse>) {
-        this.ayahs = verses
-        filteredAyahList = verses
-        notifyDataSetChanged()
-    }
-
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val query = constraint?.toString()?.lowercase()?.trim()
-
-                filteredAyahList = if (query.isNullOrEmpty()) {
-                    ayahs // If the query is empty, show the full list
-                } else {
-                    ayahs.filter {
-                        normalize(it.text.lowercase()).contains(query)
-                    }
-                }
-
-                val filterResults = FilterResults()
-                filterResults.values = filteredAyahList
-                return filterResults
-            }
-
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                filteredAyahList = results?.values as List<Verse>
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    /**
-     * Normalizes the Arabic text by removing diacritics (tashkeel) and other symbols.
-     */
-    private fun normalize(text: String): String {
-        val nfdNormalizedString = Normalizer.normalize(text, Normalizer.Form.NFD)
-        // Remove diacritical marks (tashkeel)
-        val pattern = Pattern.compile("\\p{M}")
-        return pattern.matcher(nfdNormalizedString).replaceAll("")
+    override fun filterItem(item: Verse, query: String): Boolean {
+        return normalizeTextForFiltering(item.text.lowercase()).contains(query)
     }
 }

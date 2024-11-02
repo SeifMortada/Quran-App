@@ -4,19 +4,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.ExoPlayer
-import com.seifmortada.applications.quran.data.remote.utils.NetworkResult
-import com.seifmortada.applications.quran.data.repository.surah.SurahRepository
-import com.seifmortada.applications.quran.utils.AndroidUtils
+import com.seifmortada.applications.quran.domain.repository.surah.SurahRepository
+import com.seifmortada.applications.quran.data.rest.utils.NetworkResult
+import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
+import com.seifmortada.applications.quran.domain.usecase.GetSurahByIdUseCase
+import com.seifmortada.applications.quran.utils.FunctionsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SurahViewModel(private val surahRepository: SurahRepository) : ViewModel() {
+class SurahViewModel(
+    private val surahRepository: SurahRepository,
+    private val getSurahByIdUseCase: GetSurahByIdUseCase
+) : ViewModel() {
 
     val errorState: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
 
     val ayahRecitation: MutableLiveData<NetworkResult<String>> = MutableLiveData()
+
+    val surah: MutableLiveData<Surah> = MutableLiveData()
 
     val pauseState: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -30,7 +37,7 @@ class SurahViewModel(private val surahRepository: SurahRepository) : ViewModel()
             ayahRecitation.postValue(NetworkResult.Loading)
             val globalAyahNumber =
                 async(Dispatchers.Default) {
-                    AndroidUtils.calculateGlobalAyahNumber(
+                    FunctionsUtils.calculateGlobalAyahNumber(
                         surahNumber.toInt(),
                         ayahNumber.toInt()
                     )
@@ -43,6 +50,13 @@ class SurahViewModel(private val surahRepository: SurahRepository) : ViewModel()
             }
         }
 
+    fun getSurahById(id: Int) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            surah.postValue(getSurahByIdUseCase(id)!!)
+        } catch (e: Exception) {
+            postError(e.message.toString())
+        }
+    }
 
     private suspend fun postError(message: String) {
         withContext(Dispatchers.Main) {
@@ -51,7 +65,7 @@ class SurahViewModel(private val surahRepository: SurahRepository) : ViewModel()
         }
     }
 
-     fun resetErrorState() {
+    fun resetErrorState() {
         viewModelScope.launch(Dispatchers.Main) {
             errorState.value = Pair(false, "")
         }

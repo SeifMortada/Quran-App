@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@color/md_theme_inverseSurface"
+        android:padding="10dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:id="@+id/zikrCountLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_marginStart="20dp"
+            android:maxWidth="100dp"
+            android:layout_gravity="center|bottom">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_ayah" />
+
+            <TextView
+                android:id="@+id/ayahNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="1"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/shareBtn"
+            android:layout_width="30dp"
+            android:layout_height="45dp"
+            android:layout_gravity="start|bottom"
+            android:layout_marginStart="120dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_share" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/md_theme_inverseSurface"
+            android:layout_gravity="start|bottom"
+            android:layout_marginStart="20dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_bookmark" />
+
+        <ImageView
+            android:id="@+id/playBtn"
+            android:layout_width="30dp"
+            android:layout_height="45dp"
+            android:layout_gravity="start|bottom"
+            android:backgroundTint="@color/md_theme_inverseSurface"
+            android:layout_marginStart="70dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_play" />
+        <ImageView
+            android:id="@+id/pauseBtn"
+            android:layout_width="30dp"
+            android:layout_height="45dp"
+            android:layout_gravity="start|bottom"
+            android:importantForAccessibility="no"
+            android:visibility="invisible"
+            android:backgroundTint="@color/md_theme_inverseSurface"
+
+            android:layout_marginStart="70dp"
+            android:src="@drawable/ic_pause" />
+
+        <TextView
+            android:id="@+id/zikr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/md_theme_background_mediumContrast"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            tools:text="الذكر" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:backgroundTint="@color/md_theme_onSecondaryContainer"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card2">
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

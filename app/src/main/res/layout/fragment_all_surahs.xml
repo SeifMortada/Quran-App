@@ -4,17 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.quran.all_surahs.AllSurahsFragment">
+    tools:context=".ui.fragment.quran.chapters.AllSurahsFragment">
 
-    <SearchView
-        android:id="@+id/searchSurahView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/background_search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include
+        android:id="@+id/searchItemLayout"
+        layout="@layout/search_item" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
@@ -24,7 +18,7 @@
         android:backgroundTint="@color/md_theme_primary_mediumContrast"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchSurahView">
+        app:layout_constraintTop_toBottomOf="@id/searchItemLayout">
 
         <ImageView
             android:layout_width="150dp"

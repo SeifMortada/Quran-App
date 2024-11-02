@@ -6,57 +6,9 @@
     android:layout_height="match_parent">
 
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@drawable/background_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/backBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:id="@+id/surahName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="السورة"
-            android:textColor="@color/md_theme_background_highContrast"
-            android:textSize="30sp" />
-
-        <ImageView
-            android:id="@+id/searchBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="end|center"
-            android:layout_marginEnd="4dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_search" />
-    </com.google.android.material.appbar.MaterialToolbar>
-
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/background_search"
-        android:queryHint="السورة"
-        android:visibility="invisible"
-        app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:queryBackground="@android:color/transparent" />
+    <include
+        android:id="@+id/searchItemLayout"
+        layout="@layout/search_item" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ayahRv"
@@ -67,15 +19,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolBar"
+        app:layout_constraintTop_toBottomOf="@id/searchItemLayout"
         tools:listitem="@layout/item_ayah" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

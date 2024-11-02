@@ -1,6 +1,5 @@
 package com.seifmortada.applications.quran.ui.fragment.main
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.data.model.main.MainItem
 import com.seifmortada.applications.quran.databinding.ItemMainBinding
+import com.seifmortada.applications.quran.utils.FunctionsUtils
 
 class MainAdapter :
     RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
@@ -28,6 +28,9 @@ class MainAdapter :
             imageView.setImageResource(currentItem.image)
         }
         when (holder.position) {
+            0 -> holder.itemView.setOnClickListener {
+                holder.itemView.findNavController()
+                    .navigate(R.id.action_mainFragment_to_azkarsFragment)}
             1 -> holder.itemView.setOnClickListener {
                 holder.itemView.findNavController()
                     .navigate(R.id.action_mainFragment_to_quranFragment)
@@ -38,8 +41,8 @@ class MainAdapter :
                     .navigate(R.id.action_mainFragment_to_recitersFragment)
             }
 
+            }
         }
-    }
 
     fun setItems(newItems: List<MainItem>) {
         items.clear()

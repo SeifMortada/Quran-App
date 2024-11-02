@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.data.model.main.MainItem
 import com.seifmortada.applications.quran.databinding.FragmentMainBinding
+import com.seifmortada.applications.quran.ui.core.BaseFragment
 
 
-class MainFragment : BaseFragment<FragmentMainBinding,Nothing?>() {
+class MainFragment : BaseFragment<FragmentMainBinding, Nothing?>() {
 
     private lateinit var mainAdapter: MainAdapter
     override fun initializeViewBinding(

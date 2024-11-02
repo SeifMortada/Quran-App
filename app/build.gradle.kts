@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -19,6 +22,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String","BASE_URL","\"http://api.alquran.cloud/v1/\"")
+
     }
 
     buildTypes {
@@ -39,6 +45,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -78,8 +85,6 @@ dependencies {
     // ViewPager2
     implementation(libs.androidx.viewpager2)
 
-    // Quran SDK
-    implementation(libs.quran.sdk)
 
     // Media3 ExoPlayer and UI dependencies
     implementation(libs.media3.exoplayer)
