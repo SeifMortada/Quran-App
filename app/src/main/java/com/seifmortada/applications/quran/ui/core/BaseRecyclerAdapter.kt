@@ -14,7 +14,6 @@ abstract class BaseRecyclerAdapter<T, VH : RecyclerView.ViewHolder>(
     abstract fun onBindCustomViewHolder(holder: VH, position: Int)
 
     open fun filterItem(item: T, query: String): Boolean {
-        // Default implementation (override if needed)
         return true
     }
 

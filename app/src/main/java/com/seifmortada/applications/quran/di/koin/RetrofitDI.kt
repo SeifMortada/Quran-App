@@ -28,9 +28,7 @@ fun provideCache(): Cache {
 fun provideCacheInterceptor(): Interceptor {
     return Interceptor { chain ->
         var request = chain.request()
-        // Check network connectivity (assuming there's a function to check it)
         if (isNetworkAvailable(getContext()).not()) {
-            // If there is no network, force the cache
             request = request.newBuilder()
                 .header(
                     "Cache-Control",

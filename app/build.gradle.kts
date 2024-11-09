@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
 import java.util.Properties
 
 plugins {
@@ -23,7 +22,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String","BASE_URL","\"http://api.alquran.cloud/v1/\"")
+        val apiProperties = Properties()
+        apiProperties.load(project.rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String", "BASE_URL", apiProperties.getProperty("BASE_URL"))
+        buildConfigField("String", "URL_AYAH_RECITATION", apiProperties.getProperty("URL_AYAH_RECITATION"))
+        buildConfigField("String", "URL_FETCH_ALL_RECITERS", apiProperties.getProperty("URL_FETCH_ALL_RECITERS"))
 
     }
 

@@ -16,7 +16,6 @@ abstract class BaseFragment<VB : ViewBinding, VM : ViewModel?> : Fragment() {
     private var _binding: VB? = null
     protected val binding get() = _binding!!
 
-    // Nullable ViewModel for flexibility
     protected open val viewModel: VM? = null
 
     abstract fun initializeViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
@@ -65,7 +64,6 @@ abstract class BaseFragment<VB : ViewBinding, VM : ViewModel?> : Fragment() {
 
     // To reset states in child fragments
     protected open fun resetStates() {
-        // Override this method in child fragments
     }
 
 }
