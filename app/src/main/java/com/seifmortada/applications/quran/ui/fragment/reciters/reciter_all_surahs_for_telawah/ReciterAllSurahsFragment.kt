@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.seifmortada.applications.quran.data.rest.response.reciters.Moshaf
+import com.example.domain.model.MoshafModel
+import com.example.domain.usecase.GetQuranUseCase
 import com.seifmortada.applications.quran.databinding.FragmentReciterMoshafSurahsBinding
-import com.seifmortada.applications.quran.domain.usecase.GetQuranUseCase
 import com.seifmortada.applications.quran.ui.core.BaseFragment
 import com.seifmortada.applications.quran.utils.SearchUtils
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +22,8 @@ import org.koin.android.ext.android.inject
 class ReciterAllSurahsFragment : BaseFragment<FragmentReciterMoshafSurahsBinding, Nothing?>() {
     private val args = navArgs<ReciterAllSurahsFragmentArgs>()
     private lateinit var allSurahsAdapter: ReciterAllSurahsAdapter
-    private val getQuranUseCase: GetQuranUseCase by inject() // Injecting the use case directly
-    private lateinit var moshaf: Moshaf
+    private val getQuranUseCase: GetQuranUseCase by inject()
+    private lateinit var moshaf: MoshafModel
 
     override fun initializeViewBinding(
         inflater: LayoutInflater,
@@ -57,7 +57,7 @@ class ReciterAllSurahsFragment : BaseFragment<FragmentReciterMoshafSurahsBinding
         }
     }
 
-    private fun initializeDataAndRv(moshaf: Moshaf) {
+    private fun initializeDataAndRv(moshaf: MoshafModel) {
         lifecycleScope.launch(Dispatchers.IO) {
             val surahs = getQuranUseCase()
             allSurahsAdapter = ReciterAllSurahsAdapter(moshaf, surahs)

@@ -4,10 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.ExoPlayer
-import com.seifmortada.applications.quran.domain.repository.surah.SurahRepository
-import com.seifmortada.applications.quran.data.rest.utils.NetworkResult
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
-import com.seifmortada.applications.quran.domain.usecase.GetSurahByIdUseCase
+import com.example.domain.model.SurahModel
+import com.example.domain.usecase.GetSurahByIdUseCase
 import com.seifmortada.applications.quran.utils.FunctionsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -15,7 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SurahViewModel(
-    private val surahRepository: SurahRepository,
     private val getSurahByIdUseCase: GetSurahByIdUseCase
 ) : ViewModel() {
 
@@ -23,7 +20,7 @@ class SurahViewModel(
 
     val ayahRecitation: MutableLiveData<NetworkResult<String>> = MutableLiveData()
 
-    val surah: MutableLiveData<Surah> = MutableLiveData()
+    val surah: MutableLiveData<SurahModel> = MutableLiveData()
 
     val pauseState: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -43,7 +40,11 @@ class SurahViewModel(
                     )
                 }.await()
             try {
-                ayahRecitation.postValue(surahRepository.getAyahRecitation(globalAyahNumber.toString()))
+         //      ayahRecitation.postValue(
+//                    com.example.domain.repository.surah.SurahRepository.getAyahRecitation(
+//                        globalAyahNumber.toString()
+//                    )
+       //         )
 
             } catch (e: Exception) {
                 postError(e.message.toString())

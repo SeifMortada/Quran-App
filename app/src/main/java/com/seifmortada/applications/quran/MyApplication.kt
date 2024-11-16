@@ -2,7 +2,10 @@ package com.seifmortada.applications.quran
 
 import android.app.Application
 import android.content.Context
-import com.seifmortada.applications.quran.di.koin.appModule
+import com.example.di.repositoryModule
+import com.example.di.serviceModule
+import com.example.di.usecaseModule
+import com.seifmortada.applications.quran.di.koin.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -14,7 +17,14 @@ class MyApplication : Application() {
         Timber.plant(Timber.DebugTree())
         startKoin {
             androidContext(this@MyApplication)
-            modules(appModule)
+            modules(
+                listOf(
+                    viewModelModule,
+                    usecaseModule,
+                    repositoryModule,
+                    serviceModule,
+                )
+            )
         }
     }
 

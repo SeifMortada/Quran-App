@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.ReciterModel
 import com.seifmortada.applications.quran.databinding.ItemRecitersBinding
-import com.seifmortada.applications.quran.data.rest.response.reciters.Reciter
 import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
 import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 
-class RecitersAdapter : BaseRecyclerAdapter<Reciter, RecitersAdapter.RecitersViewHolder>() {
+class RecitersAdapter : BaseRecyclerAdapter<ReciterModel, RecitersAdapter.RecitersViewHolder>() {
 
     inner class RecitersViewHolder(val binding: ItemRecitersBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(reciter: Reciter) {
+        fun bind(reciter: ReciterModel) {
             binding.apply {
                 reciterName.text = reciter.name
                 moushafNumber.text = reciter.moshaf.size.toString()
@@ -42,7 +42,7 @@ class RecitersAdapter : BaseRecyclerAdapter<Reciter, RecitersAdapter.RecitersVie
         holder.bind(filteredItems[position])
     }
 
-    override fun filterItem(item: Reciter, query: String): Boolean {
+    override fun filterItem(item: ReciterModel, query: String): Boolean {
         return normalizeTextForFiltering(item.name.lowercase()).contains(query)
     }
 }

@@ -4,10 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.main.MainItem
 import com.seifmortada.applications.quran.R
-import com.seifmortada.applications.quran.data.model.main.MainItem
 import com.seifmortada.applications.quran.databinding.ItemMainBinding
-import com.seifmortada.applications.quran.utils.FunctionsUtils
 
 class MainAdapter :
     RecyclerView.Adapter<MainAdapter.MainViewHolder>() {

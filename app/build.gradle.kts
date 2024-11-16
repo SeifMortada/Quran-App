@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("androidx.navigation.safeargs")
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.google.devtools.ksp)
 
 }
 
@@ -22,12 +22,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val apiProperties = Properties()
-        apiProperties.load(project.rootProject.file("local.properties").inputStream())
-
-        buildConfigField("String", "BASE_URL", apiProperties.getProperty("BASE_URL"))
-        buildConfigField("String", "URL_AYAH_RECITATION", apiProperties.getProperty("URL_AYAH_RECITATION"))
-        buildConfigField("String", "URL_FETCH_ALL_RECITERS", apiProperties.getProperty("URL_FETCH_ALL_RECITERS"))
 
     }
 
@@ -49,11 +43,13 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        buildConfig = true
     }
 }
 
 dependencies {
+
+    implementation(project(":domain"))
+    implementation(project(":di"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -70,21 +66,8 @@ dependencies {
     // Picasso
     implementation(libs.picasso)
 
-    // Retrofit and OkHttp
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-    implementation(libs.okhttp.urlconnection)
 
-    // Koin
-    implementation(libs.koin.core)
-    implementation(libs.koin.android)
 
-    // Room
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-    implementation(libs.room.ktx)
 
     // ViewPager2
     implementation(libs.androidx.viewpager2)
@@ -94,7 +77,6 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
 
-    // Timber
-    implementation(libs.timber)
+
 
 }

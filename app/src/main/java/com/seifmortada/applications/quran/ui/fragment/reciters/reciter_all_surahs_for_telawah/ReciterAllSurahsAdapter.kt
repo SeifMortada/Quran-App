@@ -4,23 +4,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.MoshafModel
+import com.example.domain.model.SurahModel
+import com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter
 import com.seifmortada.applications.quran.databinding.ItemSurahBinding
-import com.seifmortada.applications.quran.data.model.reciter_surah_moshaf.SurahMoshafReciter
-import com.seifmortada.applications.quran.data.rest.response.reciters.Moshaf
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
 import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
 import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 
-class ReciterAllSurahsAdapter (private val moshaf: Moshaf, private val surahs: List<Surah>):
-    BaseRecyclerAdapter<Surah, ReciterAllSurahsAdapter.SurahViewHolder>(
+class ReciterAllSurahsAdapter (private val moshaf: MoshafModel, private val surahs: List<SurahModel>):
+    BaseRecyclerAdapter<SurahModel, ReciterAllSurahsAdapter.SurahViewHolder>(
       //filtering the surahs to show only the surahs that has this telawah for the reciter
         surahs.filter { it.id in moshaf.surahList.split(",").map { it.toInt() } })
 {
     inner class SurahViewHolder(val binding: ItemSurahBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(surah: Surah) {
+        fun bind(surah: SurahModel) {
             binding.surahName.text = surah.name
-            val verses = surah.total_verses.toString()
+            val verses = surah.totalVerses.toString()
             binding.surahNozol.text =
                 if (surah.type == "meccan") "مكية -$verses" + " آيه" else "مدنية -$verses" + " آيه"
             binding.surahNumber.text = surah.id.toString()
@@ -48,7 +48,7 @@ class ReciterAllSurahsAdapter (private val moshaf: Moshaf, private val surahs: L
         holder.bind(filteredItems[position])
     }
 
-    override fun filterItem(item: Surah, query: String): Boolean {
+    override fun filterItem(item: SurahModel, query: String): Boolean {
         return normalizeTextForFiltering(item.name.lowercase()).contains(query)
     }
 }

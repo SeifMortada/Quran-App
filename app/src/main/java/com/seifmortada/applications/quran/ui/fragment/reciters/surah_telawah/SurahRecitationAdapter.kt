@@ -5,17 +5,17 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.SurahModel
+import com.example.domain.model.VerseModel
 import com.seifmortada.applications.quran.databinding.ItemAyahReciterBinding
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Verse
 import java.text.Normalizer
 import java.util.regex.Pattern
 
-class SurahRecitationAdapter(private val surah: Surah) :
+class SurahRecitationAdapter(private val surah: SurahModel) :
     RecyclerView.Adapter<SurahRecitationAdapter.AyahViewHolder>(), Filterable {
 
-    private var ayahs: List<Verse> = surah.verses
-    private var filteredAyahList: List<Verse> = surah.verses
+    private var ayahs: List<VerseModel> = surah.verses
+    private var filteredAyahList: List<VerseModel> = surah.verses
 
 
     inner class AyahViewHolder(val binding: ItemAyahReciterBinding) : RecyclerView.ViewHolder(binding.root)
@@ -59,7 +59,7 @@ class SurahRecitationAdapter(private val surah: Surah) :
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                filteredAyahList = results?.values as List<Verse>
+                filteredAyahList = results?.values as List<VerseModel>
                 notifyDataSetChanged()
             }
         }

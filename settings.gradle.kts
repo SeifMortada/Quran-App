@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Quran App"
 include(":app")
- 
+include(":data")
+include(":domain")
+include(":di")

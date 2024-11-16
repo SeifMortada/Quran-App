@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.databinding.FragmentAllSurahsBinding
-import com.seifmortada.applications.quran.domain.usecase.GetQuranUseCase
 import com.seifmortada.applications.quran.ui.core.BaseFragment
 import com.seifmortada.applications.quran.utils.SearchUtils
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,7 @@ import org.koin.android.ext.android.inject
 
 
 class AllSurahsFragment : BaseFragment<FragmentAllSurahsBinding, Nothing?>() {
-    private val getQuranUseCase: GetQuranUseCase by inject()
+    private val getQuranUseCase: com.example.domain.usecase.GetQuranUseCase by inject()
     private lateinit var adapter: AllSurahsAdapter
     override fun initializeViewBinding(
         inflater: LayoutInflater,

@@ -53,7 +53,7 @@
         tools:layout="@layout/fragment_reciter_moshaf" >
         <argument
             android:name="reciter_moshaf"
-            app:argType="com.seifmortada.applications.quran.data.rest.response.reciters.Reciter" />
+            app:argType="com.example.domain.model.ReciterModel" />
         <action
             android:id="@+id/action_reciterMoshafFragment_to_reciterAllSurahsFragment"
             app:destination="@id/reciterAllSurahsFragment" />
@@ -65,7 +65,7 @@
         tools:layout="@layout/fragment_reciter_moshaf_surahs" >
         <argument
             android:name="moshaf"
-            app:argType="com.seifmortada.applications.quran.data.rest.response.reciters.Moshaf" />
+            app:argType="com.example.domain.model.MoshafModel" />
         <action
             android:id="@+id/action_reciterAllSurahsFragment_to_surahRecitationFragment"
             app:destination="@id/surahRecitationFragment" />
@@ -77,7 +77,7 @@
         tools:layout="@layout/fragment_surah_recitation" >
         <argument
             android:name="SurahMoshaf"
-            app:argType="com.seifmortada.applications.quran.data.model.reciter_surah_moshaf.SurahMoshafReciter" />
+            app:argType="com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter" />
     </fragment>
     <fragment
         android:id="@+id/azkarsFragment"
