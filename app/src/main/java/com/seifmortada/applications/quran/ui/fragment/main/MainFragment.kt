@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.domain.model.main.MainItem
 import com.seifmortada.applications.quran.R
-import com.seifmortada.applications.quran.data.model.main.MainItem
 import com.seifmortada.applications.quran.databinding.FragmentMainBinding
 import com.seifmortada.applications.quran.ui.core.BaseFragment
 

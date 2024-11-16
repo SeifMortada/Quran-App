@@ -4,20 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.SurahModel
 import com.seifmortada.applications.quran.databinding.ItemSurahBinding
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
 import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
 import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 
 class AllSurahsAdapter()
-    : BaseRecyclerAdapter<Surah, AllSurahsAdapter.SurahViewHolder>() {
+    : BaseRecyclerAdapter<SurahModel, AllSurahsAdapter.SurahViewHolder>() {
 
     inner class SurahViewHolder(val binding: ItemSurahBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(surah: Surah) {
+        fun bind(surah: SurahModel) {
             binding.surahName.text = surah.name
-            val verses = surah.total_verses.toString()
+            val verses = surah.totalVerses.toString()
             binding.surahNozol.text =
                 if (surah.type == "meccan") "مكية -$verses" + " آيه" else "مدنية -$verses" + " آيه"
             binding.surahNumber.text = surah.id.toString()
@@ -54,7 +54,7 @@ class AllSurahsAdapter()
         )
     }
 
-    override fun filterItem(item: Surah, query: String): Boolean {
+    override fun filterItem(item: SurahModel, query: String): Boolean {
         return normalizeTextForFiltering(item.name.lowercase()).contains(query)
     }
 }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.seifmortada.applications.quran.R
-import com.seifmortada.applications.quran.data.rest.utils.NetworkResult
 import com.seifmortada.applications.quran.databinding.FragmentRecitersBinding
 import com.seifmortada.applications.quran.ui.core.BaseFragment
 import com.seifmortada.applications.quran.ui.custom_views.CustomToast
@@ -36,7 +35,7 @@ class RecitersFragment : BaseFragment<FragmentRecitersBinding, RecitersViewModel
         viewModel.recitersResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> {
-                    recitersAdapter.submitList(it.data.reciters)
+                    recitersAdapter.submitList(it.data)
                     hideProgressBar()
                 }
 
@@ -47,6 +46,7 @@ class RecitersFragment : BaseFragment<FragmentRecitersBinding, RecitersViewModel
                 }
 
                 is NetworkResult.Loading -> showProgressBar()
+                null -> TODO()
             }
         }
     }

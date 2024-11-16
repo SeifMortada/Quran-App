@@ -4,17 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.MoshafModel
 import com.seifmortada.applications.quran.databinding.ItemReciterMoshafBinding
-import com.seifmortada.applications.quran.data.rest.response.reciters.Moshaf
 import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
 import com.seifmortada.applications.quran.utils.FunctionsUtils
 
 class ReciterMoshafAdapter :
-    BaseRecyclerAdapter<Moshaf, ReciterMoshafAdapter.ReciterMoshafViewHolder>() {
+    BaseRecyclerAdapter<MoshafModel, ReciterMoshafAdapter.ReciterMoshafViewHolder>() {
 
     inner class ReciterMoshafViewHolder(val binding: ItemReciterMoshafBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(moshaf: Moshaf) {
+        fun bind(moshaf: MoshafModel) {
             binding.moshafName.text = moshaf.name
             itemView.setOnClickListener {
                 it.findNavController().navigate(
@@ -43,7 +43,7 @@ class ReciterMoshafAdapter :
         holder.bind(filteredItems[position])
     }
 
-    override fun filterItem(item: Moshaf, query: String): Boolean {
+    override fun filterItem(item: MoshafModel, query: String): Boolean {
         return FunctionsUtils.normalizeTextForFiltering(item.name.lowercase()).contains(query)
     }
 }

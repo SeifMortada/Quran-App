@@ -2,22 +2,19 @@ package com.seifmortada.applications.quran.ui.fragment.azkar.azkars
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.seifmortada.applications.quran.data.local.room.entities.azkar.AzkarItem
-import com.seifmortada.applications.quran.databinding.ItemSurahBinding
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
+import com.example.domain.model.AzkarModel
 import com.seifmortada.applications.quran.databinding.ItemAzkarsBinding
 import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
 import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 
 class AzkarsAdapter()
-    : BaseRecyclerAdapter<AzkarItem, AzkarsAdapter.AzkarsViewHolder>() {
+    : BaseRecyclerAdapter<AzkarModel, AzkarsAdapter.AzkarsViewHolder>() {
 
     inner class AzkarsViewHolder(val binding: ItemAzkarsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(zikr: AzkarItem) {
+        fun bind(zikr: AzkarModel) {
             binding.zikrName.text = zikr.category
             binding.zikrNumber.text = zikr.id.toString()
         }
@@ -38,7 +35,7 @@ class AzkarsAdapter()
         holder.bind(currentZirk)    }
 
 
-    override fun filterItem(item: AzkarItem, query: String): Boolean {
+    override fun filterItem(item: AzkarModel, query: String): Boolean {
         return normalizeTextForFiltering(item.category.lowercase()).contains(query)
     }
 }

@@ -1,8 +1,7 @@
 package com.seifmortada.applications.quran.utils
 
-import android.view.View
-import androidx.navigation.findNavController
-import com.seifmortada.applications.quran.data.rest.request.ayah.SurahAyahNumber
+
+import com.example.domain.model.SurahAyahNumber
 import java.text.Normalizer
 import java.util.regex.Pattern
 

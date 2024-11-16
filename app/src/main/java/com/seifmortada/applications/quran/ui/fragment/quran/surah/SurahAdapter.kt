@@ -6,23 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.SurahModel
+import com.example.domain.model.VerseModel
 import com.seifmortada.applications.quran.databinding.ItemAyahBinding
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Verse
 import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
 import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 
 class SurahAdapter(
     private val surahViewModel: SurahViewModel,
-    private val currentSurah: Surah,
+    private val currentSurah: SurahModel,
     private val lifecycleOwner: LifecycleOwner
-) : BaseRecyclerAdapter<Verse, SurahAdapter.AyahViewHolder>() {
+) : BaseRecyclerAdapter<VerseModel, SurahAdapter.AyahViewHolder>() {
 
     private var paused: Boolean = false
 
     inner class AyahViewHolder(val binding: ItemAyahBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Verse) {
+        fun bind(item: VerseModel) {
             binding.apply {
                 ayah.text = item.text
                 ayahNumber.text = item.id.toString()
@@ -94,7 +94,7 @@ class SurahAdapter(
         holder.bind(filteredItems[position])
     }
 
-    override fun filterItem(item: Verse, query: String): Boolean {
+    override fun filterItem(item: VerseModel, query: String): Boolean {
         return normalizeTextForFiltering(item.text.lowercase()).contains(query)
     }
 }

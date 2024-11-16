@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.seifmortada.applications.quran.data.rest.utils.NetworkResult
 import com.seifmortada.applications.quran.databinding.FragmentSurahBinding
 import com.seifmortada.applications.quran.ui.core.BaseFragment
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation.fragment.findNavController
-import com.seifmortada.applications.quran.data.local.room.entities.quran.Surah
+import com.example.domain.model.SurahModel
 import com.seifmortada.applications.quran.utils.SearchUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +70,7 @@ class SurahFragment : BaseFragment<FragmentSurahBinding, SurahViewModel>() {
         }
     }
 
-    private fun initializeViews(surah: Surah) {
+    private fun initializeViews(surah: SurahModel) {
         binding.searchItemLayout.surahItemName.setText(surah.name)
 
     }
