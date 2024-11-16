@@ -3,10 +3,6 @@
 This Quran app is a work in progress, built using a modern architecture to ensure scalability, maintainability, and testability. The app is designed to provide a smooth and seamless experience for reading, listening, and exploring the Quran, with an emphasis on clean architecture principles and modularity.
 
 
-## Description
-
-An in-depth paragraph about your project and overview of use.
-
 ## Features
 
 Display Surahs and Ayahs in a RecyclerView
