@@ -12,5 +12,5 @@ data class SurahEntity(
     val transliteration: String,
     val type: String,
     @TypeConverters(VerseConverter::class)
-    var vers: List<VerseEntity>
+    var verses: List<VerseEntity>
 )

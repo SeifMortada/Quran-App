@@ -8,7 +8,7 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewModelModule= module{
-    viewModel { SurahViewModel(getSurahByIdUseCase = get()) }
+    viewModel { SurahViewModel(getSurahByIdUseCase = get(), fetchAyahRecitationUseCase = get()) }
     viewModel  { RecitersViewModel(getAllRecitersUseCase = get()) }
     viewModel { SurahRecitationViewModel(getSurahByIdUseCase = get()) }
 }

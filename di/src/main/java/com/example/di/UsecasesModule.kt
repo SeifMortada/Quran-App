@@ -1,5 +1,6 @@
 package com.example.di
 
+import com.example.domain.usecase.FetchAyahRecitationUseCase
 import com.example.domain.usecase.GetAllRecitersUseCase
 import com.example.domain.usecase.GetAzkarsUseCase
 import com.example.domain.usecase.GetQuranUseCase
@@ -12,4 +13,5 @@ val usecaseModule = module {
     single { GetAzkarsUseCase(zikrRepository = get()) }
     single { GetSurahByIdUseCase(quranRepository = get()) }
     single { GetAllRecitersUseCase(recitersRepository = get()) }
+    single{ FetchAyahRecitationUseCase(surahRepository = get()) }
 }

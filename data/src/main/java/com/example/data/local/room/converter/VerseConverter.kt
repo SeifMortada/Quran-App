@@ -7,9 +7,9 @@ import com.google.gson.reflect.TypeToken
 
 class VerseConverter {
     @TypeConverter
-    fun fromVerseList(vers: List<VerseEntity>): String {
+    fun fromVerseList(verses: List<VerseEntity>): String {
         val type = object : TypeToken<List<VerseEntity>>() {}.type
-        return Gson().toJson(vers, type)
+        return Gson().toJson(verses, type)
     }
 
     @TypeConverter

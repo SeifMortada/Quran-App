@@ -2,17 +2,23 @@ package com.example.data.mappers
 
 import com.example.data.local.room.entities.quran.SurahEntity
 import com.example.domain.model.SurahModel
+import timber.log.Timber
 
 fun SurahEntity.toDomain(): SurahModel {
+    if (this.verses.isNullOrEmpty()) {
+        Timber.e( "SurahEntity with id ${this.id} has null or empty verses")
+    }
+    val versesDomain = this.verses?.map { it.toVerseDomain() } ?: emptyList()
     return SurahModel(
         id = this.id,
         name = this.name,
         totalVerses = this.total_verses,
         transliteration = this.transliteration,
         type = this.type,
-        verses = this.vers.map { it.toVerseDomain() }
+        verses = versesDomain
     )
 }
+
 
 fun SurahModel.toEntity(): SurahEntity {
     return SurahEntity(
@@ -21,7 +27,7 @@ fun SurahModel.toEntity(): SurahEntity {
         total_verses = this.totalVerses,
         transliteration = this.transliteration,
         type = this.type,
-        vers = this.verses.map { it.toVerseEntity() }
+        verses = this.verses.map { it.toVerseEntity() }
     )
 }
 

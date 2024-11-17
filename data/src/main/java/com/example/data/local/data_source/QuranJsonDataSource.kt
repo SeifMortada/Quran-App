@@ -20,8 +20,8 @@ class QuranJsonDataSource(private val assetManager: AssetManager) {
             // Ensure `vers` is never null in each SurahEntity
             surahs.forEach { surah ->
                 Timber.d("SURAHS ARE $surahs")
-                if (surah.vers == null) {
-                    surah.vers = emptyList() // Default to empty list if `vers` is null
+                if (surah.verses == null) {
+                    surah.verses = emptyList() // Default to empty list if `vers` is null
                 }
             }
 

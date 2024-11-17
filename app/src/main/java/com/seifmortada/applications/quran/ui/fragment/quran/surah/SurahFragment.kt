@@ -126,6 +126,8 @@ class SurahFragment : BaseFragment<FragmentSurahBinding, SurahViewModel>() {
                 is NetworkResult.Loading -> {
                     viewModel.loadingState.value = true
                 }
+
+                null -> Unit
             }
         }
     }
