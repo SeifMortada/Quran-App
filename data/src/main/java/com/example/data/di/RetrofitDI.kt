@@ -1,6 +1,8 @@
 package com.example.data.di
 
 import android.content.Context
+import com.example.data.rest.apis.QuranApi
+import com.example.data.rest.apis.RecitersApi
 import com.example.domain.utils.NetworkUtils.isNetworkAvailable
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

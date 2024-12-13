@@ -1,6 +1,6 @@
 package com.example.domain.usecase
 
-import android.app.admin.NetworkEvent
+import com.example.domain.model.NetworkResult
 import com.example.domain.model.ReciterModel
 import com.example.domain.repository.reciters.all_reciters.RecitersRepository
 import timber.log.Timber

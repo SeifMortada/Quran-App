@@ -43,6 +43,16 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        compose = true
+
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
@@ -58,6 +68,24 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Core Compose Dependencies
+    implementation(platform(libs.androidx.compose.bom))
+
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.runtime:runtime")
+    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+
+    // Navigation for Compose
+    implementation(libs.compose.navigation)
+
+    // Integration with Activity
+    implementation(libs.compose.activity)
+
 
     // Navigation
     implementation(libs.navigation.fragment.ktx)

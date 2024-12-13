@@ -3,6 +3,7 @@ package com.seifmortada.applications.quran.ui.fragment.reciters.surah_telawah
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.model.NetworkResult
 import com.example.domain.model.SurahModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.ExoPlayer
+import com.example.domain.model.NetworkResult
 import com.example.domain.model.SurahModel
 import com.example.domain.usecase.FetchAyahRecitationUseCase
 import com.example.domain.usecase.GetSurahByIdUseCase

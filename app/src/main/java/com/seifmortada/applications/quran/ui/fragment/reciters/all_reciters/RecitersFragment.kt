@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.example.domain.model.NetworkResult
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.databinding.FragmentRecitersBinding
 import com.seifmortada.applications.quran.ui.core.BaseFragment

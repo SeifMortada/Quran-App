@@ -1,7 +1,8 @@
-package com.seifmortada.applications.quran.ui.fragment.azkar.azkars
+package com.seifmortada.applications.quran.ui.azkar_feature.azkars
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.AzkarModel
 import com.seifmortada.applications.quran.databinding.ItemAzkarsBinding
@@ -17,6 +18,10 @@ class AzkarsAdapter()
         fun bind(zikr: AzkarModel) {
             binding.zikrName.text = zikr.category
             binding.zikrNumber.text = zikr.id.toString()
+            binding.root.setOnClickListener {
+                val action = AzkarsFragmentDirections.actionAzkarsFragmentToZikrDetailsFragment(zikr)
+                it.findNavController().navigate(action)
+            }
         }
     }
 

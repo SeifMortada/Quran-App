@@ -3,6 +3,7 @@ package com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.model.NetworkResult
 import com.example.domain.model.ReciterModel
 import com.example.domain.usecase.GetAllRecitersUseCase
 import kotlinx.coroutines.Dispatchers

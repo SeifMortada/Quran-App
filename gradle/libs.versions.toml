@@ -1,6 +1,7 @@
 [versions]
 agp = "8.4.0"
-kotlin = "2.0.0"
+composeBom = "2023.10.01"
+kotlin = "1.9.10"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -20,11 +21,22 @@ loggingInterceptor = "4.11.0"
 okhttpUrlconnection = "4.10.0"
 media3 = "1.0.2"
 timber = "5.0.1"
-ksp = "2.0.10-1.0.24"
+ksp = "1.9.10-1.0.13"
+compose ="1.5.3"
+composeActivity ="1.9.1"
+composeNavigation="2.7.7"
 
 
 [libraries]
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+#compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref= "compose" }
+#compose-material = { group = "androidx.compose.material", name = "material", version.ref= "compose" }
+#compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref= "compose" }
+#compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref= "compose" }
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose",  version.ref="composeNavigation" }
+compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref="composeActivity" }
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

@@ -13,6 +13,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation.fragment.findNavController
+import com.example.domain.model.NetworkResult
 import com.example.domain.model.SurahModel
 import com.seifmortada.applications.quran.utils.SearchUtils
 import kotlinx.coroutines.Dispatchers

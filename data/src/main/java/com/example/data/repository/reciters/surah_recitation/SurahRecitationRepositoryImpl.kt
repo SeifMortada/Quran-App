@@ -1,5 +1,7 @@
 package com.example.data.repository.reciters.surah_recitation
 
+import com.example.data.rest.apis.RecitersApi
+import com.example.domain.model.NetworkResult
 import com.example.domain.repository.reciters.surah_recitation.SurahRecitationRepository
 import java.util.Locale
 

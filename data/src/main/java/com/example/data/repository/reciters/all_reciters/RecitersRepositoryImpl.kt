@@ -1,7 +1,9 @@
 package com.example.data.repository.reciters.all_reciters
 
 import com.example.data.mappers.toModel
+import com.example.data.rest.apis.RecitersApi
 import com.example.data.rest.utils.ApiConstant.URL_Fetch_All_Reciters
+import com.example.domain.model.NetworkResult
 import com.example.domain.model.ReciterModel
 import com.example.domain.repository.reciters.all_reciters.RecitersRepository
 

@@ -12,6 +12,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.domain.model.NetworkResult
 import com.seifmortada.applications.quran.databinding.FragmentSurahRecitationBinding
 import com.seifmortada.applications.quran.ui.core.BaseFragment
 import kotlinx.coroutines.CoroutineScope

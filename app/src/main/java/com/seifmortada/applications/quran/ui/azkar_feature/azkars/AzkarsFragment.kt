@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.ui.fragment.azkar.azkars
+package com.seifmortada.applications.quran.ui.azkar_feature.azkars
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.domain.usecase.GetAzkarsUseCase
 import com.seifmortada.applications.quran.databinding.FragmentAzkarsBinding
 import com.seifmortada.applications.quran.ui.core.BaseFragment
 import com.seifmortada.applications.quran.utils.SearchUtils
@@ -17,7 +18,7 @@ import org.koin.android.ext.android.inject
 
 class AzkarsFragment : BaseFragment<FragmentAzkarsBinding,Nothing>() {
     private lateinit var adapter: AzkarsAdapter
-    private val getAzkarsUseCase: com.example.domain.usecase.GetAzkarsUseCase by inject()
+    private val getAzkarsUseCase: GetAzkarsUseCase by inject()
 
     override fun initializeViewBinding(
         inflater: LayoutInflater,

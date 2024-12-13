@@ -82,6 +82,19 @@
     <fragment
         android:id="@+id/azkarsFragment"
         tools:layout="@layout/fragment_azkars"
-        android:name="com.seifmortada.applications.quran.ui.fragment.azkar.azkars.AzkarsFragment"
-        android:label="AzkarsFragment" />
+        android:name="com.seifmortada.applications.quran.ui.azkar_feature.azkars.AzkarsFragment"
+        android:label="AzkarsFragment" >
+        <action
+            android:id="@+id/action_azkarsFragment_to_zikrDetailsFragment"
+            app:destination="@id/zikrDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/zikrDetailsFragment"
+        android:name="com.seifmortada.applications.quran.ui.azkar_feature.azkarsDetails.ZikrDetailsFragment"
+        android:label="fragment_zikr_details"
+        tools:layout="@layout/fragment_zikr_details" >
+        <argument
+            android:name="zikrItem"
+            app:argType="com.example.domain.model.AzkarModel" />
+    </fragment>
 </navigation>

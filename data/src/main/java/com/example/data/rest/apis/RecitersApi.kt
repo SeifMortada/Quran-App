@@ -1,4 +1,5 @@
-import com.example.data.rest.response.reciters.Reciter
+package com.example.data.rest.apis
+
 import com.example.data.rest.response.reciters.RecitersResponse
 import okhttp3.ResponseBody
 import retrofit2.Response

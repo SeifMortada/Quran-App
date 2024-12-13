@@ -1,5 +1,7 @@
 package com.example.data.repository.surah
+import com.example.data.rest.apis.RecitersApi
 import com.example.data.rest.utils.ApiConstant.URL_Ayah_Recitation
+import com.example.domain.model.NetworkResult
 import com.example.domain.repository.surah.SurahRepository
 
 

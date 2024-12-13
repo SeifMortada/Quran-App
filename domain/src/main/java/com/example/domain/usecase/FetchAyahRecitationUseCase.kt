@@ -1,5 +1,6 @@
 package com.example.domain.usecase
 
+import com.example.domain.model.NetworkResult
 import com.example.domain.repository.surah.SurahRepository
 
 class FetchAyahRecitationUseCase(private val surahRepository: SurahRepository) {
