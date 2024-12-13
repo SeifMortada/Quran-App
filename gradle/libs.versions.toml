@@ -30,10 +30,13 @@ composeNavigation="2.7.7"
 [libraries]
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-#compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref= "compose" }
-#compose-material = { group = "androidx.compose.material", name = "material", version.ref= "compose" }
-#compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref= "compose" }
-#compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref= "compose" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+androidx-runtime = { module = "androidx.compose.runtime:runtime" }
+androidx-material3 = { module = "androidx.compose.material3:material3" }
+androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+androidx-ui = { module = "androidx.compose.ui:ui" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose",  version.ref="composeNavigation" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref="composeActivity" }
 
