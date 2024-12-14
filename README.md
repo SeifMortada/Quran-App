@@ -37,6 +37,7 @@ The project is divided into **multiple modules**, promoting **better maintainabi
 ### **Technologies Used** 💻
 
 - **Kotlin**: The primary language for development
+- **UI**: XML+viewBinding & Compose
 - **Clean Architecture**: To create a well-structured and scalable codebase
 - **MVVM Design Pattern**: To manage UI states in the UI layer effectively
 - **Koin**: Dependency Injection to simplify dependency management
