@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
-import com.seifmortada.applications.quran.ui.core.BaseRecyclerAdapter
+import com.seifmortada.applications.quran.presentation.core.BaseRecyclerAdapter
 
 object SearchUtils {
 

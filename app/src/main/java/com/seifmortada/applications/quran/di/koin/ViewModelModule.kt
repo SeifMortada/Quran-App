@@ -1,10 +1,9 @@
 package com.seifmortada.applications.quran.di.koin
 
-import com.seifmortada.applications.quran.ui.fragment.quran.surah.SurahViewModel
-import com.seifmortada.applications.quran.ui.fragment.reciters.all_reciters.RecitersViewModel
-import com.seifmortada.applications.quran.ui.fragment.reciters.surah_telawah.SurahRecitationViewModel
+import com.seifmortada.applications.quran.presentation.features.surah_feature.SurahViewModel
+import com.seifmortada.applications.quran.presentation.features.reciters_feature.RecitersViewModel
+import com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.SurahRecitationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewModelModule= module{
