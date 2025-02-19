@@ -82,6 +82,8 @@ dependencies {
 
     // Navigation for Compose
     implementation(libs.compose.navigation)
+    // Hilt Navigation for compose
+    implementation (libs.koin.androidx.compose)
 
     // Integration with Activity
     implementation(libs.compose.activity)
