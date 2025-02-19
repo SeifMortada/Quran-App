@@ -45,6 +45,8 @@ import com.example.domain.model.AzkarItemModel
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.presentation.common.composables.AppTopAppBar
 import com.seifmortada.applications.quran.presentation.common.composables.ButtonIcon
+import com.seifmortada.applications.quran.presentation.common.composables.SearchToolbar
+import com.seifmortada.applications.quran.utils.FunctionsUtils
 
 
 @Composable
@@ -53,20 +55,37 @@ fun AzkarScreen(
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    var searchQuery by remember { mutableStateOf("") }
+    var filterdAzkars = azkars.array.filter {
+        FunctionsUtils.normalizeTextForFiltering(it.text)
+            .contains(searchQuery, ignoreCase = true)
+    }
+    var isSearch by remember { mutableStateOf(false) }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            AppTopAppBar(
-                title = azkars.category,
-                onBackClick = onBackButtonClicked
-            )
+            if (isSearch) {
+                SearchToolbar(
+                    searchQuery = searchQuery,
+                    onSearchQueryChanged = { newQuery -> searchQuery = newQuery },
+                    onSearchTriggered = { isSearch=false },
+                    onBackClick = onBackButtonClicked
+                )
+            } else {
+                AppTopAppBar(
+                    title = azkars.category,
+                    onBackClick = onBackButtonClicked,
+                    onSearchClick = { isSearch = it }
+                )
+            }
         }) { padding ->
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            items(azkars.array) { zikr ->
+            items(filterdAzkars) { zikr ->
                 AzkarCard(
                     zikr
                 )
@@ -163,7 +182,6 @@ private fun AzkarCard(
 
     }
 }
-
 
 
 private fun vibrate(vibrator: Vibrator) {

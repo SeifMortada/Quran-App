@@ -9,5 +9,5 @@ import org.koin.dsl.module
 val viewModelModule= module{
     viewModel { SurahViewModel(getSurahByIdUseCase = get(), fetchAyahRecitationUseCase = get()) }
     viewModel  { RecitersViewModel(getAllRecitersUseCase = get()) }
-    viewModel { SurahRecitationViewModel(getSurahByIdUseCase = get()) }
+    viewModel { SurahRecitationViewModel(getSurahByIdUseCase = get(),getSurahRecitationUseCase = get()) }
 }
