@@ -39,23 +39,26 @@ import com.seifmortada.applications.quran.presentation.features.reciter_surah_re
 
 @Composable
 fun ReciterSurahRecitationCore(
+    surahId: Int,
+    server: String,
     onBackClicked: () -> Unit,
-    viewModel: SurahRecitationViewModel = koinViewModel(),
-    modifier: Modifier = Modifier
+    viewModel: SurahRecitationViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    LaunchedEffect(surahId, server) {
+        viewModel.fetchRecitation(server, surahId)
+    }
     ReciterSurahRecitationScreen(
         state = state,
-        onBackClicked = onBackClicked,
-        modifier = modifier
+        onBackClicked = onBackClicked
     )
 }
 
 @Composable
 fun ReciterSurahRecitationScreen(
+    modifier: Modifier = Modifier,
     state: SurahRecitationState,
-    onBackClicked: () -> Unit = {},
-    modifier: Modifier = Modifier
+    onBackClicked: () -> Unit = {}
 ) {
     val mediaPlayer = remember { MediaPlayer() }
 
@@ -269,14 +272,12 @@ fun AudioPlayer(
 }
 
 
-
 @Composable
 fun ProgressBarSlider(
     title: String,
     currentPosition: Int,
     duration: Int,
-    onValueChange: (Float) -> Unit = {},
-    modifier: Modifier = Modifier
+    onValueChange: (Float) -> Unit = {}
 ) {
     Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Slider(
