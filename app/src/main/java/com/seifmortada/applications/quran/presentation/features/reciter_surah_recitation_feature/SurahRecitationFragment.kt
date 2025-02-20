@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.domain.model.NetworkResult
 import com.seifmortada.applications.quran.databinding.FragmentSurahRecitationBinding
 import com.seifmortada.applications.quran.presentation.core.BaseFragment
+import com.seifmortada.applications.quran.presentation.core.ui.theme.QuranAppTheme
 import com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.composables.ReciterSurahRecitationCore
 import com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.composables.ReciterSurahRecitationScreen
 import kotlinx.coroutines.CoroutineScope
@@ -47,10 +48,11 @@ class SurahRecitationFragment : Fragment() {
             val server = moshaf.server
             viewModel.fetchRecitation(server, surahId)
             setContent {
-                ReciterSurahRecitationCore(
-                    onBackClicked = { findNavController().navigateUp() },
-                    viewModel
-                )
+                QuranAppTheme {
+                    ReciterSurahRecitationCore(
+                        onBackClicked = { findNavController().navigateUp() }
+                    )
+                }
             }
         }
     }
