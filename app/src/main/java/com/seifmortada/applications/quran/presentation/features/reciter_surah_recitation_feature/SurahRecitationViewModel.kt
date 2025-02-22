@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 
 data class SurahRecitationState(
     val audioUrl: String = "",
+    val fileSize: Long = 0L,
     val title: String = "",
     val currentSurah: SurahModel? = null,
     val isError: String = "",
@@ -36,9 +37,11 @@ class SurahRecitationViewModel(
             val surahRecitationResponse = getSurahRecitationUseCase(server, surahNumber.toString())
             when (surahRecitationResponse) {
                 is NetworkResult.Success -> {
+                    val (audioUrl, fileSize) = surahRecitationResponse.data
                     _uiState.update {
                         it.copy(
-                            audioUrl = surahRecitationResponse.data,
+                            audioUrl = audioUrl,
+                            fileSize = fileSize,
                             isLoading = false
                         )
                     }

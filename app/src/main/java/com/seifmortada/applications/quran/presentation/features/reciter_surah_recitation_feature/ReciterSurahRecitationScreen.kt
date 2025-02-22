@@ -1,10 +1,10 @@
-package com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.composables
+package com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.SurahRecitationViewModel
 import org.koin.androidx.compose.koinViewModel
 import android.media.MediaPlayer
+import android.text.format.Formatter.formatFileSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +27,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.SurahModel
 import com.example.domain.model.VerseModel
-import com.seifmortada.applications.quran.presentation.common.composables.AppTopAppBar
-import com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.SurahRecitationState
+import com.seifmortada.applications.quran.utils.SearchTopAppBar
+import kotlinx.coroutines.delay
 
 @Composable
 fun ReciterSurahRecitationCore(
@@ -69,7 +70,7 @@ fun ReciterSurahRecitationScreen(
     }
     Scaffold(
         topBar = {
-            AppTopAppBar(
+            SearchTopAppBar(
                 title = "Reciter Surah Recitation",
                 onBackClick = onBackClicked,
                 onSearchClick = {}
@@ -88,8 +89,17 @@ fun ReciterSurahRecitationScreen(
                 state.isLoading -> CircularProgressIndicator()
                 state.isError.isNotEmpty() -> ShowErrorMessage(errorMessage = state.isError)
                 state.audioUrl.isNotEmpty() -> {
-                    state.currentSurah?.let { SurahDisplay(surah = it) }
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Text(
+                        text = "File Size: ${formatFileSize(LocalContext.current, state.fileSize)}",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                    ) {
+                        SurahDisplay(surah = state.currentSurah!!)
+                    }
                     AudioPlayer(
                         title = state.title,
                         audioUrl = state.audioUrl,
@@ -133,22 +143,17 @@ fun SurahDisplay(surah: SurahModel) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // **Ensure LazyColumn is scrollable by making it take available space**
-            BoxWithConstraints(
-                modifier = Modifier
-                    .wrapContentSize()
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(8.dp)
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    items(surah.verses) { verse ->
-                        AyahItem(verse)
-                    }
+                items(surah.verses) { verse ->
+                    AyahItem(verse)
                 }
             }
         }
     }
+
 }
 
 
@@ -203,9 +208,7 @@ fun AudioPlayer(
     var currentPosition by remember { mutableIntStateOf(0) }
     var duration by remember { mutableIntStateOf(0) }
     var isPrepared by remember { mutableStateOf(false) }
-
     LaunchedEffect(audioUrl) {
-        println("AudioPlayer initialized with URL: $audioUrl") // Debugging
         try {
             mediaPlayer.reset()
             mediaPlayer.setDataSource(audioUrl)
@@ -218,12 +221,12 @@ fun AudioPlayer(
             e.printStackTrace()
         }
     }
-
-    if (audioUrl.isEmpty()) {
-        Text("No audio source", color = MaterialTheme.colorScheme.primary)
-        return
+    LaunchedEffect(isPlaying) {
+        while (isPlaying && isPrepared) {
+            currentPosition = mediaPlayer.currentPosition
+            delay(1000)
+        }
     }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -231,7 +234,6 @@ fun AudioPlayer(
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
             .padding(16.dp)
     ) {
-        Text("Audio Player Loaded!", color = MaterialTheme.colorScheme.primary) // Debugging
         ProgressBarSlider(
             title = title,
             currentPosition = currentPosition,
@@ -248,7 +250,9 @@ fun AudioPlayer(
             isPlaying = isPlaying,
             onReplayClicked = {
                 if (isPrepared) {
-                    mediaPlayer.seekTo((currentPosition - 10000).coerceAtLeast(0))
+                    val newPosition = (mediaPlayer.currentPosition - 10000).coerceAtLeast(0)
+                    mediaPlayer.seekTo(newPosition)
+                    currentPosition = newPosition
                 }
             },
             onPlayClicked = {
@@ -264,7 +268,9 @@ fun AudioPlayer(
             },
             onFastForwardClicked = {
                 if (isPrepared) {
-                    mediaPlayer.seekTo((currentPosition + 10000).coerceAtMost(duration))
+                    val newPosition = (mediaPlayer.currentPosition + 10000).coerceAtMost(duration)
+                    mediaPlayer.seekTo(newPosition)
+                    currentPosition = newPosition
                 }
             }
         )
@@ -349,5 +355,16 @@ fun formatTime(millis: Int): String {
 @Composable
 private fun PreviewReciterSurahRecitationScreen() {
     ReciterSurahRecitationScreen(
-        state = SurahRecitationState(), onBackClicked = {})
+        state = SurahRecitationState(
+            audioUrl = "https://example.com/audio.mp3",
+            title = "Surah Name",
+            currentSurah = SurahModel(
+                name = "Surah Name",
+                type = "Type",
+                verses = emptyList(),
+                totalVerses = 11,
+                transliteration = "",
+                id = 1
+            )
+        ), onBackClicked = {})
 }

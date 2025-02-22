@@ -11,7 +11,6 @@ class SurahRecitationRepositoryImpl(private val recitersApiService: RecitersApi)
         server: String,
         surahNumber: String
     ): NetworkResult<String> {
-
         val formattedSurahNumber = String.format(Locale.US, "%03d", surahNumber.toInt()) // "001"
         val url = "$server$formattedSurahNumber.mp3"
         return try {
