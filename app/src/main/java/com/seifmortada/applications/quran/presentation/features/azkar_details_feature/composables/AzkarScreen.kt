@@ -43,10 +43,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.domain.model.AzkarItemModel
 import com.seifmortada.applications.quran.R
-import com.seifmortada.applications.quran.presentation.common.composables.AppTopAppBar
 import com.seifmortada.applications.quran.presentation.common.composables.ButtonIcon
 import com.seifmortada.applications.quran.presentation.common.composables.SearchToolbar
 import com.seifmortada.applications.quran.utils.FunctionsUtils
+import com.seifmortada.applications.quran.utils.SearchTopAppBar
 
 
 @Composable
@@ -73,7 +73,7 @@ fun AzkarScreen(
                     onBackClick = onBackButtonClicked
                 )
             } else {
-                AppTopAppBar(
+                SearchTopAppBar(
                     title = azkars.category,
                     onBackClick = onBackButtonClicked,
                     onSearchClick = { isSearch = it }

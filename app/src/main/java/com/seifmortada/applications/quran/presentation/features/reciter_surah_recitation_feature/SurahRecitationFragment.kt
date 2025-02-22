@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.seifmortada.applications.quran.presentation.core.ui.theme.QuranAppTheme
-import com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.composables.ReciterSurahRecitationCore
-
 
 class SurahRecitationFragment : Fragment() {
     private val args = navArgs<SurahRecitationFragmentArgs>()
