@@ -23,7 +23,13 @@ class ReciterAllSurahsFragment :
             setContent {
                 ReciterAllSurahsCore(
                     onBackClicked = { findNavController().navigateUp() },
-                    availableSurahsWithThisTelawah = moshaf
+                    onSurahClicked = { surahAndTelawah ->
+                        findNavController().navigate(
+                            ReciterAllSurahsFragmentDirections.actionReciterAllSurahsFragmentToSurahRecitationFragment(
+                                surahAndTelawah
+                            )
+                        )
+                    }, availableSurahsWithThisTelawah = moshaf
                 )
             }
         }

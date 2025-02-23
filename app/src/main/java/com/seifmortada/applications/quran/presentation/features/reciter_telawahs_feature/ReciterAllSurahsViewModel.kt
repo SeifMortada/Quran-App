@@ -19,10 +19,7 @@ import kotlinx.coroutines.launch
 class ReciterAllSurahsViewModel(private val getQuranUseCase: GetQuranUseCase) : ViewModel() {
 
     private val _surahs = MutableStateFlow<List<SurahModel>>(emptyList())
-    val surahs = _surahs.asStateFlow()
-
     private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     val filteredSurahs: StateFlow<List<SurahModel>> =
         combine(_surahs, _searchQuery) { surahList, query ->

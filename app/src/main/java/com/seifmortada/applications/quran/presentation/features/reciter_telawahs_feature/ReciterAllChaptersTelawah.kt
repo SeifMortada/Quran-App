@@ -26,13 +26,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.MoshafModel
 import com.example.domain.model.SurahModel
+import com.example.domain.model.VerseModel
 import com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter
 import com.seifmortada.applications.quran.presentation.common.composables.SearchToolbar
-import com.seifmortada.applications.quran.presentation.features.reciter_surah_recitation_feature.ReciterSurahRecitationScreen
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
 import org.koin.androidx.compose.koinViewModel
 
@@ -40,6 +41,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ReciterAllSurahsCore(
     onBackClicked: () -> Unit,
     availableSurahsWithThisTelawah: MoshafModel,
+    onSurahClicked: (SurahMoshafReciter) -> Unit,
     viewModel: ReciterAllSurahsViewModel = koinViewModel()
 ) {
 
@@ -47,9 +49,13 @@ fun ReciterAllSurahsCore(
         viewModel.filterSurahsWithThisTelawah(availableSurahsWithThisTelawah)
     }
     val surahs by viewModel.filteredSurahs.collectAsState()
-    ReciterAllSurahsScreen(availableSurahsWithThisTelawah, surahs,
+    ReciterAllSurahsScreen(
+        moshaf = availableSurahsWithThisTelawah,
+        surahs = surahs,
         onBackClicked = onBackClicked,
-        onSearchQuery = { viewModel.updateSearchQuery(query = it) })
+        onSurahClicked = onSurahClicked,
+        onSearchQuery = { viewModel.updateSearchQuery(query = it) }
+    )
 
 }
 
@@ -57,6 +63,7 @@ fun ReciterAllSurahsCore(
 fun ReciterAllSurahsScreen(
     moshaf: MoshafModel,
     surahs: List<SurahModel>,
+    onSurahClicked: (SurahMoshafReciter) -> Unit,
     onBackClicked: () -> Unit,
     onSearchQuery: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -88,7 +95,7 @@ fun ReciterAllSurahsScreen(
     ) { paddingValues ->
         LazyColumn(modifier = modifier.padding(paddingValues)) {
             items(surahs) { surah ->
-                SurahItem(surah = surah, moshaf = moshaf) {}
+                SurahItem(surah = surah, moshaf = moshaf, onSurahClicked = onSurahClicked)
             }
         }
     }
@@ -98,13 +105,13 @@ fun ReciterAllSurahsScreen(
 fun SurahItem(
     surah: SurahModel,
     moshaf: MoshafModel,
-    onClick: (SurahMoshafReciter) -> Unit
+    onSurahClicked: (SurahMoshafReciter) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick(SurahMoshafReciter(moshaf, surah.id)) },
+            .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
@@ -150,5 +157,38 @@ fun SurahItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun ReciterAllSurahsScreenPreview() {
+    ReciterAllSurahsScreen(
+        surahs = listOf(
+            SurahModel(
+                1,
+                "الفاتحة",
+                totalVerses = 7,
+                transliteration = "Al-Fatihah",
+                type = "meccan",
+                verses = listOf(
+                    VerseModel(1, surahId = 1, text = "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ"),
+                    VerseModel(2, surahId = 2, text = "ٱلۡحَمۡدُ لِلَّهِ رَبِّ ٱلۡعَٰلَمِينَ"),
+                    VerseModel(3, surahId = 3, text = "ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ"),
+                )
+            ),
+            SurahModel(
+                2,
+                "البقرة",
+                totalVerses = 286,
+                transliteration = "Al-Baqarah",
+                type = "medinan",
+                verses = emptyList()
+            )
+        ),
+        onSearchQuery = { "" },
+        onBackClicked = {},
+        moshaf = MoshafModel(1, 2, "", "", "", 20),
+        onSurahClicked = {}
+    )
 }
 
