@@ -81,12 +81,12 @@ fun ReciterAllSurahsScreen(
                         onSearchQuery(it)
                     },
                     onSearchTriggered = { isSearch = false },
-                    onBackClick = onBackClicked
+                    onBackClick = { isSearch = false }
                 )
             } else {
                 SearchTopAppBar(
                     title = "السور المتاحة لهذة التلاوة",
-                    onBackClick = {},
+                    onBackClick = onBackClicked,
                     onSearchClick = { isSearch = it }
                 )
             }
@@ -124,7 +124,7 @@ fun SurahItem(
         ) {
             Text(
                 text = surah.name,
-                fontSize = 20.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.headlineSmall
