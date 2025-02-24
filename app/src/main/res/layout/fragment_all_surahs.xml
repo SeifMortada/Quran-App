@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.features.chapters_feature.AllSurahsFragment">
+    tools:context=".presentation.features.quran_chapters_feature.AllSurahsFragment">
 
     <include
         android:id="@+id/searchItemLayout"

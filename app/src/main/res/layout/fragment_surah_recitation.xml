@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.features.reciter_surah_recitation_feature.SurahRecitationFragment">
+    tools:context=".presentation.features.surah_recitation_feature.SurahRecitationFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolBar"
