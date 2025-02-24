@@ -29,10 +29,6 @@ object FunctionsUtils {
         return pattern.matcher(nfdNormalizedString).replaceAll("")
     }
 
-//    fun navigate(view:View,destination:Int){
-//        view.findNavController().navigate(destination)
-//    }
-
     val surahs = listOf(
         SurahAyahNumber(1, 7),    // Al-Fatiha
         SurahAyahNumber(2, 286),  // Al-Baqarah

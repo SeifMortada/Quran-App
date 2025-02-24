@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.features.reciter_telawahs_feature.ReciterAllSurahsFragment">
+    tools:context=".presentation.features.reciter_tilawah_feature.ReciterAllSurahsFragment">
 
     <include
         android:id="@+id/searchLayout"
