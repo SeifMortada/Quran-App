@@ -38,7 +38,7 @@ import com.seifmortada.applications.quran.utils.mediumPadding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ReciterCore(
+fun ReciterRoute(
     onBackClick: () -> Unit,
     onReciterClick: (ReciterModel) -> Unit,
     viewModel: RecitersViewModel = koinViewModel()

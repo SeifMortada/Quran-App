@@ -1,6 +1,9 @@
 package com.example.domain.model.main
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+
 data class MainItem(
-    val title: String,
-    val image:Int
+    @StringRes val title: String,
+    @DrawableRes val image: Int
 )

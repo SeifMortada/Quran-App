@@ -20,7 +20,7 @@ class ReciterMoshafFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                ReciterTelawahDetailsCore(
+                ReciterTelawahDetailsRoute(
                     onBackClick = { findNavController().navigateUp() },
                     reciter = args.value.reciterMoshaf,
                     onTelawahClick = {

@@ -1,7 +1,6 @@
 package com.seifmortada.applications.quran.features.reciter_tilawah_detail
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +28,7 @@ import com.seifmortada.applications.quran.utils.mediumPadding
 import com.seifmortada.applications.quran.utils.smallPadding
 
 @Composable
-fun ReciterTelawahDetailsCore(
+fun ReciterTelawahDetailsRoute(
     onBackClick: () -> Unit,
     onTelawahClick: (MoshafModel) -> Unit,
     reciter: ReciterModel

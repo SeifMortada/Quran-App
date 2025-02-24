@@ -21,7 +21,7 @@ class ReciterAllSurahsFragment :
         return ComposeView(requireContext()).apply {
             val moshaf = args.value.moshaf
             setContent {
-                ReciterAllSurahsCore(
+                ReciterAllSurahsRoute(
                     onBackClicked = { findNavController().navigateUp() },
                     onSurahClicked = { surahAndTelawah ->
                         findNavController().navigate(

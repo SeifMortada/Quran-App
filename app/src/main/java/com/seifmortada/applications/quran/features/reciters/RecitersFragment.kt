@@ -18,7 +18,7 @@ class RecitersFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                ReciterCore(
+                ReciterRoute(
                     onBackClick = { findNavController().navigateUp() },
                     onReciterClick = { reciter->
                         val action=RecitersFragmentDirections.actionRecitersFragmentToReciterMoshafFragment(reciter)

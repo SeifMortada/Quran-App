@@ -39,7 +39,7 @@ import com.seifmortada.applications.quran.utils.SearchTopAppBar
 import kotlinx.coroutines.delay
 
 @Composable
-fun ReciterSurahRecitationCore(
+fun ReciterSurahRecitationRoute(
     surahId: Int,
     server: String,
     onBackClicked: () -> Unit,

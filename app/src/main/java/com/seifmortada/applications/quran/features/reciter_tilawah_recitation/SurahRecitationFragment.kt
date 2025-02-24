@@ -23,7 +23,7 @@ class SurahRecitationFragment : Fragment() {
             val server = moshaf.server
             setContent {
                 QuranAppTheme {
-                    ReciterSurahRecitationCore(
+                    ReciterSurahRecitationRoute(
                         onBackClicked = { findNavController().navigateUp() },
                         surahId = surahId,
                         server = server

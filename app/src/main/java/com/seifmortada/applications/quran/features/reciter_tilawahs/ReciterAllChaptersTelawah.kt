@@ -38,7 +38,7 @@ import com.seifmortada.applications.quran.utils.SearchTopAppBar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ReciterAllSurahsCore(
+fun ReciterAllSurahsRoute(
     onBackClicked: () -> Unit,
     availableSurahsWithThisTelawah: MoshafModel,
     onSurahClicked: (SurahMoshafReciter) -> Unit,
