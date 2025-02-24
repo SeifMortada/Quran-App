@@ -33,7 +33,7 @@ import com.example.domain.model.MoshafModel
 import com.example.domain.model.SurahModel
 import com.example.domain.model.VerseModel
 import com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter
-import com.seifmortada.applications.quran.presentation.common.composables.SearchToolbar
+import com.seifmortada.applications.quran.utils.SearchToolbar
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
 import org.koin.androidx.compose.koinViewModel
 

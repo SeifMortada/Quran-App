@@ -7,6 +7,7 @@ import com.example.domain.model.NetworkResult
 import com.example.domain.model.SurahModel
 import com.example.domain.usecase.GetSurahByIdUseCase
 import com.example.domain.usecase.GetSurahRecitationUseCase
+import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,6 +29,8 @@ class SurahRecitationViewModel(
 
     private val _uiState = MutableStateFlow(SurahRecitationState())
     val uiState = _uiState.asStateFlow()
+
+    private val _searchQuery = MutableStateFlow("")
 
     fun fetchRecitation(server: String, surahNumber: Int) =
         viewModelScope.launch {
@@ -57,4 +60,8 @@ class SurahRecitationViewModel(
                 else -> Unit
             }
         }
+
+    fun searchQuery(query: String) {
+        _searchQuery.value = normalizeTextForFiltering(query)
+    }
 }
