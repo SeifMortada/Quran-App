@@ -1,5 +1,8 @@
 package com.seifmortada.applications.quran.core.navigation
 
+import com.example.domain.model.MoshafModel
+import com.example.domain.model.ReciterModel
+import com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter
 import kotlinx.serialization.Serializable
 
 object QuranScreens {
@@ -23,12 +26,12 @@ object QuranScreens {
     object Reciters
 
     @Serializable
-    data class ReciterTilawahChapters(val tilawahId:Int)
+    data class ReciterTilawahChapters(val telawah:MoshafModel)
 
     @Serializable
-    data class ReciterTilawahDetail(val reciterId: Int)
+    data class ReciterTilawahDetail(val reciter:ReciterModel)
 
     @Serializable
-    data class ReciterTilawahRecitation(val surahAndReciterId: Int)
+    data class ReciterTilawahRecitation(val surahAndReciter: SurahMoshafReciter)
 
 }

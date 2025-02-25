@@ -40,12 +40,11 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ReciterSurahRecitationRoute(
-    surahAndServer:Int,
+    surahId: Int,
+    server: String,
     onBackClicked: () -> Unit,
     viewModel: SurahRecitationViewModel = koinViewModel()
 ) {
-    val server = (surahAndServer / 10000).toString()
-    val surahId = surahAndServer % 10000
     val state by viewModel.uiState.collectAsState()
     LaunchedEffect(surahId, server) {
         viewModel.fetchRecitation(server, surahId)

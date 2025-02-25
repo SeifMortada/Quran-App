@@ -40,7 +40,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ReciterRoute(
     onBackClick: () -> Unit,
-    onReciterClick: (Int) -> Unit,
+    onReciterClick: (ReciterModel) -> Unit,
     viewModel: RecitersViewModel = koinViewModel()
 ) {
     val reciterState by viewModel.uiState.collectAsState()
@@ -52,7 +52,7 @@ fun ReciterScreen(
     uiState: ReciterScreenState,
     onSearchQueryChanged: (String) -> Unit,
     onBackClick: () -> Unit,
-    onReciterClick: (Int) -> Unit,
+    onReciterClick: (ReciterModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isSearch by remember { mutableStateOf(false) }
@@ -99,7 +99,7 @@ fun ReciterScreen(
 }
 
 @Composable
-fun ReciterList(reciters: List<ReciterModel>, onReciterClick: (Int) -> Unit) {
+fun ReciterList(reciters: List<ReciterModel>, onReciterClick: (ReciterModel) -> Unit) {
     LazyColumn(contentPadding = PaddingValues(mediumPadding)) {
         items(reciters) {
             ReciterCard(it, onReciterClick)
@@ -108,12 +108,12 @@ fun ReciterList(reciters: List<ReciterModel>, onReciterClick: (Int) -> Unit) {
 }
 
 @Composable
-fun ReciterCard(reciter: ReciterModel, onReciterClick: (Int) -> Unit) {
+fun ReciterCard(reciter: ReciterModel, onReciterClick: (ReciterModel) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onReciterClick(reciter.id) },
+            .clickable { onReciterClick(reciter) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)

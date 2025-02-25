@@ -40,16 +40,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ReciterAllSurahsRoute(
     onBackClicked: () -> Unit,
-    availableSurahsWithThisTelawahId: Int,
-    availableSurahsWithThisTelawah: MoshafModel = MoshafModel(
-        id = availableSurahsWithThisTelawahId,
-        moshafType = 2,
-        name = "",
-        server = "",
-        surahList = "",
-        surahTotal = 0
-    ),
-    onSurahClicked: (Int) -> Unit,
+    availableSurahsWithThisTelawah: MoshafModel,
+    onSurahClicked: (SurahMoshafReciter) -> Unit,
     viewModel: ReciterAllSurahsViewModel = koinViewModel()
 ) {
 
@@ -71,7 +63,7 @@ fun ReciterAllSurahsRoute(
 fun ReciterAllSurahsScreen(
     moshaf: MoshafModel,
     surahs: List<SurahModel>,
-    onSurahClicked: (Int) -> Unit,
+    onSurahClicked: (SurahMoshafReciter) -> Unit,
     onBackClicked: () -> Unit,
     onSearchQuery: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -113,13 +105,13 @@ fun ReciterAllSurahsScreen(
 fun SurahItem(
     surah: SurahModel,
     moshaf: MoshafModel,
-    onSurahClicked: (Int) -> Unit
+    onSurahClicked: (SurahMoshafReciter) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onSurahClicked(moshaf.id + surah.id) },
+            .clickable { SurahMoshafReciter(moshaf, surah.id) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)

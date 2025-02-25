@@ -9,6 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.domain.model.MoshafModel
+import com.example.domain.model.ReciterModel
+import com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter
 import com.seifmortada.applications.quran.features.azkar_detail.composables.ZikrScreen
 import com.seifmortada.applications.quran.features.home.HomeRoute
 import com.seifmortada.applications.quran.features.quran_chapters_feature.QuranChaptersRoute
@@ -17,14 +20,13 @@ import com.seifmortada.applications.quran.features.reciter_tilawah_detail.Recite
 import com.seifmortada.applications.quran.features.reciter_tilawah_recitation.ReciterSurahRecitationRoute
 import com.seifmortada.applications.quran.features.reciters.ReciterRoute
 import com.seifmortada.applications.quran.features.surah_feature.SurahRoute
+import kotlin.reflect.typeOf
 
 @Composable
 fun QuranAppNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
-    val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
-
     NavHost(
         navController = navController,
         startDestination = QuranScreens.Home,
@@ -68,30 +70,43 @@ fun QuranAppNavGraph(
                 }
             )
         }
-        composable<QuranScreens.ReciterTilawahDetail> {
+        composable<QuranScreens.ReciterTilawahDetail>(
+            typeMap = mapOf(
+                typeOf<ReciterModel>() to CustomNavType.reciterType
+            )
+        ) {
             val args = it.toRoute<QuranScreens.ReciterTilawahDetail>()
             ReciterTelawahDetailsRoute(
-                reciterId = args.reciterId,
+                reciter = args.reciter,
                 onBackClick = { navController.navigateUp() },
                 onTelawahClick = { tilawah ->
                     navController.navigate(QuranScreens.ReciterTilawahChapters(tilawah))
                 }
             )
         }
-        composable<QuranScreens.ReciterTilawahChapters> {
+        composable<QuranScreens.ReciterTilawahChapters>(
+            typeMap = mapOf(
+                typeOf<MoshafModel>() to CustomNavType.tilawahType
+            )
+        ) {
             val args = it.toRoute<QuranScreens.ReciterTilawahChapters>()
             ReciterAllSurahsRoute(
                 onBackClicked = { navController.navigateUp() },
-                availableSurahsWithThisTelawahId = args.tilawahId,
+                availableSurahsWithThisTelawah = args.telawah,
                 onSurahClicked = { surahAndTelawah ->
                     navController.navigate(QuranScreens.ReciterTilawahRecitation(surahAndTelawah))
                 }
             )
         }
-        composable<QuranScreens.ReciterTilawahRecitation> {
+        composable<QuranScreens.ReciterTilawahRecitation>(
+            typeMap = mapOf(
+                typeOf<SurahMoshafReciter>() to CustomNavType.surahTelawahReciter
+            )
+        ) {
             val args = it.toRoute<QuranScreens.ReciterTilawahRecitation>()
             ReciterSurahRecitationRoute(
-                surahAndServer = args.surahAndReciterId,
+                surahId = args.surahAndReciter.surahId,
+                server = args.surahAndReciter.moshaf.server,
                 onBackClicked = { navController.navigateUp() }
             )
         }

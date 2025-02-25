@@ -30,19 +30,12 @@ import com.seifmortada.applications.quran.utils.smallPadding
 @Composable
 fun ReciterTelawahDetailsRoute(
     onBackClick: () -> Unit,
-    onTelawahClick: (Int) -> Unit,
-    reciterId: Int,
-   // reciter: ReciterModel
+    onTelawahClick: (MoshafModel) -> Unit,
+    reciter: ReciterModel
 ) {
 
     ReciterTelawahDetailsScreen(
-        reciter = ReciterModel(
-            id = 1,
-            name = "ebay",
-            letter = "",
-            date = "",
-            moshaf = emptyList()
-        ),
+        reciter = reciter,
         onBackClick = onBackClick,
         onTelawahClick = onTelawahClick
     )
@@ -53,7 +46,7 @@ fun ReciterTelawahDetailsRoute(
 fun ReciterTelawahDetailsScreen(
     reciter: ReciterModel,
     onBackClick: () -> Unit,
-    onTelawahClick: (Int) -> Unit,
+    onTelawahClick: (MoshafModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -76,7 +69,7 @@ fun ReciterTelawahDetailsScreen(
 @Composable
 fun TelawahGrid(
     moshafList: List<MoshafModel>,
-    onTelawahClick: (Int) -> Unit,
+    onTelawahClick: (MoshafModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -91,12 +84,12 @@ fun TelawahGrid(
 }
 
 @Composable
-fun TelawahItem(telawah: MoshafModel, onTelawahClick: (Int) -> Unit) {
+fun TelawahItem(telawah: MoshafModel, onTelawahClick: (MoshafModel) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(smallPadding)
-            .clickable { onTelawahClick(telawah.id) }
+            .clickable { onTelawahClick(telawah) }
             .size(70.dp),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
