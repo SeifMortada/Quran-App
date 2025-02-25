@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
 import com.seifmortada.applications.quran.R
-import com.seifmortada.applications.quran.core.ui.custom_views.CustomToast
 
 abstract class BaseFragment<VB : ViewBinding, VM : ViewModel?> : Fragment() {
 
@@ -47,7 +46,6 @@ abstract class BaseFragment<VB : ViewBinding, VM : ViewModel?> : Fragment() {
         viewModel?.let {
             errorState.observe(viewLifecycleOwner) { error ->
                 if (error.first) {
-                    CustomToast.makeText(requireContext().applicationContext, error.second).show()
                     resetStates()
                 }
             }

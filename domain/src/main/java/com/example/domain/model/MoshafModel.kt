@@ -1,8 +1,9 @@
 package com.example.domain.model
 
 import android.os.Parcelable
+import kotlinx.serialization.Serializable
 
-@kotlinx.parcelize.Parcelize
+@Serializable
 data class MoshafModel(
     val id: Int,
     val moshafType: Int,
@@ -10,4 +11,4 @@ data class MoshafModel(
     val server: String,
     val surahList: String,
     val surahTotal: Int
-): Parcelable
+)

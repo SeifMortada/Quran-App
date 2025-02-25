@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.features.reciter_tilawahs
+package com.seifmortada.applications.quran.features.reciter_tilawah_chapters
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,8 +40,16 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ReciterAllSurahsRoute(
     onBackClicked: () -> Unit,
-    availableSurahsWithThisTelawah: MoshafModel,
-    onSurahClicked: (SurahMoshafReciter) -> Unit,
+    availableSurahsWithThisTelawahId: Int,
+    availableSurahsWithThisTelawah: MoshafModel = MoshafModel(
+        id = availableSurahsWithThisTelawahId,
+        moshafType = 2,
+        name = "",
+        server = "",
+        surahList = "",
+        surahTotal = 0
+    ),
+    onSurahClicked: (Int) -> Unit,
     viewModel: ReciterAllSurahsViewModel = koinViewModel()
 ) {
 
@@ -63,7 +71,7 @@ fun ReciterAllSurahsRoute(
 fun ReciterAllSurahsScreen(
     moshaf: MoshafModel,
     surahs: List<SurahModel>,
-    onSurahClicked: (SurahMoshafReciter) -> Unit,
+    onSurahClicked: (Int) -> Unit,
     onBackClicked: () -> Unit,
     onSearchQuery: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -105,13 +113,13 @@ fun ReciterAllSurahsScreen(
 fun SurahItem(
     surah: SurahModel,
     moshaf: MoshafModel,
-    onSurahClicked: (SurahMoshafReciter) -> Unit
+    onSurahClicked: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) },
+            .clickable { onSurahClicked(moshaf.id + surah.id) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)

@@ -19,8 +19,8 @@ class AzkarsAdapter()
             binding.zikrName.text = zikr.category
             binding.zikrNumber.text = zikr.id.toString()
             binding.root.setOnClickListener {
-                val action = AzkarsFragmentDirections.actionAzkarsFragmentToZikrDetailsFragment(zikr)
-                it.findNavController().navigate(action)
+//                val action = AzkarsFragmentDirections.actionAzkarsFragmentToZikrDetailsFragment(zikr)
+//                it.findNavController().navigate(action)
             }
         }
     }

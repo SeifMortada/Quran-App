@@ -1,89 +1,76 @@
 package com.seifmortada.applications.quran.features.surah_feature
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.exoplayer.ExoPlayer
 import com.example.domain.model.NetworkResult
 import com.example.domain.model.SurahModel
 import com.example.domain.usecase.FetchAyahRecitationUseCase
 import com.example.domain.usecase.GetSurahByIdUseCase
-import com.seifmortada.applications.quran.utils.FunctionsUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import com.seifmortada.applications.quran.utils.FunctionsUtils.calculateGlobalAyahNumber
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
+data class SurahState(
+    val surah: SurahModel? = null,
+    val error: String? = null,
+    val loading: Boolean = false,
+    val searchQuery: String = "",
+    val surahAudioUrl: String? = null
+)
 
 class SurahViewModel(
     private val getSurahByIdUseCase: GetSurahByIdUseCase,
     private val fetchAyahRecitationUseCase: FetchAyahRecitationUseCase
 ) : ViewModel() {
 
-    val errorState: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
+    private val _uiState = MutableStateFlow(SurahState())
+    val uiState = _uiState.asStateFlow()
 
-    val ayahRecitation: MutableLiveData<NetworkResult<String>?> = MutableLiveData()
-
-    val surah: MutableLiveData<SurahModel> = MutableLiveData()
-
-    val pauseState: MutableLiveData<Boolean> = MutableLiveData()
-
-    val loadingState: MutableLiveData<Boolean> = MutableLiveData()
-
-    val ayahEnded: MutableLiveData<Boolean> = MutableLiveData()
-
-    lateinit var exoPlayer: ExoPlayer
     fun getAyahRecitation(surahNumber: String, ayahNumber: String) =
-        viewModelScope.launch(Dispatchers.IO) {
-            ayahRecitation.postValue(NetworkResult.Loading)
-            val globalAyahNumber =
-                async(Dispatchers.Default) {
-                    FunctionsUtils.calculateGlobalAyahNumber(
-                        surahNumber.toInt(),
-                        ayahNumber.toInt()
-                    )
-                }.await()
+        viewModelScope.launch {
+            _uiState.update { it.copy(loading = true) }
             try {
-                ayahRecitation.postValue(
-                    fetchAyahRecitationUseCase(globalAyahNumber)
+                val globalAyahNumber = calculateGlobalAyahNumber(
+                    surahNumber.toInt(),
+                    ayahNumber.toInt()
                 )
+                _uiState.update {
+                    when (val response = fetchAyahRecitationUseCase(globalAyahNumber)) {
+                        is NetworkResult.Error -> {
+                            it.copy(error = response.errorMessage, loading = false)
+                        }
 
+                        NetworkResult.Loading -> it.copy(loading = true)
+                        is NetworkResult.Success -> it.copy(
+                            loading = false,
+                            surahAudioUrl = response.data
+                        )
+                    }
+                }
             } catch (e: Exception) {
-                postError(e.message.toString())
+                _uiState.update { it.copy(error = e.message, loading = false) }
             }
         }
 
-    fun getSurahById(id: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun getSurahById(id: Int) = viewModelScope.launch {
+        _uiState.update { it.copy(loading = true) }
         try {
-            surah.postValue(getSurahByIdUseCase(id)!!)
+            val surah = getSurahByIdUseCase(id)
+            _uiState.update { it.copy(surah = surah, loading = false) }
         } catch (e: Exception) {
-            postError(e.message.toString())
+            _uiState.update { it.copy(error = e.message, loading = false) }
         }
     }
 
-    private suspend fun postError(message: String) {
-        withContext(Dispatchers.Main) {
-            errorState.value = Pair(true, message)
-            resetLoadingState()
+    fun onSearchQueryChanged(query: String) {
+        _uiState.update { state ->
+            val filteredVerses = state.surah?.verses?.filter {
+                it.text.contains(query, ignoreCase = true)
+            } ?: emptyList()
+
+            state.copy(searchQuery = query, surah = state.surah?.copy(verses = filteredVerses))
         }
-    }
-
-    fun resetErrorState() {
-        viewModelScope.launch(Dispatchers.Main) {
-            errorState.value = Pair(false, "")
-        }
-    }
-
-    fun resetLoadingState() {
-        viewModelScope.launch(Dispatchers.Main) {
-            loadingState.value = false
-        }
-    }
-
-    fun pauseAyahRecitation() {
-        pauseState.value = true
-    }
-
-    fun resumeAyahRecitation() {
-        pauseState.value = false
     }
 }

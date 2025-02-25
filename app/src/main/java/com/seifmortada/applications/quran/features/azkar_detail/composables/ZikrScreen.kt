@@ -50,8 +50,15 @@ import com.seifmortada.applications.quran.utils.SearchTopAppBar
 
 
 @Composable
-fun AzkarScreen(
-    azkars: AzkarModel,
+fun ZikrScreen(
+    zikrId:Int,
+    azkars: AzkarModel= AzkarModel(
+        array = emptyList(),
+        audio = "",
+        category = "",
+        filename = "",
+        id = 0
+    ),
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -239,5 +246,5 @@ private fun AzkarScreenPreview() {
         id = 101
     )
 
-    AzkarScreen(azkars = fakeAzkarModel, onBackButtonClicked = {})
+
 }
