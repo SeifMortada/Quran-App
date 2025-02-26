@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.features.quran_chapters_feature
+package com.seifmortada.applications.quran.features.quran_chapters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

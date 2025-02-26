@@ -1,5 +1,6 @@
 package com.seifmortada.applications.quran.core.navigation
 
+import com.example.domain.model.AzkarModel
 import com.example.domain.model.MoshafModel
 import com.example.domain.model.ReciterModel
 import com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter
@@ -14,7 +15,7 @@ object QuranScreens {
     object Azkars
 
     @Serializable
-    data class Zikr(val zikrItemId: Int)
+    data class Zikr(val zikrItem: AzkarModel)
 
     @Serializable
     object QuranChapters
@@ -26,10 +27,10 @@ object QuranScreens {
     object Reciters
 
     @Serializable
-    data class ReciterTilawahChapters(val telawah:MoshafModel)
+    data class ReciterTilawahDetail(val reciter: ReciterModel)
 
     @Serializable
-    data class ReciterTilawahDetail(val reciter:ReciterModel)
+    data class ReciterTilawahChapters(val telawah: MoshafModel)
 
     @Serializable
     data class ReciterTilawahRecitation(val surahAndReciter: SurahMoshafReciter)

@@ -1,15 +1,13 @@
-package com.seifmortada.applications.quran.features.surah_feature
+package com.seifmortada.applications.quran.features.surah
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,7 +54,7 @@ fun SurahRoute(
 
 @Composable
 fun SurahScreen(
-    state: SurahState,
+    state: SurahUiState,
     onSearchQueryChanged: (String) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -92,8 +90,8 @@ fun SurahScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                state.loading -> CircularProgressIndicator()
-                state.error != null -> ShowErrorMessage(errorMessage = state.error)
+                state.isLoading -> CircularProgressIndicator()
+                state.userMessage != null -> ShowErrorMessage(errorMessage = state.userMessage)
                 state.surah != null -> LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {

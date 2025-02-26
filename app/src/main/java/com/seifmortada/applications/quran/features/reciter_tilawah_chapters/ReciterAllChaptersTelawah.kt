@@ -111,10 +111,10 @@ fun SurahItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { SurahMoshafReciter(moshaf, surah.id) },
+            .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Column(
             modifier = Modifier
@@ -126,7 +126,7 @@ fun SurahItem(
                 text = surah.name,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.headlineSmall
             )
 

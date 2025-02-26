@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.features.quran_chapters_feature
+package com.seifmortada.applications.quran.features.quran_chapters
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.domain.model.ReciterModel
 import com.example.domain.model.SurahModel
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.utils.SearchToolbar
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
-import com.seifmortada.applications.quran.utils.mediumPadding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

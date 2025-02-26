@@ -116,7 +116,7 @@ fun ReciterCard(reciter: ReciterModel, onReciterClick: (ReciterModel) -> Unit) {
             .clickable { onReciterClick(reciter) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Column(
             modifier = Modifier
@@ -128,7 +128,7 @@ fun ReciterCard(reciter: ReciterModel, onReciterClick: (ReciterModel) -> Unit) {
                 text = reciter.name,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.headlineSmall
             )
         }

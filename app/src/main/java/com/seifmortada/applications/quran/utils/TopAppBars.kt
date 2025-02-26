@@ -40,13 +40,11 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.seifmortada.applications.quran.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -163,8 +161,7 @@ fun SearchToolbar(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth(),
-        //    .background(color = MaterialTheme.colorScheme.primaryContainer)
+        modifier = modifier.fillMaxWidth()
     ) {
         IconButton(onClick = { onBackClick() }) {
             Icon(

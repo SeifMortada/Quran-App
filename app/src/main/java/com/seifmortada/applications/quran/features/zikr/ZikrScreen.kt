@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.features.azkar_detail.composables
+package com.seifmortada.applications.quran.features.zikr
 
 import android.content.Context
 import android.content.Intent
@@ -48,23 +48,24 @@ import com.seifmortada.applications.quran.utils.FunctionsUtils
 import com.seifmortada.applications.quran.utils.SearchToolbar
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
 
+@Composable
+fun ZikrRoute(zikr: AzkarModel, onBackClicked: () -> Unit) {
+    ZikrScreen(
+        zikr = zikr,
+        onBackButtonClicked = onBackClicked
+    )
+
+}
 
 @Composable
 fun ZikrScreen(
-    zikrId:Int,
-    azkars: AzkarModel= AzkarModel(
-        array = emptyList(),
-        audio = "",
-        category = "",
-        filename = "",
-        id = 0
-    ),
+    zikr: AzkarModel,
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     var searchQuery by remember { mutableStateOf("") }
-    var filterdAzkars = azkars.array.filter {
+    var filterdAzkars = zikr.array.filter {
         FunctionsUtils.normalizeTextForFiltering(it.text)
             .contains(searchQuery, ignoreCase = true)
     }
@@ -76,12 +77,12 @@ fun ZikrScreen(
                 SearchToolbar(
                     searchQuery = searchQuery,
                     onSearchQueryChanged = { newQuery -> searchQuery = newQuery },
-                    onSearchTriggered = { isSearch=false },
+                    onSearchTriggered = { isSearch = false },
                     onBackClick = onBackButtonClicked
                 )
             } else {
                 SearchTopAppBar(
-                    title = azkars.category,
+                    title = zikr.category,
                     onBackClick = onBackButtonClicked,
                     onSearchClick = { isSearch = it }
                 )
@@ -177,12 +178,11 @@ private fun AzkarCard(
 
                     ButtonIcon(
                         onClick = {},
-                        iconId = R.drawable.ic_bookmark,
-                        tintResource = R.color.md_theme_primary
+                        iconId = R.drawable.ic_bookmark
                     )
                     ButtonIcon(onClick = {
                         shareZikr(context = context, zikr = zikr.text)
-                    }, iconId = R.drawable.ic_share, tintResource = R.color.md_theme_primary)
+                    }, iconId = R.drawable.ic_share)
                 }
             }
         }
