@@ -6,6 +6,7 @@ plugins {
     id("androidx.navigation.safeargs")
     id("kotlin-parcelize")
     alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.kotlin.serialization)
 
 }
 
@@ -81,7 +82,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
 
     // Navigation for Compose
-    implementation(libs.compose.navigation)
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     // Hilt Navigation for compose
     implementation (libs.koin.androidx.compose)
 

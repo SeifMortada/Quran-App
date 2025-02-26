@@ -1,6 +1,7 @@
 package com.seifmortada.applications.quran.features.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,51 +33,76 @@ import com.example.domain.model.main.MainItem
 import com.seifmortada.applications.quran.R
 
 @Composable
-fun HomeRoute() {
-    val mainItems = listOf(
-        MainItem(stringResource(R.string.zikrs), R.drawable.ic_tasbih),
-        MainItem(stringResource(R.string.quran), R.drawable.ic_koran),
-        MainItem(stringResource(R.string.quran_readers), R.drawable.ic_imam)
+fun HomeRoute(
+    onZikrClick: () -> Unit,
+    onQuranClick: () -> Unit,
+    onReciterClick: () -> Unit
+) {
+    val mainItems = remember {
+        listOf(
+            MainItem("Zikrs", R.drawable.ic_tasbih),
+            MainItem("Quran", R.drawable.ic_koran),
+            MainItem("Quran Readers", R.drawable.ic_imam)
+        )
+    }
+    HomeScreen(
+        mainItems = mainItems,
+        onZikrClick = onZikrClick,
+        onQuranClick = onQuranClick,
+        onReciterClick = onReciterClick
     )
-    HomeScreen(mainItems)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(mainItems: List<MainItem>) {
+fun HomeScreen(
+    mainItems: List<MainItem>,
+    onZikrClick: () -> Unit,
+    onQuranClick: () -> Unit,
+    onReciterClick: () -> Unit
+) {
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(mainItems) { item ->
-                MainItemRow(item)
+                MainItemRow(item, onZikrClick, onQuranClick, onReciterClick)
             }
         }
     }
 }
 
 @Composable
-fun MainItemRow(item: MainItem) {
+fun MainItemRow(
+    item: MainItem,
+    onZikrClick: () -> Unit,
+    onQuranClick: () -> Unit,
+    onReciterClick: () -> Unit
+) {
+    val zikrsTitle = "Zikrs"
+    val quranTitle = "Quran"
+    val recitersTitle = "Quran Readers"
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor =MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
                     when (item.title) {
-//                    stringResource(R.string.zikrs) -> navController.navigate("azkarsScreen")
-//                    stringResource(R.string.quran) -> navController.navigate("quranScreen")
-//                    stringResource(R.string.quran_readers) -> navController.navigate("recitersScreen")
+                        zikrsTitle -> onZikrClick()
+                        quranTitle -> onQuranClick()
+                        recitersTitle -> onReciterClick()
                     }
                 }
                 .padding(16.dp),
@@ -88,7 +115,12 @@ fun MainItemRow(item: MainItem) {
                 modifier = Modifier.size(96.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = item.title, style = MaterialTheme.typography.bodyMedium, fontSize = 32.sp)
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 32.sp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }
@@ -101,7 +133,7 @@ private fun HomeScreenPreview() {
             MainItem(stringResource(R.string.zikrs), R.drawable.ic_tasbih),
             MainItem(stringResource(R.string.quran), R.drawable.ic_koran),
             MainItem(stringResource(R.string.quran_readers), R.drawable.ic_imam)
-        )
+        ), {}, {}, {}
     )
 
 }

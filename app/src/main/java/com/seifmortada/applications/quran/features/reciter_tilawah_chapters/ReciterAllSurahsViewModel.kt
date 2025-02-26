@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.features.reciter_tilawahs
+package com.seifmortada.applications.quran.features.reciter_tilawah_chapters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

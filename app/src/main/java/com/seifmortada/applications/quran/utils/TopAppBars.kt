@@ -40,13 +40,11 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.seifmortada.applications.quran.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,19 +52,23 @@ import com.seifmortada.applications.quran.R
 fun SearchTopAppBar(
     title: String,
     onBackClick: () -> Unit,
-    onSearchClick:(Boolean)->Unit,
+    onSearchClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primaryContainer),
+            .background(color = MaterialTheme.colorScheme.primary),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        IconButton(onClick = {onSearchClick(true)}) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+        IconButton(onClick = { onSearchClick(true) }) {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
         }
         TopAppBar(
             modifier = Modifier.wrapContentSize(),
@@ -75,12 +77,12 @@ fun SearchTopAppBar(
                     text = title,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color =  MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(start = 20.dp)
                 )
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = MaterialTheme.colorScheme.primary,
                 scrolledContainerColor = Color.Transparent,
             ),
             navigationIcon = {
@@ -93,7 +95,7 @@ fun SearchTopAppBar(
                             onClick = onBackClick
                         )
                         .size(25.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             },
             actions = actions
@@ -112,7 +114,7 @@ fun BackTopAppBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primaryContainer),
+            .background(color = MaterialTheme.colorScheme.primary),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -123,12 +125,12 @@ fun BackTopAppBar(
                     text = title,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color =  MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(start = 20.dp)
                 )
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = MaterialTheme.colorScheme.primary,
                 scrolledContainerColor = Color.Transparent,
             ),
             navigationIcon = {
@@ -141,7 +143,7 @@ fun BackTopAppBar(
                             onClick = onBackClick
                         )
                         .size(25.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             },
             actions = actions
@@ -159,12 +161,13 @@ fun SearchToolbar(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
     ) {
         IconButton(onClick = { onBackClick() }) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription =null
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null
             )
         }
         SearchTextField(
@@ -204,9 +207,9 @@ private fun SearchTextField(
                     },
                 ) {
                     Icon(
-                        imageVector =  Icons.Default.Close,
+                        imageVector = Icons.Default.Close,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -216,7 +219,7 @@ private fun SearchTextField(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = colorResource(R.color.md_theme_primary),
+                tint = MaterialTheme.colorScheme.primary,
             )
         },
         onValueChange = {
@@ -259,9 +262,9 @@ private fun SearchTextField(
 @Composable
 private fun SearchToolBarPreview() {
     SearchToolbar(
-        "",
+        "Search Query Test",
         onSearchQueryChanged = {},
-        onSearchTriggered = {""},
+        onSearchTriggered = { "" },
         onBackClick = {}
     )
 }
@@ -269,12 +272,12 @@ private fun SearchToolBarPreview() {
 @Preview
 @Composable
 private fun SearchTopAppBarPreview() {
-    SearchTopAppBar(title = "", onBackClick = {},{})
+    SearchTopAppBar(title = "Title Test", onBackClick = {}, {})
 }
 
 @Preview
 @Composable
 private fun BackTopAppBarPreview() {
-    BackTopAppBar(title = "", onBackClick = {})
+    BackTopAppBar(title = "Title Test", onBackClick = {})
 
 }

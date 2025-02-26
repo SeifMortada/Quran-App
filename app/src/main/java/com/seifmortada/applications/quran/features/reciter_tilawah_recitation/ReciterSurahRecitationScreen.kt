@@ -113,7 +113,7 @@ fun ReciterSurahRecitationScreen(
 }
 
 @Composable
-fun SurahDisplay(surah: SurahModel) {
+private fun SurahDisplay(surah: SurahModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -158,7 +158,7 @@ fun SurahDisplay(surah: SurahModel) {
 
 
 @Composable
-fun AyahItem(verse: VerseModel) {
+private fun AyahItem(verse: VerseModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

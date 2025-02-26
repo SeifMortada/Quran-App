@@ -24,8 +24,8 @@ media3 = "1.0.2"
 timber = "5.0.1"
 ksp = "1.9.10-1.0.13"
 composeActivity ="1.9.1"
-composeNavigation="2.7.7"
-
+composeNavigation="2.8.7"
+serialization = "1.6.3"
 
 [libraries]
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
@@ -38,7 +38,8 @@ androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-ui = { module = "androidx.compose.ui:ui" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
-compose-navigation = { group = "androidx.navigation", name = "navigation-compose",  version.ref="composeNavigation" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref="composeActivity" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -78,3 +79,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

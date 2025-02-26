@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.devtools.ksp)
     id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.serialization)
 
 }
 
@@ -43,4 +44,5 @@ dependencies {
     api(libs.koin.android)
     // Timber
     api(libs.timber)
+    api(libs.kotlinx.serialization.json)
 }

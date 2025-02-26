@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.features.reciter_tilawahs
+package com.seifmortada.applications.quran.features.reciter_tilawah_chapters
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -114,7 +114,7 @@ fun SurahItem(
             .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Column(
             modifier = Modifier
@@ -126,7 +126,7 @@ fun SurahItem(
                 text = surah.name,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.headlineSmall
             )
 
