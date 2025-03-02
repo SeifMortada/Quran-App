@@ -1,14 +1,23 @@
 package com.seifmortada.applications.quran.features.surah
 
+import android.media.MediaPlayer
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -16,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,8 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.SurahModel
@@ -45,6 +57,7 @@ fun SurahRoute(
     LaunchedEffect(surahId) {
         viewModel.getSurahById(surahId)
     }
+
     SurahScreen(
         onBackClick = onBackClick,
         state = uiState,
@@ -61,7 +74,12 @@ fun SurahScreen(
 ) {
     var isSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-
+    val mediaPlayer = remember { MediaPlayer() }
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayer.release()
+        }
+    }
     Scaffold(
         topBar = {
             if (isSearch) {
@@ -99,10 +117,24 @@ fun SurahScreen(
                         SurahDisplay(surah = state.surah)
                     }
                 }
+
+                state.surahAudioUrl != null -> playAudio(state.surahAudioUrl, mediaPlayer)
             }
         }
     }
 }
+
+fun playAudio(surahAudioUrl: String, mediaPlayer: MediaPlayer) {
+try {
+    mediaPlayer.reset()
+    mediaPlayer.setDataSource(surahAudioUrl)
+    mediaPlayer.prepare()
+    mediaPlayer.start()
+} catch (e: Exception) {
+    e.printStackTrace()
+}
+}
+
 @Composable
 private fun SurahDisplay(surah: SurahModel) {
     Card(
@@ -134,7 +166,6 @@ private fun SurahDisplay(surah: SurahModel) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Replacing LazyColumn with Column
             Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -146,10 +177,11 @@ private fun SurahDisplay(surah: SurahModel) {
     }
 }
 
-
-
 @Composable
-private fun AyahItem(verse: VerseModel) {
+fun AyahItem(verse: VerseModel) {
+    var isPlaying by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -170,20 +202,73 @@ private fun AyahItem(verse: VerseModel) {
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.onBackground
             )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
             Text(
                 text = "(${verse.id})",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.align(Alignment.End)
+                color = MaterialTheme.colorScheme.secondary
             )
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                    contentDescription = if (isPlaying) "Pause" else "Play",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .clickable {
+                            if (isPlaying) {
+                           //     exoPlayer.pause()
+                            } else {
+                             //   exoPlayer.setMediaItem(MediaItem.fromUri(verse.audioUrl))
+                             //   exoPlayer.prepare()
+                               // exoPlayer.play()
+                            }
+                            isPlaying = !isPlaying
+                        }
+                )
+            }
         }
     }
 }
 
+
 @Composable
-fun ShowErrorMessage(errorMessage: String) {
-    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+fun AyahAudioPlayer(modifier: Modifier) {
+    var isPlaying by remember { mutableStateOf(false) }
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .weight(1f)
+                .clickable {
+                    isPlaying = !isPlaying
+                }
+        )
+
+
+    }
+}
+
+@Preview
+@Composable
+private fun SurahScreenPreview() {
+    SurahScreen(SurahUiState(
+        surah = SurahModel(
+            1, "surah name", 11, "meccan", "type", listOf(
+                VerseModel(
+                    1,
+                    "verse text",
+                    1
+                )
+            )
+        ),
+    ), {}, {})
 }

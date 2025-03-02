@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.core.navigation
+package com.seifmortada.applications.quran.core.navigation.destinations
 
 import com.example.domain.model.AzkarModel
 import com.example.domain.model.MoshafModel
@@ -15,16 +15,28 @@ object QuranScreens {
     object Azkars
 
     @Serializable
+    object AzkarsRoute
+
+    @Serializable
+    object Settings
+
+    @Serializable
     data class Zikr(val zikrItem: AzkarModel)
 
     @Serializable
     object QuranChapters
 
     @Serializable
+    object QuranChaptersRoute
+
+    @Serializable
     data class Surah(val surahId: Int)
 
     @Serializable
     object Reciters
+
+    @Serializable
+    object RecitersRoute
 
     @Serializable
     data class ReciterTilawahDetail(val reciter: ReciterModel)

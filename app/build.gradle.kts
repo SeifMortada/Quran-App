@@ -3,7 +3,6 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("androidx.navigation.safeargs")
     id("kotlin-parcelize")
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.kotlin.serialization)
@@ -83,6 +82,7 @@ dependencies {
 
     // Navigation for Compose
     implementation(libs.navigation.compose)
+    implementation (libs.androidx.material)
     implementation(libs.kotlinx.serialization.json)
     // Hilt Navigation for compose
     implementation (libs.koin.androidx.compose)
@@ -90,27 +90,13 @@ dependencies {
     // Integration with Activity
     implementation(libs.compose.activity)
 
-
-    // Navigation
-    implementation(libs.navigation.fragment.ktx)
-    implementation(libs.navigation.ui.ktx)
-
-    // Picasso
-    implementation(libs.picasso)
-
-
-
-
     // ViewPager2
     implementation(libs.androidx.viewpager2)
-
-
-    // Media3 ExoPlayer and UI dependencies
-    implementation(libs.media3.exoplayer)
-    implementation(libs.media3.ui)
 
     // Extended icons
     implementation (libs.androidx.material.icons.extended)
 
-
+    implementation (libs.androidx.media3.exoplayer)
+    implementation (libs.androidx.media3.ui)
+    implementation (libs.androidx.media3.common)
 }

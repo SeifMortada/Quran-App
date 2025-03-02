@@ -5,8 +5,3 @@ plugins {
     alias(libs.plugins.google.devtools.ksp) apply true
     alias(libs.plugins.android.library) apply false
 }
-buildscript {
-    dependencies {
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.0")
-    }
-}

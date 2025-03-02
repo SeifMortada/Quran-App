@@ -1,4 +1,4 @@
-package com.seifmortada.applications.quran.core.navigation
+package com.seifmortada.applications.quran.core.navigation.types
 
 import android.net.Uri
 import android.os.Bundle
