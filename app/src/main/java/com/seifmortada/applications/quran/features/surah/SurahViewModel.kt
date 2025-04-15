@@ -1,5 +1,6 @@
 package com.seifmortada.applications.quran.features.surah
 
+import android.media.MediaPlayer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.NetworkResult
@@ -23,6 +24,7 @@ data class SurahUiState(
     val surah: SurahModel? = null,
     val isLoading: Boolean = false,
     val userMessage: String? = null,
+    val playingAyahId: Int? = null,
     val surahAudioUrl: String? = null
 )
 
@@ -56,6 +58,7 @@ class SurahViewModel(
         uiState.copy(surah = filteredSurah)
     }.stateIn(viewModelScope, WhileUiSubscribed, SurahUiState())
 
+    private var mediaPlayer: MediaPlayer? = null
 
     fun getSurahById(id: Int) {
         _uiState.update { it.copy(isLoading = true) }
@@ -69,7 +72,7 @@ class SurahViewModel(
         }
     }
 
-    fun getAyahRecitation(surahNumber: String, ayahNumber: String) {
+    fun getAyahRecitation(surahNumber: String, ayahNumber: String,ayahId:Int) {
         viewModelScope.launch {
             val globalAyahNumber =
                 calculateGlobalAyahNumber(surahNumber.toInt(), ayahNumber.toInt())
@@ -77,7 +80,9 @@ class SurahViewModel(
 
             when (val response = fetchAyahRecitationUseCase(globalAyahNumber)) {
                 is NetworkResult.Success -> {
-                    _uiState.update { it.copy(surahAudioUrl = response.data) }
+                    stopAudio()
+                    _uiState.update { it.copy(surahAudioUrl = response.data, playingAyahId = ayahId) }
+                    startAudio(response.data)
                 }
 
                 is NetworkResult.Error -> {
@@ -94,5 +99,29 @@ class SurahViewModel(
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.update { query }
+    }
+    private fun startAudio(url: String) {
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer().apply {
+            setDataSource(url)
+            prepare()
+            start()
+            setOnCompletionListener {
+                _uiState.update { it.copy(playingAyahId = null) }
+            }
+        }
+    }
+
+    fun stopAudio() {
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+        _uiState.update { it.copy(playingAyahId = null) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }

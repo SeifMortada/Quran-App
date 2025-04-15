@@ -61,7 +61,9 @@ fun SurahRoute(
     SurahScreen(
         onBackClick = onBackClick,
         state = uiState,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onAudioStart = viewModel::getAyahRecitation,
+        onAudioStop = viewModel::stopAudio
     )
 }
 
@@ -70,6 +72,8 @@ fun SurahScreen(
     state: SurahUiState,
     onSearchQueryChanged: (String) -> Unit,
     onBackClick: () -> Unit,
+    onAudioStart: (String, String, Int) -> Unit,
+    onAudioStop: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isSearch by remember { mutableStateOf(false) }
@@ -114,7 +118,11 @@ fun SurahScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     item {
-                        SurahDisplay(surah = state.surah)
+                        SurahDisplay(
+                            uiState = state,
+                            onAudioStop = onAudioStop,
+                            onAudioStart = onAudioStart
+                        )
                     }
                 }
 
@@ -125,18 +133,22 @@ fun SurahScreen(
 }
 
 fun playAudio(surahAudioUrl: String, mediaPlayer: MediaPlayer) {
-try {
-    mediaPlayer.reset()
-    mediaPlayer.setDataSource(surahAudioUrl)
-    mediaPlayer.prepare()
-    mediaPlayer.start()
-} catch (e: Exception) {
-    e.printStackTrace()
-}
+    try {
+        mediaPlayer.reset()
+        mediaPlayer.setDataSource(surahAudioUrl)
+        mediaPlayer.prepare()
+        mediaPlayer.start()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 
 @Composable
-private fun SurahDisplay(surah: SurahModel) {
+private fun SurahDisplay(
+    uiState: SurahUiState,
+    onAudioStop: () -> Unit,
+    onAudioStart: (String, String, Int) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,14 +164,14 @@ private fun SurahDisplay(surah: SurahModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = surah.name,
+                text = uiState.surah?.name ?: "",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
 
             Text(
-                text = "(${surah.type})",
+                text = "(${uiState.surah?.type ?: ""})",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.secondary
             )
@@ -169,8 +181,22 @@ private fun SurahDisplay(surah: SurahModel) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                surah.verses.forEach { verse ->
-                    AyahItem(verse)
+                uiState.surah?.verses?.forEach { verse ->
+                    AyahItem(
+                        verse = verse,
+                        isPlaying = uiState.playingAyahId == verse.id,
+                        onPlayPauseClick = {
+                            if (uiState.playingAyahId == verse.id) {
+                                onAudioStop()
+                            } else {
+                                onAudioStart(
+                                    uiState.surah.id.toString(),
+                                    verse.surahId.toString(),
+                                    verse.id
+                                )
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -178,10 +204,7 @@ private fun SurahDisplay(surah: SurahModel) {
 }
 
 @Composable
-fun AyahItem(verse: VerseModel) {
-    var isPlaying by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
+fun AyahItem(verse: VerseModel, isPlaying: Boolean, onPlayPauseClick: (VerseModel) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,16 +241,10 @@ fun AyahItem(verse: VerseModel) {
                     contentDescription = if (isPlaying) "Pause" else "Play",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .clickable {
-                            if (isPlaying) {
-                           //     exoPlayer.pause()
-                            } else {
-                             //   exoPlayer.setMediaItem(MediaItem.fromUri(verse.audioUrl))
-                             //   exoPlayer.prepare()
-                               // exoPlayer.play()
-                            }
-                            isPlaying = !isPlaying
-                        }
+                        .clickable { onPlayPauseClick(verse) }
+                        .padding(8.dp)
+                        .width(32.dp)
+                        .height(32.dp)
                 )
             }
         }
@@ -260,15 +277,5 @@ fun AyahAudioPlayer(modifier: Modifier) {
 @Preview
 @Composable
 private fun SurahScreenPreview() {
-    SurahScreen(SurahUiState(
-        surah = SurahModel(
-            1, "surah name", 11, "meccan", "type", listOf(
-                VerseModel(
-                    1,
-                    "verse text",
-                    1
-                )
-            )
-        ),
-    ), {}, {})
+
 }

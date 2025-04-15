@@ -1,8 +1,8 @@
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    id(BuildPlugins.KOTLIN_ANDROID)
+    id(BuildPlugins.ANDROID_APPLICATION)
     id("kotlin-parcelize")
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.kotlin.serialization)
@@ -10,17 +10,17 @@ plugins {
 }
 
 android {
-    namespace = "com.seifmortada.applications.quran"
-    compileSdk = 34
+    namespace = BuildConfig.NAMESPACE
+    compileSdk = BuildConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
-        applicationId = "com.seifmortada.applications.quran"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = BuildConfig.APP_ID
+        minSdk = BuildConfig.MIN_SDK_VERSION
+        targetSdk = BuildConfig.TARGET_SDK_VERSION
+        versionCode = ReleaseConfig.VERSION_CODE
+        versionName = ReleaseConfig.VERSION_NAME
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
 
 
     }
@@ -82,10 +82,10 @@ dependencies {
 
     // Navigation for Compose
     implementation(libs.navigation.compose)
-    implementation (libs.androidx.material)
+    implementation(libs.androidx.material)
     implementation(libs.kotlinx.serialization.json)
     // Hilt Navigation for compose
-    implementation (libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose)
 
     // Integration with Activity
     implementation(libs.compose.activity)
@@ -94,9 +94,5 @@ dependencies {
     implementation(libs.androidx.viewpager2)
 
     // Extended icons
-    implementation (libs.androidx.material.icons.extended)
-
-    implementation (libs.androidx.media3.exoplayer)
-    implementation (libs.androidx.media3.ui)
-    implementation (libs.androidx.media3.common)
+    implementation(libs.androidx.material.icons.extended)
 }
