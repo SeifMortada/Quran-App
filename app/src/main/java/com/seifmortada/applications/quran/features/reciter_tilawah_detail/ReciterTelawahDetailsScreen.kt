@@ -1,20 +1,13 @@
 package com.seifmortada.applications.quran.features.reciter_tilawah_detail
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,13 +26,11 @@ fun ReciterTelawahDetailsRoute(
     onTelawahClick: (MoshafModel) -> Unit,
     reciter: ReciterModel
 ) {
-
     ReciterTelawahDetailsScreen(
         reciter = reciter,
         onBackClick = onBackClick,
         onTelawahClick = onTelawahClick
     )
-
 }
 
 @Composable
@@ -52,17 +43,32 @@ fun ReciterTelawahDetailsScreen(
     Scaffold(
         topBar = {
             BackTopAppBar(
-                title = "التلاوات",
+                title = "تلاوات ${reciter.name}",
                 onBackClick = onBackClick
             )
         },
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
-        TelawahGrid(
-            moshafList = reciter.moshaf,
-            modifier = Modifier.padding(paddingValues),
-            onTelawahClick = onTelawahClick
-        )
+        if (reciter.moshaf.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "لا توجد تلاوات متاحة",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            TelawahGrid(
+                moshafList = reciter.moshaf,
+                modifier = Modifier.padding(paddingValues),
+                onTelawahClick = onTelawahClick
+            )
+        }
     }
 }
 
@@ -75,7 +81,9 @@ fun TelawahGrid(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(mediumPadding)
+        contentPadding = PaddingValues(mediumPadding),
+        horizontalArrangement = Arrangement.spacedBy(mediumPadding),
+        verticalArrangement = Arrangement.spacedBy(mediumPadding)
     ) {
         items(moshafList) { telawah ->
             TelawahItem(telawah, onTelawahClick)
@@ -84,80 +92,87 @@ fun TelawahGrid(
 }
 
 @Composable
-fun TelawahItem(telawah: MoshafModel, onTelawahClick: (MoshafModel) -> Unit) {
+fun TelawahItem(
+    telawah: MoshafModel,
+    onTelawahClick: (MoshafModel) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(smallPadding)
-            .clickable { onTelawahClick(telawah) }
-            .size(70.dp),
+            .aspectRatio(1.2f) // tile shape instead of fixed dp
+            .clickable { onTelawahClick(telawah) },
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
+            Icon(
+                imageVector = Icons.Default.LibraryMusic,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = telawah.name,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                maxLines = 2
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "عدد السور: ${telawah.surahTotal}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
     }
 }
 
-
-private val ITEM_SPACING = 16.dp
-private val PADDING = 12.dp
-private val PADDING_SMALL = 8.dp
-
-
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ReciterTelawahDetailsScreenPreview() {
     ReciterTelawahDetailsScreen(
         reciter = ReciterModel(
             id = 1,
-            name = "حفص عن عاصم",
+            name = "الشيخ مشاري العفاسي",
             moshaf = listOf(
                 MoshafModel(
-                    1,
-                    moshafType = 2,
+                    id = 1,
+                    moshafType = 1,
                     name = "حفص عن عاصم",
                     server = "",
                     surahList = "",
-                    surahTotal = 10
+                    surahTotal = 114
                 ),
                 MoshafModel(
-                    2,
+                    id = 2,
                     moshafType = 2,
-                    name = " 2حفص عن عاصم",
+                    name = "ورش عن نافع",
                     server = "",
                     surahList = "",
-                    surahTotal = 10
+                    surahTotal = 114
                 ),
-
                 MoshafModel(
-                    3,
-                    moshafType = 2,
-                    name = " 2حفص عن عاصم",
+                    id = 3,
+                    moshafType = 3,
+                    name = "قالون عن نافع",
                     server = "",
                     surahList = "",
-                    surahTotal = 10
-                ),
-
-                MoshafModel(
-                    4,
-                    moshafType = 2,
-                    name = " 2حفص عن عاصم",
-                    server = "",
-                    surahList = "",
-                    surahTotal = 10
-                ),
+                    surahTotal = 114
+                )
             ),
             date = "",
             letter = ""

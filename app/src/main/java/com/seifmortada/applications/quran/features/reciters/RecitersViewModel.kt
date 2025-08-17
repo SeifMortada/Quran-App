@@ -1,6 +1,5 @@
 package com.seifmortada.applications.quran.features.reciters
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.NetworkResult
@@ -15,42 +14,40 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class ReciterScreenState(
-    val reciters: List<ReciterModel>? = null,
+    val reciters: List<ReciterModel> = emptyList(),
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val error: String? = null
 )
 
-class RecitersViewModel(private val getAllRecitersUseCase: GetAllRecitersUseCase) : ViewModel() {
+class RecitersViewModel(
+    private val getAllRecitersUseCase: GetAllRecitersUseCase
+) : ViewModel() {
 
-
-    private var _recitersState = MutableStateFlow<NetworkResult<List<ReciterModel>>?>(null)
-    private var _searchQuery = MutableStateFlow("")
+    private val _recitersState = MutableStateFlow<List<ReciterModel>>(emptyList())
+    private val _searchQuery = MutableStateFlow("")
+    private val _isLoading = MutableStateFlow(false)
+    private val _error = MutableStateFlow<String?>(null)
 
     val uiState: StateFlow<ReciterScreenState> =
-        combine(_recitersState, _searchQuery) { recitersState, searchQuery ->
-            when (recitersState) {
-                is NetworkResult.Error -> ReciterScreenState(
-                    isLoading = false,
-                    error = recitersState.errorMessage
-                )
-
-                NetworkResult.Loading -> ReciterScreenState(isLoading = true)
-                is NetworkResult.Success -> {
-                    val filteredReciters = if (searchQuery.isNotBlank()) {
-                        recitersState.data.filter { reciter ->
-                            reciter.name.contains(searchQuery, ignoreCase = true)
-                        }
-                    } else recitersState.data
-                    ReciterScreenState(
-                        isLoading = false,
-                        error = null,
-                        reciters = filteredReciters
-                    )
+        combine(
+            _recitersState,
+            _searchQuery,
+            _isLoading,
+            _error
+        ) { reciters, searchQuery, isLoading, error ->
+            val filteredReciters = if (searchQuery.isNotBlank()) {
+                reciters.filter { reciter ->
+                    reciter.name.contains(searchQuery, ignoreCase = true)
                 }
+            } else reciters
 
-                null -> TODO()
-            }
+            ReciterScreenState(
+                reciters = filteredReciters,
+                isLoading = isLoading,
+                error = error,
+                searchQuery = searchQuery
+            )
         }.stateIn(
             scope = viewModelScope,
             started = WhileUiSubscribed,
@@ -61,12 +58,21 @@ class RecitersViewModel(private val getAllRecitersUseCase: GetAllRecitersUseCase
         fetchAllReciters()
     }
 
-    private fun fetchAllReciters() =
-        viewModelScope.launch {
-            _recitersState.value = NetworkResult.Loading
-            _recitersState.value = getAllRecitersUseCase()
-        }
+    private fun fetchAllReciters() = viewModelScope.launch {
+        _isLoading.value = true
+        _error.value = null
 
+        val result = getAllRecitersUseCase()
+        _isLoading.value = false
+
+        if (result is NetworkResult.Success) {
+            _recitersState.value = sortRecitersByName(result.data)
+        }
+    }
+
+    private fun sortRecitersByName(reciters: List<ReciterModel>): List<ReciterModel> {
+        return reciters.sortedBy { it.name }
+    }
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = normalizeTextForFiltering(query)

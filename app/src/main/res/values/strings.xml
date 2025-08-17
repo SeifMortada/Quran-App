@@ -9,5 +9,13 @@
     <string name="zikrs">الأذكار</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reciter_icon_content_description">Reciter icon</string>
+    <string name="select_riwayat_subtitle">Tap to select narrations</string>
+    <string name="error_icon_content_description">Error icon</string>
+    <string name="error_occurred">An error occurred: %s</string>
+    <string name="retry">Retry</string>
+    <string name="no_results_icon_content_description">No results icon</string>
+    <string name="no_reciters_found">No reciters found.</string>
+    <string name="no_reciters_matching_search">No reciters found matching \"%s\"</string>
 
 </resources>

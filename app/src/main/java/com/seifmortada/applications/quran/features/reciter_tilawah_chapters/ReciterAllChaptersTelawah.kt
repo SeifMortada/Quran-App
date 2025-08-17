@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -85,7 +86,7 @@ fun ReciterAllSurahsScreen(
                 )
             } else {
                 SearchTopAppBar(
-                    title = "السور المتاحة لهذة التلاوة",
+                    title = "السور المتاحة لهذه التلاوة",
                     onBackClick = onBackClicked,
                     onSearchClick = { isSearch = it }
                 )
@@ -93,9 +94,19 @@ fun ReciterAllSurahsScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        LazyColumn(modifier = modifier.padding(paddingValues)) {
+        LazyColumn(
+            modifier = modifier.padding(paddingValues)
+        ) {
             items(surahs) { surah ->
-                SurahItem(surah = surah, moshaf = moshaf, onSurahClicked = onSurahClicked)
+                SurahItem(
+                    surah = surah,
+                    moshaf = moshaf,
+                    onSurahClicked = onSurahClicked
+                )
+                Divider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                )
             }
         }
     }
@@ -107,54 +118,38 @@ fun SurahItem(
     moshaf: MoshafModel,
     onSurahClicked: (SurahMoshafReciter) -> Unit
 ) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) },
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+            .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        // Surah number badge
+        Text(
+            text = "﴾ ${surah.id} ﴿",
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+        )
+
+        Column(horizontalAlignment = Alignment.End) {
             Text(
                 text = surah.name,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                style = MaterialTheme.typography.headlineSmall
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = if (surah.type == "meccan") "مكية - ${surah.totalVerses} آية"
-                else "مدنية - ${surah.totalVerses} آية",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "﴾ ${surah.id} ﴿",
-                    fontSize = 24.sp,
+                style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineMedium
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-            }
+            )
+            Text(
+                text = if (surah.type == "meccan") "مكية • ${surah.totalVerses} آية"
+                else "مدنية • ${surah.totalVerses} آية",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            )
         }
     }
 }
@@ -170,11 +165,7 @@ private fun ReciterAllSurahsScreenPreview() {
                 totalVerses = 7,
                 transliteration = "Al-Fatihah",
                 type = "meccan",
-                verses = listOf(
-                    VerseModel(1, surahId = 1, text = "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ"),
-                    VerseModel(2, surahId = 2, text = "ٱلۡحَمۡدُ لِلَّهِ رَبِّ ٱلۡعَٰلَمِينَ"),
-                    VerseModel(3, surahId = 3, text = "ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ"),
-                )
+                verses = emptyList()
             ),
             SurahModel(
                 2,
@@ -185,7 +176,7 @@ private fun ReciterAllSurahsScreenPreview() {
                 verses = emptyList()
             )
         ),
-        onSearchQuery = { "" },
+        onSearchQuery = { },
         onBackClicked = {},
         moshaf = MoshafModel(1, 2, "", "", "", 20),
         onSurahClicked = {}

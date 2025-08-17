@@ -18,9 +18,9 @@ android {
         val apiProperties = Properties()
         apiProperties.load(project.rootProject.file("local.properties").inputStream())
 
-        buildConfigField("String", "BASE_URL", apiProperties.getProperty("BASE_URL"))
-        buildConfigField("String", "URL_AYAH_RECITATION", apiProperties.getProperty("URL_AYAH_RECITATION"))
-        buildConfigField("String", "URL_FETCH_ALL_RECITERS", apiProperties.getProperty("URL_FETCH_ALL_RECITERS"))
+        buildConfigField("String", "BASE_URL", "\"http://api.alquran.cloud/v1/\"")
+        buildConfigField("String", "URL_AYAH_RECITATION", "\"https://cdn.islamic.network/quran/audio/64/ar.husary/\"")
+        buildConfigField("String", "URL_FETCH_ALL_RECITERS", "\"https://mp3quran.net/api/v3/reciters\"")
 
     }
 

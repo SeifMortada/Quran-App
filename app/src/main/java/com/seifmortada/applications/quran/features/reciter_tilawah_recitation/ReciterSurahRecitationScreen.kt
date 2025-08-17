@@ -19,8 +19,11 @@ import androidx.compose.material.icons.rounded.Replay10
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -71,7 +74,7 @@ fun ReciterSurahRecitationScreen(
     Scaffold(
         topBar = {
             SearchTopAppBar(
-                title = "Reciter Surah Recitation",
+                title = state.currentSurah?.name ?: "Surah Recitation",
                 onBackClick = onBackClicked,
                 onSearchClick = {}
             )
@@ -114,81 +117,107 @@ fun ReciterSurahRecitationScreen(
 
 @Composable
 private fun SurahDisplay(surah: SurahModel) {
-    Card(
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        // Surah Header
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            Text(
-                text = surah.name,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Text(
-                text = "(${surah.type})",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(8.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(surah.verses) { verse ->
-                    AyahItem(verse)
+                Text(
+                    text = surah.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "${surah.type} • ${surah.totalVerses} آيات",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                if (surah.transliteration.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = surah.transliteration,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Verses list
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 80.dp)
+        ) {
+            items(surah.verses) { verse ->
+                AyahItem(verse)
+            }
+        }
     }
-
 }
-
 
 @Composable
 private fun AyahItem(verse: VerseModel) {
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .padding(vertical = 8.dp, horizontal = 4.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.End
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            // Verse number inside a circle
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = verse.id.toString(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
             Text(
                 text = verse.text,
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                 textAlign = TextAlign.End,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "(${verse.id})",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.align(Alignment.End)
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f)
             )
         }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
     }
 }
 
@@ -313,36 +342,48 @@ fun PlayPauseRow(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = { onReplayClicked() }
+        // Left control (Rewind 10s) → Tonal for secondary action
+        FilledTonalIconButton(
+            onClick = onReplayClicked
         ) {
-            Icon(Icons.Rounded.Replay10, contentDescription = "Rewind")
+            Icon(
+                imageVector = Icons.Rounded.Replay10,
+                contentDescription = "Rewind 10 seconds"
+            )
         }
-        IconButton(
-            onClick = { onPlayClicked() },
-            modifier = modifier
-                .size(64.dp)
-                .background(MaterialTheme.colorScheme.primary, CircleShape)
+
+        // Center control (Play/Pause) → Large FAB for main action
+        LargeFloatingActionButton(
+            onClick = onPlayClicked,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            shape = CircleShape
         ) {
             Icon(
                 imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                 contentDescription = "Play/Pause",
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = modifier.size(48.dp)
+                modifier = Modifier.size(36.dp) // keeps nice balance inside FAB
             )
         }
 
-        IconButton(
-            onClick = { onFastForwardClicked() }
+        // Right control (Forward 10s) → Tonal for secondary action
+        FilledTonalIconButton(
+            onClick = onFastForwardClicked
         ) {
-            Icon(Icons.Rounded.FastForward, contentDescription = "Forward")
+            Icon(
+                imageVector = Icons.Rounded.FastForward,
+                contentDescription = "Forward 10 seconds"
+            )
         }
     }
 }
+
 
 fun formatTime(millis: Int): String {
     val minutes = (millis / 1000) / 60
