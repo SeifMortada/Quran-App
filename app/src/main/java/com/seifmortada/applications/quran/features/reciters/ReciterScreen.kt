@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.ReciterModel
 import com.seifmortada.applications.quran.R
+import com.seifmortada.applications.quran.core.ui.composables.LanguagePreviews
+import com.seifmortada.applications.quran.core.ui.composables.ThemePreviews
 import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import com.seifmortada.applications.quran.utils.SearchToolbar
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
@@ -133,8 +135,8 @@ fun ReciterCard(reciter: ReciterModel, onReciterClick: (ReciterModel) -> Unit) {
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {
         Row(
@@ -175,7 +177,7 @@ fun ReciterCard(reciter: ReciterModel, onReciterClick: (ReciterModel) -> Unit) {
                     Box(
                         modifier = Modifier
                             .background(
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.tertiary,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .padding(horizontal = 8.dp, vertical = 2.dp)
@@ -183,7 +185,7 @@ fun ReciterCard(reciter: ReciterModel, onReciterClick: (ReciterModel) -> Unit) {
                         Text(
                             text = "${reciter.moshaf.size} رواية",
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onTertiary
                         )
                     }
 
@@ -213,8 +215,8 @@ fun ErrorScreen(errorMessage: String) {
 fun LoadingScreen() {
     CircularProgressIndicator()
 }
-
-@Preview
+@LanguagePreviews
+@ThemePreviews
 @Composable
 private fun ReciterScreenPreview() {
     QuranAppTheme {

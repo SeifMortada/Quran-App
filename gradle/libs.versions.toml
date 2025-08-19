@@ -1,7 +1,7 @@
 [versions]
-agp = "8.4.0"
-composeBom = "2023.10.01"
-kotlin = "1.9.10"
+agp = "8.6.0"
+composeBom = "2024.08.00"
+kotlin = "2.0.20"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -22,10 +22,11 @@ viewpager2 = "1.1.0"
 loggingInterceptor = "4.11.0"
 okhttpUrlconnection = "4.10.0"
 timber = "5.0.1"
-ksp = "1.9.10-1.0.13"
+ksp = "2.0.20-1.0.24"
 composeActivity ="1.9.1"
 composeNavigation="2.8.8"
 serialization = "1.6.3"
+composeMaterial3 = "1.5.0-rc02"
 
 [libraries]
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
@@ -70,6 +71,7 @@ androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", vers
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version.ref = "okhttpUrlconnection" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+androidx-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeMaterial3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -77,3 +79,4 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

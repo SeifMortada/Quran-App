@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تطبيق القرآن</string>
+    <string name="quran_readers">قراء القرآن</string>
+    <string name="quran">القرآن الكريم</string>
+    <string name="settings">الإعدادات</string>
+    <string name="bookmark">إشارة مرجعية</string>
+    <string name="play_ayah">تشغيل الآية</string>
+    <string name="share">مشاركة</string>
+    <string name="zikrs">الأذكار</string>
+    <string name="hello_blank_fragment">مرحباً، مكون فارغ</string>
+    <string name="reciter_icon_content_description">أيقونة القارئ</string>
+    <string name="select_riwayat_subtitle">اضغط لاختيار الروايات</string>
+    <string name="error_icon_content_description">أيقونة الخطأ</string>
+    <string name="error_occurred">حدث خطأ: %s</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="no_results_icon_content_description">أيقونة لا توجد نتائج</string>
+    <string name="no_reciters_found">لم يتم العثور على قراء.</string>
+    <string name="no_reciters_matching_search">لم يتم العثور على قراء مطابقين لـ "%s"</string>
+</resources>

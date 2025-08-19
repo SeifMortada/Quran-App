@@ -1,17 +1,30 @@
 package com.seifmortada.applications.quran.features.reciter_tilawah_recitation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import org.koin.androidx.compose.koinViewModel
 import android.media.MediaPlayer
-import android.text.format.Formatter.formatFileSize
+import android.widget.ToggleButton
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Coffee
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.Work
+import androidx.compose.material.icons.outlined.Coffee
+import androidx.compose.material.icons.outlined.Restaurant
+import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material.icons.rounded.FastForward
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -20,17 +33,20 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,8 +54,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.SurahModel
 import com.example.domain.model.VerseModel
+import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
 import kotlinx.coroutines.delay
+import kotlin.math.cos
+import kotlin.math.sin
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.filled.FastForward
+import androidx.compose.material.icons.filled.FastRewind
+import androidx.compose.material.icons.filled.Forward10
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Replay10
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import com.seifmortada.applications.quran.core.ui.composables.ForceRightOrLeft
+import com.seifmortada.applications.quran.core.ui.composables.LanguagePreviews
+import com.seifmortada.applications.quran.core.ui.composables.ThemePreviews
 
 @Composable
 fun ReciterSurahRecitationRoute(
@@ -88,28 +131,75 @@ fun ReciterSurahRecitationScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            when {
-                state.isLoading -> CircularProgressIndicator()
-                state.isError.isNotEmpty() -> ShowErrorMessage(errorMessage = state.isError)
-                state.audioUrl.isNotEmpty() -> {
-                    Text(
-                        text = "File Size: ${formatFileSize(LocalContext.current, state.fileSize)}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+            when (val dState = state.downloadState) {
+                is DownloadState.Idle -> {
+                    // Nothing yet
+                }
+
+                is DownloadState.InProgress -> {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text("Downloading ${(dState.progress * 100).toInt()}%")
+                        LinearProgressIndicator(
+                            progress = { dState.progress },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                is DownloadState.Finished -> {
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .fillMaxWidth()
+                            .fillMaxSize()
                     ) {
                         SurahDisplay(surah = state.currentSurah!!)
                     }
                     AudioPlayer(
                         title = state.title,
-                        audioUrl = state.audioUrl,
+                        audioUrl = dState.filePath,
                         mediaPlayer = mediaPlayer
                     )
                 }
+
+                is DownloadState.Error -> {
+                    ShowErrorMessage(errorMessage = dState.message)
+                }
             }
+
+            /*
+                            state.isLoading -> CircularProgressIndicator()
+                            state.isError.isNotEmpty() -> ShowErrorMessage(errorMessage = state.isError)
+                            state.audioUrl.isNotEmpty() -> {
+                              Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxSize()
+                                ) {
+                                    Text(text = "Audio Url: ${state.title}")
+                                    LinearProgressIndicator(
+                                    progress = { state.progress },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    color = ProgressIndicatorDefaults.linearColor,
+                                    trackColor = ProgressIndicatorDefaults.linearTrackColor,
+                                    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+                                    )
+                             //       SurahDisplay(surah = state.currentSurah!!)
+                              //  }
+            */
+            /*                    AudioPlayer(
+                                    title = state.title,
+                                    audioUrl = state.audioUrl,
+                                    mediaPlayer = mediaPlayer
+                                )*//*
+
+                }
+            }
+                state.downloadState
+*/
 
         }
     }
@@ -117,59 +207,61 @@ fun ReciterSurahRecitationScreen(
 
 @Composable
 private fun SurahDisplay(surah: SurahModel) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Surah Header
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ForceRightOrLeft(forceRight = false) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            // Surah Header
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                Text(
-                    text = surah.name,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "${surah.type} • ${surah.totalVerses} آيات",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-                if (surah.transliteration.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(4.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        text = surah.transliteration,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = surah.name,
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
                     )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "${surah.type} • ${surah.totalVerses} آيات",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+
+                    if (surah.transliteration.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = surah.transliteration,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-        // Verses list
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 80.dp)
-        ) {
-            items(surah.verses) { verse ->
-                AyahItem(verse)
+            // Verses list
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 20.dp)
+            ) {
+                items(surah.verses) { verse ->
+                    AyahItem(verse)
+                }
             }
         }
     }
@@ -259,9 +351,8 @@ fun AudioPlayer(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
-            .padding(16.dp)
+            .padding(horizontal = 2.dp, vertical = 2.dp)
     ) {
         ProgressBarSlider(
             title = title,
@@ -314,7 +405,6 @@ fun ProgressBarSlider(
     duration: Int,
     onValueChange: (Float) -> Unit = {}
 ) {
-    Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Slider(
         value = currentPosition.toFloat(),
         onValueChange = {
@@ -333,6 +423,7 @@ fun ProgressBarSlider(
 
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayPauseRow(
     onReplayClicked: () -> Unit,
@@ -342,48 +433,54 @@ fun PlayPauseRow(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
     ) {
-        // Left control (Rewind 10s) → Tonal for secondary action
-        FilledTonalIconButton(
-            onClick = onReplayClicked
+        // Forward - secondary action
+        OutlinedButton(
+            onClick = onReplayClicked,
+            modifier = Modifier
+                .weight(1f)
+                .semantics { role = Role.Button },
+            shape = ButtonGroupDefaults.connectedLeadingButtonShape,
         ) {
-            Icon(
-                imageVector = Icons.Rounded.Replay10,
-                contentDescription = "Rewind 10 seconds"
-            )
+            Icon(Icons.Default.Replay10, contentDescription = "Replay 10 seconds")
         }
 
-        // Center control (Play/Pause) → Large FAB for main action
-        LargeFloatingActionButton(
-            onClick = onPlayClicked,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            shape = CircleShape
+        // Play / Pause - primary action (expressive)
+        ToggleButton(
+            checked = isPlaying,
+            onCheckedChange = { onPlayClicked() },
+            modifier = Modifier
+                .weight(1.5f)
+                .semantics { role = Role.Button },
+            shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
+            colors = ToggleButtonDefaults.toggleButtonColors(
+                checkedContainerColor = MaterialTheme.colorScheme.primary,
+                checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
         ) {
             Icon(
-                imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                contentDescription = "Play/Pause",
-                modifier = Modifier.size(36.dp) // keeps nice balance inside FAB
+                if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                contentDescription = if (isPlaying) "Pause" else "Play"
             )
         }
-
-        // Right control (Forward 10s) → Tonal for secondary action
-        FilledTonalIconButton(
-            onClick = onFastForwardClicked
+        // Rewind - secondary action
+        OutlinedButton(
+            onClick = onFastForwardClicked,
+            modifier = Modifier
+                .weight(1f)
+                .semantics { role = Role.Button },
+            shape = ButtonGroupDefaults.connectedTrailingButtonShape,
         ) {
-            Icon(
-                imageVector = Icons.Rounded.FastForward,
-                contentDescription = "Forward 10 seconds"
-            )
+            Icon(Icons.Default.Forward10, contentDescription = "Rewind")
         }
     }
 }
-
 
 fun formatTime(millis: Int): String {
     val minutes = (millis / 1000) / 60
@@ -391,21 +488,107 @@ fun formatTime(millis: Int): String {
     return String.format("%02d:%02d", minutes, seconds)
 }
 
+/*
+@LanguagePreviews
+@ThemePreviews
+@Composable
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+fun ReciterSurahRecitationScreenPreview() {
+    QuranAppTheme {
+        ReciterSurahRecitationScreen(
+            state = SurahRecitationState(
+                audioUrl = "https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/1",
+                fileSize = 123456789,
+                title = "Surah Name",
+                currentSurah = SurahModel(
+                    id = 1,
+                    name = "Name",
+                    totalVerses = 100,
+                    transliteration = "Transliteration",
+                    type = "meccan",
+                    verses = listOf(
+                            VerseModel(id = 1, text = "Verse Text", surahId = 1),
+                            VerseModel(id = 1, text = "Verse Text", surahId = 1),
+                            VerseModel(id = 1, text = "Verse Text", surahId = 1),
+                            VerseModel(id = 1, text = "Verse Text", surahId = 1)
+                        )
+                ),
+                isError = "",
+                isLoading = false
+            )
+        )
+    }
+}
+*/
 
-@Preview
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@LanguagePreviews
+@ThemePreviews
 @Composable
 private fun PreviewReciterSurahRecitationScreen() {
-    ReciterSurahRecitationScreen(
-        state = SurahRecitationState(
-            audioUrl = "https://example.com/audio.mp3",
-            title = "Surah Name",
-            currentSurah = SurahModel(
-                name = "Surah Name",
-                type = "Type",
-                verses = emptyList(),
-                totalVerses = 11,
-                transliteration = "",
-                id = 1
-            )
-        ), onBackClicked = {})
+    QuranAppTheme {
+        LinearProgressIndicator(
+            progress = { 0.5f },
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(50.dp),
+            color = ProgressIndicatorDefaults.linearColor,
+
+            trackColor = ProgressIndicatorDefaults.linearTrackColor,
+            strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+        )
+    }
+    /*
+            var isPlaying by remember { mutableStateOf(false) }
+
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+            ) {
+                // Rewind - secondary action
+                OutlinedButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { role = Role.Button },
+                    shape = ButtonGroupDefaults.connectedTrailingButtonShape,
+                ) {
+                    Icon(Icons.Default.Replay10, contentDescription = "Rewind")
+                }
+
+                // Play / Pause - primary action (expressive)
+                ToggleButton(
+                    checked = isPlaying,
+                    onCheckedChange = { isPlaying = it },
+                    modifier = Modifier
+                        .weight(1.5f)
+                        .semantics { role = Role.Button },
+                    shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
+                    colors = ToggleButtonDefaults.toggleButtonColors(
+                        checkedContainerColor = MaterialTheme.colorScheme.primary,
+                        checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                ) {
+                    Icon(
+                        if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                        contentDescription = if (isPlaying) "Pause" else "Play"
+                    )
+                }
+
+
+                // Forward - secondary action
+                OutlinedButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { role = Role.Button },
+                    shape = ButtonGroupDefaults.connectedLeadingButtonShape,
+                ) {
+                    Icon(Icons.Default.Forward10, contentDescription = "Fast Forward")
+                }
+            }
+        }*/
+
 }

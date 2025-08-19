@@ -217,45 +217,7 @@ fun QuranAppTheme(
     dynamicColor: Boolean = false,
     content: @Composable() () -> Unit
 ) {
-    val colorScheme = if (darkTheme) darkColorScheme(
-        primary = primaryDark,
-        secondary = secondaryDark,
-        tertiary = tertiaryDark,
-        background = backgroundDark,
-        surface = surfaceDark,
-        onPrimary = onPrimaryDark,
-        onSecondary = onSecondaryDark,
-        onTertiary = onTertiaryDark,
-        onBackground = onBackgroundDark,
-        onSurface = onSurfaceDark,
-        surfaceVariant = surfaceVariantDark,
-        onSurfaceVariant = onSurfaceVariantDark,
-        outline = outlineDark,
-        inverseSurface = inverseSurfaceDark,
-        inverseOnSurface = inverseOnSurfaceDark,
-        inversePrimary = inversePrimaryDark,
-        outlineVariant = outlineVariantDark,
-        scrim = scrimDark
-    ) else lightColorScheme(
-        primary = primaryLight,
-        secondary = secondaryLight,
-        tertiary = tertiaryLight,
-        background = backgroundLight,
-        surface = surfaceLight,
-        onPrimary = onPrimaryLight,
-        onSecondary = onSecondaryLight,
-        onTertiary = onTertiaryLight,
-        onBackground = onBackgroundLight,
-        onSurface = onSurfaceLight,
-        surfaceVariant = surfaceVariantLight,
-        onSurfaceVariant = onSurfaceVariantLight,
-        outline = outlineLight,
-        inverseSurface = inverseSurfaceLight,
-        inverseOnSurface = inverseOnSurfaceLight,
-        inversePrimary = inversePrimaryLight,
-        outlineVariant = outlineVariantLight,
-        scrim = scrimLight
-    )
+    val colorScheme = if (darkTheme) darkScheme else lightScheme
 
 
     MaterialTheme(

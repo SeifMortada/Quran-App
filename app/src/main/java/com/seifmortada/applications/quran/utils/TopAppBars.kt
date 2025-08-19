@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.seifmortada.applications.quran.core.ui.composables.ForceRightOrLeft
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,50 +57,52 @@ fun SearchTopAppBar(
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primary),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        IconButton(onClick = { onSearchClick(true) }) {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-        TopAppBar(
-            modifier = Modifier.wrapContentSize(),
-            title = {
-                Text(
-                    text = title,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(start = 20.dp)
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                scrolledContainerColor = Color.Transparent,
-            ),
-            navigationIcon = {
+    ForceRightOrLeft(forceRight = false) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.primary),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            IconButton(onClick = { onSearchClick(true) }) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                    imageVector = Icons.Default.Search,
                     contentDescription = null,
-                    modifier = Modifier
-                        .clickable(
-                            enabled = true,
-                            onClick = onBackClick
-                        )
-                        .size(25.dp),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
-            },
-            actions = actions
-        )
+            }
+            TopAppBar(
+                modifier = Modifier.wrapContentSize(),
+                title = {
+                    Text(
+                        text = title,
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    scrolledContainerColor = Color.Transparent,
+                ),
+                navigationIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickable(
+                                enabled = true,
+                                onClick = onBackClick
+                            )
+                            .size(25.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                actions = actions
+            )
+        }
     }
 }
 

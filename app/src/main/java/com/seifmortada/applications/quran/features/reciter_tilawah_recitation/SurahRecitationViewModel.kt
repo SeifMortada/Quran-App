@@ -1,14 +1,15 @@
 package com.seifmortada.applications.quran.features.reciter_tilawah_recitation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.model.NetworkResult
 import com.example.domain.model.SurahModel
 import com.example.domain.usecase.GetSurahByIdUseCase
 import com.example.domain.usecase.GetSurahRecitationUseCase
 import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -18,7 +19,9 @@ data class SurahRecitationState(
     val title: String = "",
     val currentSurah: SurahModel? = null,
     val isError: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val downloadState: DownloadState = DownloadState.Idle
+
 )
 
 class SurahRecitationViewModel(
@@ -31,34 +34,28 @@ class SurahRecitationViewModel(
 
     private val _searchQuery = MutableStateFlow("")
 
-    fun fetchRecitation(server: String, surahNumber: Int) =
-        viewModelScope.launch {
+    fun fetchRecitation(server: String, surahNumber: Int) = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val currentSurah = getSurahByIdUseCase(surahNumber)
-            _uiState.update { it.copy(currentSurah = currentSurah) }
-            val surahRecitationResponse = getSurahRecitationUseCase(server, surahNumber.toString())
-            when (surahRecitationResponse) {
-                is NetworkResult.Success -> {
-                    val (audioUrl, fileSize) = surahRecitationResponse.data
+            _uiState.update { it.copy(currentSurah = currentSurah, isLoading = false) }
+            getSurahRecitationUseCase(server, surahNumber.toString())
+                .collect { progress ->
+                    val clamped = (progress.progress).coerceIn(0f, 1f)
                     _uiState.update {
                         it.copy(
-                            audioUrl = audioUrl,
-                            fileSize = fileSize,
-                            isLoading = false
+                            fileSize = progress.totalBytes,
+                            isLoading = false,
+                            title = "Downloading ${(clamped * 100).toInt()}%",
+                            downloadState = if (clamped < 1f) {
+                                DownloadState.InProgress(clamped)
+                            } else {
+                                DownloadState.Finished(progress.localPath.toString())
+                            }
                         )
                     }
                 }
-
-                is NetworkResult.Error -> _uiState.update {
-                    it.copy(
-                        isError = surahRecitationResponse.errorMessage,
-                        isLoading = false
-                    )
-                }
-
-                else -> Unit
-            }
         }
+
 
     fun searchQuery(query: String) {
         _searchQuery.value = normalizeTextForFiltering(query)

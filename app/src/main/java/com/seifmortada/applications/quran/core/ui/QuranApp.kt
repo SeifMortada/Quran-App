@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.seifmortada.applications.quran.core.navigation.QuranAppNavGraph
 import com.seifmortada.applications.quran.core.navigation.destinations.QuranScreens
 import com.seifmortada.applications.quran.core.navigation.destinations.topLevelDestinations
+import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import java.util.Locale
 
 @Composable
@@ -38,8 +39,11 @@ fun QuranApp(modifier: Modifier = Modifier) {
         else -> -1
     }
     val isRtl = Locale.getDefault().layoutDirection == android.util.LayoutDirection.RTL
-    CompositionLocalProvider(LocalLayoutDirection provides if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+    CompositionLocalProvider(LocalLayoutDirection provides /*if (isRtl)*/ LayoutDirection.Rtl /*else LayoutDirection.Ltr*/) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
             Scaffold(
                 bottomBar = {
                     NavigationBar {

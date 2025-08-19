@@ -25,9 +25,21 @@ fun QuranAppNavGraph(
     ) {
         composable<QuranScreens.Home> {
             HomeRoute(
-                onZikrClick = { navController.navigate(QuranScreens.Azkars) },
-                onQuranClick = { navController.navigate(QuranScreens.QuranChapters) },
-                onReciterClick = { navController.navigate(QuranScreens.Reciters) }
+                onZikrClick = { navController.navigate(QuranScreens.Azkars){
+                    popUpTo(QuranScreens.Home) { inclusive = false }
+                    launchSingleTop = true
+                    restoreState = true
+                } },
+                onQuranClick = { navController.navigate(QuranScreens.QuranChapters){
+                    popUpTo(QuranScreens.Home) { inclusive = false }
+                    launchSingleTop = true
+                    restoreState = true
+                } },
+                onReciterClick = { navController.navigate(QuranScreens.Reciters){
+                    popUpTo(QuranScreens.Home) { inclusive = false }
+                    launchSingleTop = true
+                    restoreState = true
+                } }
             )
         }
         composable<QuranScreens.Settings> {

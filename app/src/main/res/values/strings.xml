@@ -1,12 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Quran App</string>
-    <string name="quran_readers">قراء القرآن</string>
-    <string name="quran">القرآن الكريم</string>
+    <string name="quran_readers">Quran Readers</string>
+    <string name="quran">The Holy Quran</string>
     <string name="settings">Settings</string>
     <string name="bookmark">Bookmark</string>
     <string name="play_ayah">Play Ayah</string>
     <string name="share">Share</string>
-    <string name="zikrs">الأذكار</string>
+    <string name="zikrs">Azkar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="reciter_icon_content_description">Reciter icon</string>
@@ -16,6 +17,5 @@
     <string name="retry">Retry</string>
     <string name="no_results_icon_content_description">No results icon</string>
     <string name="no_reciters_found">No reciters found.</string>
-    <string name="no_reciters_matching_search">No reciters found matching \"%s\"</string>
-
+    <string name="no_reciters_matching_search">No reciters found matching "%s"</string>
 </resources>

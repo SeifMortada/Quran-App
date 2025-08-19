@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,14 +27,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.MoshafModel
 import com.example.domain.model.SurahModel
 import com.example.domain.model.VerseModel
 import com.example.domain.model.reciter_surah_moshaf.SurahMoshafReciter
+import com.seifmortada.applications.quran.core.ui.composables.ForceRightOrLeft
+import com.seifmortada.applications.quran.core.ui.composables.LanguagePreviews
+import com.seifmortada.applications.quran.core.ui.composables.ThemePreviews
+import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import com.seifmortada.applications.quran.utils.SearchToolbar
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
 import org.koin.androidx.compose.koinViewModel
@@ -118,68 +125,72 @@ fun SurahItem(
     moshaf: MoshafModel,
     onSurahClicked: (SurahMoshafReciter) -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Surah number badge
-        Text(
-            text = "﴾ ${surah.id} ﴿",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+    ForceRightOrLeft(forceRight = false) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onSurahClicked(SurahMoshafReciter(moshaf, surah.id)) }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Surah number badge
+            Text(
+                text = "﴾ ${surah.id} ﴿",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
             )
-        )
 
-        Column(horizontalAlignment = Alignment.End) {
-            Text(
-                text = surah.name,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = surah.name,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 )
-            )
-            Text(
-                text = if (surah.type == "meccan") "مكية • ${surah.totalVerses} آية"
-                else "مدنية • ${surah.totalVerses} آية",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                Text(
+                    text = if (surah.type == "meccan") "مكية • ${surah.totalVerses} آية"
+                    else "مدنية • ${surah.totalVerses} آية",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
-            )
+            }
         }
     }
 }
 
-@Preview
+@LanguagePreviews
 @Composable
 private fun ReciterAllSurahsScreenPreview() {
-    ReciterAllSurahsScreen(
-        surahs = listOf(
-            SurahModel(
-                1,
-                "الفاتحة",
-                totalVerses = 7,
-                transliteration = "Al-Fatihah",
-                type = "meccan",
-                verses = emptyList()
+    QuranAppTheme {
+        ReciterAllSurahsScreen(
+            surahs = listOf(
+                SurahModel(
+                    1,
+                    "الفاتحة",
+                    totalVerses = 7,
+                    transliteration = "Al-Fatihah",
+                    type = "meccan",
+                    verses = emptyList()
+                ),
+                SurahModel(
+                    2,
+                    "البقرة",
+                    totalVerses = 286,
+                    transliteration = "Al-Baqarah",
+                    type = "medinan",
+                    verses = emptyList()
+                )
             ),
-            SurahModel(
-                2,
-                "البقرة",
-                totalVerses = 286,
-                transliteration = "Al-Baqarah",
-                type = "medinan",
-                verses = emptyList()
-            )
-        ),
-        onSearchQuery = { },
-        onBackClicked = {},
-        moshaf = MoshafModel(1, 2, "", "", "", 20),
-        onSurahClicked = {}
-    )
+            onSearchQuery = { },
+            onBackClicked = {},
+            moshaf = MoshafModel(1, 2, "", "", "", 20),
+            onSurahClicked = {}
+        )
+    }
 }
 

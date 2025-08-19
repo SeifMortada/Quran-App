@@ -33,7 +33,8 @@ val repositoryModule = module {
     }
     factory<SurahRecitationRepository> {
         SurahRecitationRepositoryImpl(
-            recitersApiService = get()
+            context = get(),
+            remote = get()
         )
     }
     factory<AzkarRepository> {
