@@ -3,68 +3,38 @@ package com.seifmortada.applications.quran.features.reciter_tilawah_recitation
 import androidx.compose.runtime.Composable
 import org.koin.androidx.compose.koinViewModel
 import android.media.MediaPlayer
-import android.widget.ToggleButton
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Coffee
-import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.Work
-import androidx.compose.material.icons.outlined.Coffee
-import androidx.compose.material.icons.outlined.Restaurant
-import androidx.compose.material.icons.outlined.Work
-import androidx.compose.material.icons.rounded.FastForward
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Replay10
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.SurahModel
 import com.example.domain.model.VerseModel
 import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
-import kotlinx.coroutines.delay
-import kotlin.math.cos
-import kotlin.math.sin
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.filled.FastForward
-import androidx.compose.material.icons.filled.FastRewind
 import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -75,11 +45,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.seifmortada.applications.quran.core.ui.composables.ForceRightOrLeft
 import com.seifmortada.applications.quran.core.ui.composables.LanguagePreviews
 import com.seifmortada.applications.quran.core.ui.composables.ThemePreviews
@@ -89,23 +59,29 @@ fun ReciterSurahRecitationRoute(
     surahId: Int,
     server: String,
     onBackClicked: () -> Unit,
-    viewModel: SurahRecitationViewModel = koinViewModel()
+    viewModel: ReciterSurahRecitationViewModel = koinViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val events by viewModel.event.collectAsState(initial = FileDownloadEvent.Idle)
+
     LaunchedEffect(surahId, server) {
         viewModel.fetchRecitation(server, surahId)
     }
     ReciterSurahRecitationScreen(
         state = state,
+        events = events,
+        audioActions = viewModel::sendEvent,
         onBackClicked = onBackClicked
     )
 }
 
 @Composable
 fun ReciterSurahRecitationScreen(
-    modifier: Modifier = Modifier,
-    state: SurahRecitationState,
-    onBackClicked: () -> Unit = {}
+    state: ReciterSurahRecitationUiState,
+    events: FileDownloadEvent,
+    audioActions: (AudioPlayerAction) -> Unit,
+    onBackClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val mediaPlayer = remember { MediaPlayer() }
 
@@ -131,26 +107,24 @@ fun ReciterSurahRecitationScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            when (val dState = state.downloadState) {
-                is DownloadState.Idle -> {
-                    // Nothing yet
-                }
+            when (events) {
+                is FileDownloadEvent.Idle -> Unit
 
-                is DownloadState.InProgress -> {
+                is FileDownloadEvent.InProgress -> {
                     Column(
                         Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
                     ) {
-                        Text("Downloading ${(dState.progress * 100).toInt()}%")
+                        Text("Downloading ${(events.progress * 100).toInt()}%")
                         LinearProgressIndicator(
-                            progress = { dState.progress },
+                            progress = { events.progress },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
 
-                is DownloadState.Finished -> {
+                is FileDownloadEvent.Finished -> {
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -159,48 +133,16 @@ fun ReciterSurahRecitationScreen(
                         SurahDisplay(surah = state.currentSurah!!)
                     }
                     AudioPlayer(
-                        title = state.title,
-                        audioUrl = dState.filePath,
-                        mediaPlayer = mediaPlayer
+                        audioPlayerState = state.audioPlayerState,
+                        audioActions = audioActions,
+                        audioUrl = events.filePath
                     )
                 }
 
-                is DownloadState.Error -> {
-                    ShowErrorMessage(errorMessage = dState.message)
+                is FileDownloadEvent.Error -> {
+                    ShowErrorMessage(errorMessage = events.message)
                 }
             }
-
-            /*
-                            state.isLoading -> CircularProgressIndicator()
-                            state.isError.isNotEmpty() -> ShowErrorMessage(errorMessage = state.isError)
-                            state.audioUrl.isNotEmpty() -> {
-                              Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxSize()
-                                ) {
-                                    Text(text = "Audio Url: ${state.title}")
-                                    LinearProgressIndicator(
-                                    progress = { state.progress },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    color = ProgressIndicatorDefaults.linearColor,
-                                    trackColor = ProgressIndicatorDefaults.linearTrackColor,
-                                    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
-                                    )
-                             //       SurahDisplay(surah = state.currentSurah!!)
-                              //  }
-            */
-            /*                    AudioPlayer(
-                                    title = state.title,
-                                    audioUrl = state.audioUrl,
-                                    mediaPlayer = mediaPlayer
-                                )*//*
-
-                }
-            }
-                state.downloadState
-*/
-
         }
     }
 }
@@ -321,33 +263,16 @@ fun ShowErrorMessage(errorMessage: String) {
 
 @Composable
 fun AudioPlayer(
-    title: String,
-    audioUrl: String,
-    mediaPlayer: MediaPlayer
+    audioPlayerState: AudioPlayerState,
+    audioActions: (AudioPlayerAction) -> Unit,
+    audioUrl: String
 ) {
-    var isPlaying by remember { mutableStateOf(false) }
-    var currentPosition by remember { mutableIntStateOf(0) }
-    var duration by remember { mutableIntStateOf(0) }
-    var isPrepared by remember { mutableStateOf(false) }
     LaunchedEffect(audioUrl) {
-        try {
-            mediaPlayer.reset()
-            mediaPlayer.setDataSource(audioUrl)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnPreparedListener {
-                duration = it.duration
-                isPrepared = true
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        if (audioUrl != audioPlayerState.audioUrl) {
+            audioActions(AudioPlayerAction.LoadAudioPlayer(audioUrl))
         }
     }
-    LaunchedEffect(isPlaying) {
-        while (isPlaying && isPrepared) {
-            currentPosition = mediaPlayer.currentPosition
-            delay(1000)
-        }
-    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -355,44 +280,24 @@ fun AudioPlayer(
             .padding(horizontal = 2.dp, vertical = 2.dp)
     ) {
         ProgressBarSlider(
-            title = title,
-            currentPosition = currentPosition,
-            duration = duration,
-            onValueChange = {
-                if (isPrepared) {
-                    mediaPlayer.seekTo(it.toInt())
-                    currentPosition = it.toInt()
+            currentPosition = audioPlayerState.currentPosition,
+            duration = audioPlayerState.duration,
+            onValueChange = { newPosition ->
+                if (audioPlayerState.isPrepared) {
+                    audioActions(AudioPlayerAction.SeekTo(newPosition.toInt()))
                 }
             }
         )
 
         PlayPauseRow(
-            isPlaying = isPlaying,
+            isPlaying = audioPlayerState.isPlaying,
             onReplayClicked = {
-                if (isPrepared) {
-                    val newPosition = (mediaPlayer.currentPosition - 10000).coerceAtLeast(0)
-                    mediaPlayer.seekTo(newPosition)
-                    currentPosition = newPosition
+                if (audioPlayerState.isPrepared) {
+                    audioActions(AudioPlayerAction.FastRewind)
                 }
             },
-            onPlayClicked = {
-                if (isPrepared) {
-                    if (mediaPlayer.isPlaying) {
-                        mediaPlayer.pause()
-                        isPlaying = false
-                    } else {
-                        mediaPlayer.start()
-                        isPlaying = true
-                    }
-                }
-            },
-            onFastForwardClicked = {
-                if (isPrepared) {
-                    val newPosition = (mediaPlayer.currentPosition + 10000).coerceAtMost(duration)
-                    mediaPlayer.seekTo(newPosition)
-                    currentPosition = newPosition
-                }
-            }
+            onPlayClicked = { audioActions(AudioPlayerAction.PlayPause) },
+            onFastForwardClicked = { audioActions(AudioPlayerAction.FastForward) }
         )
     }
 }
@@ -400,7 +305,6 @@ fun AudioPlayer(
 
 @Composable
 fun ProgressBarSlider(
-    title: String,
     currentPosition: Int,
     duration: Int,
     onValueChange: (Float) -> Unit = {}

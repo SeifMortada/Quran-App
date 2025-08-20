@@ -5,7 +5,7 @@ import com.seifmortada.applications.quran.features.quran_chapters.QuranChaptersV
 import com.seifmortada.applications.quran.features.reciter_tilawah_chapters.ReciterAllSurahsViewModel
 import com.seifmortada.applications.quran.features.reciters.RecitersViewModel
 import com.seifmortada.applications.quran.features.surah.SurahViewModel
-import com.seifmortada.applications.quran.features.reciter_tilawah_recitation.SurahRecitationViewModel
+import com.seifmortada.applications.quran.features.reciter_tilawah_recitation.ReciterSurahRecitationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -13,7 +13,7 @@ val viewModelModule = module {
     viewModel { SurahViewModel(getSurahByIdUseCase = get(), fetchAyahRecitationUseCase = get()) }
     viewModel { RecitersViewModel(getAllRecitersUseCase = get()) }
     viewModel {
-        SurahRecitationViewModel(
+        ReciterSurahRecitationViewModel(
             getSurahByIdUseCase = get(),
             getSurahRecitationUseCase = get()
         )
