@@ -1,41 +1,49 @@
 package com.seifmortada.applications.quran.features.reciter_tilawah_recitation
 
-import android.media.MediaPlayer
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GetSurahByIdUseCase
 import com.example.domain.usecase.GetSurahRecitationUseCase
-import com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering
+import com.seifmortada.applications.quran.core.service.AudioPlayerService
+import com.seifmortada.applications.quran.core.service.FORWARD
+import com.seifmortada.applications.quran.core.service.PLAYPAUSE
+import com.seifmortada.applications.quran.core.service.REWIND
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.receiveAsFlow
 
 class ReciterSurahRecitationViewModel(
     private val getSurahByIdUseCase: GetSurahByIdUseCase,
     private val getSurahRecitationUseCase: GetSurahRecitationUseCase
 ) : ViewModel() {
 
-    private val _ReciterSurahRecitation_uiState = MutableStateFlow(ReciterSurahRecitationUiState())
-    val uiState = _ReciterSurahRecitation_uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ReciterSurahRecitationUiState())
+    val uiState = _uiState.asStateFlow()
 
     private val _event = Channel<FileDownloadEvent>()
     val event = _event.receiveAsFlow()
 
-    private var mediaPlayer: MediaPlayer? = null
+    private var audioService: AudioPlayerService? = null
+    private var serviceCollectJob: Job? = null
 
     fun fetchRecitation(server: String, surahNumber: Int) = viewModelScope.launch {
-
         val currentSurah = getSurahByIdUseCase(surahNumber)
-        _ReciterSurahRecitation_uiState.update { it.copy(currentSurah = currentSurah) }
+        _uiState.update { it.copy(currentSurah = currentSurah) }
 
         getSurahRecitationUseCase(server, surahNumber.toString())
             .collect { progress ->
                 val clamped = (progress.progress).coerceIn(0f, 1f)
-                _ReciterSurahRecitation_uiState.update {
+                _uiState.update {
                     it.copy(
                         fileSize = progress.totalBytes,
                         title = "Downloading ${(clamped * 100).toInt()}%",
@@ -46,115 +54,96 @@ class ReciterSurahRecitationViewModel(
                 } else {
                     _event.send(FileDownloadEvent.Finished(progress.localPath.toString()))
                 }
-
             }
     }
 
     fun searchQuery(query: String) {
-        _ReciterSurahRecitation_uiState.update {
-            it.copy(searchQuery = normalizeTextForFiltering(query))
+        _uiState.update {
+            it.copy(
+                searchQuery = com.seifmortada.applications.quran.utils.FunctionsUtils.normalizeTextForFiltering(
+                    query
+                )
+            )
         }
     }
 
+    fun bindService(service: AudioPlayerService) {
+        audioService = service
 
-    fun sendEvent(audioEvent: AudioPlayerAction) {
+        serviceCollectJob?.cancel()
+        serviceCollectJob = viewModelScope.launch {
+            combine(
+                service.currentAudio,
+                service.isPlaying,
+                service.currentDuration
+            ) { audio, isPlaying, current ->
+                AudioPlayerState(
+                    audio = audio,
+                    isPlaying = isPlaying,
+                    currentPosition = current
+                )
+            }.collect { audioPlayerState ->
+                _uiState.update { it.copy(audioPlayerState = audioPlayerState) }
+            }
+        }
+    }
+
+    /**
+     * Dispatch playback events to the AudioPlayerService
+     */
+    fun sendEvent(context: Context, audioEvent: AudioPlayerAction) {
+        val intent = Intent(context, AudioPlayerService::class.java)
+
         when (audioEvent) {
-            is AudioPlayerAction.LoadAudioPlayer -> loadAudio(url = audioEvent.url)
-            is AudioPlayerAction.SeekTo -> seekTo(audioEvent.ms)
-            AudioPlayerAction.PlayPause -> playPause()
-            AudioPlayerAction.FastForward -> forward10s()
-            AudioPlayerAction.FastRewind -> rewind10s()
-        }
-    }
-
-    private fun loadAudio(url: String) {
-        releasePlayer()
-
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(url)
-            prepareAsync()
-            setOnPreparedListener {
-                _ReciterSurahRecitation_uiState.update { state ->
-                    state.copy(
-                        audioPlayerState = state.audioPlayerState.copy(
-                            isPrepared = true,
-                            duration = duration,
-                            audioUrl = url
-                        )
-                    )
-                }
+            is AudioPlayerAction.LoadAudioPlayer -> {
+                intent.action = com.seifmortada.applications.quran.core.service.AUDIO_LOAD
+                intent.putExtra("AUDIO_PATH", audioEvent.url)
+                startAudioService(context, intent)
             }
-            setOnCompletionListener {
-                _ReciterSurahRecitation_uiState.update { state ->
-                    state.copy(
-                        audioPlayerState = state.audioPlayerState.copy(
-                            isPlaying = false,
-                            currentPosition = 0
-                        )
-                    )
-                }
+
+            is AudioPlayerAction.SeekTo -> {
+                intent.action = com.seifmortada.applications.quran.core.service.SEEK_TO
+                intent.putExtra("SEEK_POSITION", audioEvent.ms)
+                startAudioService(context, intent)
+            }
+
+            AudioPlayerAction.PlayPause -> {
+                intent.action = PLAYPAUSE
+                startAudioService(context, intent)
+            }
+
+            AudioPlayerAction.FastForward -> {
+                intent.action = FORWARD
+                startAudioService(context, intent)
+            }
+
+            AudioPlayerAction.FastRewind -> {
+                intent.action = REWIND
+                startAudioService(context, intent)
             }
         }
     }
 
-    private fun playPause() {
-        val player = mediaPlayer ?: return
-        val ps = _ReciterSurahRecitation_uiState.value.audioPlayerState
-
-        if (ps.isPrepared) {
-            if (player.isPlaying) {
-                player.pause()
-                _ReciterSurahRecitation_uiState.update { it.copy(audioPlayerState = ps.copy(isPlaying = false)) }
-            } else {
-                player.start()
-                _ReciterSurahRecitation_uiState.update { it.copy(audioPlayerState = ps.copy(isPlaying = true)) }
-                observeProgress()
-            }
+    private fun startAudioService(context: Context, intent: Intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent)
+        } else {
+            context.startService(intent)
         }
-    }
-
-    private fun seekTo(ms: Int) {
-        mediaPlayer?.seekTo(ms)
-        _ReciterSurahRecitation_uiState.update { state ->
-            state.copy(audioPlayerState = state.audioPlayerState.copy(currentPosition = ms))
-        }
-    }
-
-    private fun rewind10s() {
-        val newPos = (_ReciterSurahRecitation_uiState.value.audioPlayerState.currentPosition - 10_000).coerceAtLeast(0)
-        seekTo(newPos)
-    }
-
-    private fun forward10s() {
-        val ps = _ReciterSurahRecitation_uiState.value.audioPlayerState
-        val newPos = (ps.currentPosition + 10_000).coerceAtMost(ps.duration)
-        seekTo(newPos)
-    }
-
-    private fun observeProgress() {
-        viewModelScope.launch {
-            while (_ReciterSurahRecitation_uiState.value.audioPlayerState.isPlaying) {
-                mediaPlayer?.let { player ->
-                    _ReciterSurahRecitation_uiState.update { state ->
-                        state.copy(
-                            audioPlayerState = state.audioPlayerState.copy(
-                                currentPosition = player.currentPosition
-                            )
-                        )
-                    }
-                }
-                delay(1000)
-            }
-        }
-    }
-
-    private fun releasePlayer() {
-        mediaPlayer?.release()
-        mediaPlayer = null
     }
 
     override fun onCleared() {
         super.onCleared()
-        releasePlayer()
+        cleanResources()
     }
+
+    private fun cleanResources() {
+        serviceCollectJob?.cancel()
+        audioService?.stopPlayback()
+        audioService = null
+        _uiState.value = ReciterSurahRecitationUiState()
+        _event.close()
+    }
+
+
 }

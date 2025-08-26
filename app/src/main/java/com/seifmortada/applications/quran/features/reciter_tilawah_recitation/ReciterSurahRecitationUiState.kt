@@ -13,7 +13,12 @@ data class ReciterSurahRecitationUiState(
 data class AudioPlayerState(
     val isPlaying: Boolean = false,
     val currentPosition: Int = 0,
-    val duration: Int = 0,
     val isPrepared: Boolean = false,
-    val audioUrl: String = ""
+    val audio: Audio? = null,
+)
+
+data class Audio(
+    val title: String,
+    val path: String,
+    val duration: Int
 )

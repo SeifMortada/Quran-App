@@ -1,8 +1,12 @@
 package com.seifmortada.applications.quran.features.reciter_tilawah_recitation
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import androidx.compose.runtime.Composable
 import org.koin.androidx.compose.koinViewModel
-import android.media.MediaPlayer
+import android.os.IBinder
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -48,8 +52,10 @@ import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.seifmortada.applications.quran.core.service.AudioPlayerService
 import com.seifmortada.applications.quran.core.ui.composables.ForceRightOrLeft
 import com.seifmortada.applications.quran.core.ui.composables.LanguagePreviews
 import com.seifmortada.applications.quran.core.ui.composables.ThemePreviews
@@ -63,15 +69,23 @@ fun ReciterSurahRecitationRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val events by viewModel.event.collectAsState(initial = FileDownloadEvent.Idle)
+    val context = LocalContext.current
+    val service = rememberAudioService()
 
     LaunchedEffect(surahId, server) {
         viewModel.fetchRecitation(server, surahId)
     }
+
+    LaunchedEffect(service) {
+        service?.let { viewModel.bindService(it) }
+    }
+
     ReciterSurahRecitationScreen(
         state = state,
         events = events,
-        audioActions = viewModel::sendEvent,
+        audioActions = { action -> viewModel.sendEvent(context, action) },
         onBackClicked = onBackClicked
+
     )
 }
 
@@ -83,13 +97,6 @@ fun ReciterSurahRecitationScreen(
     onBackClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val mediaPlayer = remember { MediaPlayer() }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            mediaPlayer.release()
-        }
-    }
     Scaffold(
         topBar = {
             SearchTopAppBar(
@@ -267,8 +274,13 @@ fun AudioPlayer(
     audioActions: (AudioPlayerAction) -> Unit,
     audioUrl: String
 ) {
+
+    val currentDuration = audioPlayerState.currentPosition
+    val maxDuration = audioPlayerState.audio?.duration
+    val isPlaying = audioPlayerState.isPlaying
+
     LaunchedEffect(audioUrl) {
-        if (audioUrl != audioPlayerState.audioUrl) {
+        if (audioUrl != audioPlayerState.audio?.path) {
             audioActions(AudioPlayerAction.LoadAudioPlayer(audioUrl))
         }
     }
@@ -280,8 +292,8 @@ fun AudioPlayer(
             .padding(horizontal = 2.dp, vertical = 2.dp)
     ) {
         ProgressBarSlider(
-            currentPosition = audioPlayerState.currentPosition,
-            duration = audioPlayerState.duration,
+            currentPosition = currentDuration,
+            duration = maxDuration ?: 0,
             onValueChange = { newPosition ->
                 if (audioPlayerState.isPrepared) {
                     audioActions(AudioPlayerAction.SeekTo(newPosition.toInt()))
@@ -290,7 +302,7 @@ fun AudioPlayer(
         )
 
         PlayPauseRow(
-            isPlaying = audioPlayerState.isPlaying,
+            isPlaying = isPlaying,
             onReplayClicked = {
                 if (audioPlayerState.isPrepared) {
                     audioActions(AudioPlayerAction.FastRewind)
@@ -392,38 +404,36 @@ fun formatTime(millis: Int): String {
     return String.format("%02d:%02d", minutes, seconds)
 }
 
-/*
-@LanguagePreviews
-@ThemePreviews
 @Composable
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-fun ReciterSurahRecitationScreenPreview() {
-    QuranAppTheme {
-        ReciterSurahRecitationScreen(
-            state = SurahRecitationState(
-                audioUrl = "https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/1",
-                fileSize = 123456789,
-                title = "Surah Name",
-                currentSurah = SurahModel(
-                    id = 1,
-                    name = "Name",
-                    totalVerses = 100,
-                    transliteration = "Transliteration",
-                    type = "meccan",
-                    verses = listOf(
-                            VerseModel(id = 1, text = "Verse Text", surahId = 1),
-                            VerseModel(id = 1, text = "Verse Text", surahId = 1),
-                            VerseModel(id = 1, text = "Verse Text", surahId = 1),
-                            VerseModel(id = 1, text = "Verse Text", surahId = 1)
-                        )
-                ),
-                isError = "",
-                isLoading = false
-            )
-        )
+fun rememberAudioService(): AudioPlayerService? {
+    val context = LocalContext.current
+    var service by remember { mutableStateOf<AudioPlayerService?>(null) }
+    val connection = remember { mutableStateOf<ServiceConnection?>(null) }
+
+    DisposableEffect(Unit) {
+        val serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+                service = (binder as? AudioPlayerService.AudioPlayerBinder)?.getService()
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+                service = null
+            }
+        }
+
+        val intent = Intent(context, AudioPlayerService::class.java)
+        context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        connection.value = serviceConnection
+
+        onDispose {
+            connection.value?.let { context.unbindService(it) }
+            service = null
+        }
     }
+
+    return service
 }
-*/
+
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @LanguagePreviews
@@ -442,57 +452,4 @@ private fun PreviewReciterSurahRecitationScreen() {
             strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
         )
     }
-    /*
-            var isPlaying by remember { mutableStateOf(false) }
-
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-            ) {
-                // Rewind - secondary action
-                OutlinedButton(
-                    onClick = {},
-                    modifier = Modifier
-                        .weight(1f)
-                        .semantics { role = Role.Button },
-                    shape = ButtonGroupDefaults.connectedTrailingButtonShape,
-                ) {
-                    Icon(Icons.Default.Replay10, contentDescription = "Rewind")
-                }
-
-                // Play / Pause - primary action (expressive)
-                ToggleButton(
-                    checked = isPlaying,
-                    onCheckedChange = { isPlaying = it },
-                    modifier = Modifier
-                        .weight(1.5f)
-                        .semantics { role = Role.Button },
-                    shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
-                    colors = ToggleButtonDefaults.toggleButtonColors(
-                        checkedContainerColor = MaterialTheme.colorScheme.primary,
-                        checkedContentColor = MaterialTheme.colorScheme.onPrimary,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                ) {
-                    Icon(
-                        if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                        contentDescription = if (isPlaying) "Pause" else "Play"
-                    )
-                }
-
-
-                // Forward - secondary action
-                OutlinedButton(
-                    onClick = {},
-                    modifier = Modifier
-                        .weight(1f)
-                        .semantics { role = Role.Button },
-                    shape = ButtonGroupDefaults.connectedLeadingButtonShape,
-                ) {
-                    Icon(Icons.Default.Forward10, contentDescription = "Fast Forward")
-                }
-            }
-        }*/
-
 }
