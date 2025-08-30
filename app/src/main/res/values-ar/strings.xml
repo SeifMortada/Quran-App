@@ -36,6 +36,24 @@
     <!-- Support -->
     <string name="support_description">ادعم تطوير هذا التطبيق وساعدنا في إنشاء المزيد من الميزات الرائعة!</string>
     <string name="support_us">ادعمنا</string>
+    <string name="support_dialog_description">دعمكم يساعدنا في الاستمرار في تطوير وتحسين هذا التطبيق. اختاروا من الخيارات أدناه لإظهار تقديركم!</string>
+    <string name="purchase">شراء</string>
+
+    <!-- In-App Purchase Support -->
+    <string name="choose_support_amount">اختر مبلغ الدعم</string>
+    <string name="support_option_small_coffee">قهوة صغيرة ☕</string>
+    <string name="support_option_large_coffee">قهوة كبيرة ☕☕</string>
+    <string name="support_option_premium">دعم مميز 🌟</string>
+    <string name="support_option_ultimate">دعم نهائي 🚀</string>
+    <string name="support_small_coffee_desc">اشتري لي قهوة صغيرة لأستمر في البرمجة!</string>
+    <string name="support_large_coffee_desc">اشتري لي قهوة كبيرة لطاقة إضافية!</string>
+    <string name="support_premium_desc">دعم مميز للتطوير المستمر</string>
+    <string name="support_ultimate_desc">دعم نهائي - أنت رائع!</string>
+    <string name="purchase_processing">جاري معالجة الشراء...</string>
+    <string name="purchase_success">شكراً لك على دعمك! 🙏</string>
+    <string name="purchase_cancelled">تم إلغاء الشراء</string>
+    <string name="purchase_error">فشل الشراء: %s</string>
+    <string name="billing_not_available">المشتريات داخل التطبيق غير متوفرة</string>
 
     <!-- Feedback -->
     <string name="feedback_description">هل لديك اقتراحات أو وجدت خطأ؟ نحن نحب أن نسمع منك!</string>
@@ -94,4 +112,10 @@
     <string name="quran_description">اقرأ واستكشف القرآن الكريم مع النص العربي الجميل والترجمات</string>
     <string name="reciters_description">استمع إلى التلاوات العذبة من قبل القراء المشهورين من جميع أنحاء العالم</string>
     <string name="zikrs_description">ذكر الله اليومي مع الأذكار الصحيحة للصباح والمساء والمناسبات الخاصة</string>
+    <string name="reciters_available">قارئ متاح</string>
+    <string name="back">رجوع</string>
+    <string name="search">بحث</string>
+    <string name="no_search_results">لا توجد نتائج لـ "%s"</string>
+    <string name="loading_reciters">جاري تحميل القراء...</string>
+    <string name="no_reciters_description">تحقق من اتصال الإنترنت وحاول مرة أخرى.</string>
 </resources>

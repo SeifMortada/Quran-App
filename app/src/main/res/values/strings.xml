@@ -48,6 +48,24 @@
     <!-- Support -->
     <string name="support_description">Support the development of this app and help us create more amazing features!</string>
     <string name="support_us">Support Us</string>
+    <string name="support_dialog_description">Your support helps us continue developing and improving this app. Choose from the options below to show your appreciation!</string>
+    <string name="purchase">Purchase</string>
+
+    <!-- In-App Purchase Support -->
+    <string name="choose_support_amount">Choose Support Amount</string>
+    <string name="support_option_small_coffee">Small Coffee ☕</string>
+    <string name="support_option_large_coffee">Large Coffee ☕☕</string>
+    <string name="support_option_premium">Premium Support 🌟</string>
+    <string name="support_option_ultimate">Ultimate Support 🚀</string>
+    <string name="support_small_coffee_desc">Buy me a small coffee to keep coding!</string>
+    <string name="support_large_coffee_desc">Buy me a large coffee for extra energy!</string>
+    <string name="support_premium_desc">Premium support for continued development</string>
+    <string name="support_ultimate_desc">Ultimate support - you\'re amazing!</string>
+    <string name="purchase_processing">Processing purchase...</string>
+    <string name="purchase_success">Thank you for your support! 🙏</string>
+    <string name="purchase_cancelled">Purchase cancelled</string>
+    <string name="purchase_error">Purchase failed: %s</string>
+    <string name="billing_not_available">In-app purchases not available</string>
 
     <!-- Feedback -->
     <string name="feedback_description">Have suggestions or found a bug? We\'d love to hear from you!</string>
@@ -93,4 +111,10 @@
     <string name="quran_description">Read and explore the Holy Quran with beautiful Arabic text and translations</string>
     <string name="reciters_description">Listen to melodious recitations by renowned Quranic reciters from around the world</string>
     <string name="zikrs_description">Daily remembrance of Allah with authentic Azkar for morning, evening, and special occasions</string>
+    <string name="reciters_available">reciters available</string>
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="no_search_results">No results found for "%s"</string>
+    <string name="loading_reciters">Loading reciters...</string>
+    <string name="no_reciters_description">Check your internet connection and try again.</string>
 </resources>

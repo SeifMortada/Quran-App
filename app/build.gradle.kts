@@ -105,4 +105,6 @@ dependencies {
     // LocalBroadcastManager for download progress broadcasts
     implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
 
+    // Google Play Billing for in-app purchases
+    implementation("com.android.billingclient:billing-ktx:7.1.1")
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -52,6 +54,8 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     var showFeedbackDialog by remember { mutableStateOf(false) }
+    var showSupportDialog by remember { mutableStateOf(false) }
+    var productId by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -113,10 +117,7 @@ fun SettingsScreen(
         ) {
             SupportSection(
                 onSupportClick = {
-                    // Navigate to support/payment screen (placeholder for future implementation)
-                    val intent =
-                        Intent(Intent.ACTION_VIEW, Uri.parse("https://your-support-link.com"))
-                    context.startActivity(intent)
+                    showSupportDialog = true
                 }
             )
         }
@@ -139,6 +140,24 @@ fun SettingsScreen(
             onSendFeedback = { feedback ->
                 onSendFeedback(feedback)
                 showFeedbackDialog = false
+            }
+        )
+    }
+
+    // Support Dialog
+    if (showSupportDialog) {
+        SupportDialog(
+            onDismiss = { showSupportDialog = false },
+            onPurchase = {
+                productId = it
+                // Placeholder for billing integration
+                // This will be replaced with actual billing logic
+                android.widget.Toast.makeText(
+                    context,
+                    "Purchase: $productId",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+                showSupportDialog = false
             }
         )
     }
@@ -382,6 +401,127 @@ private fun FeedbackDialog(
             }
         }
     )
+}
+
+@Composable
+private fun SupportDialog(
+    onDismiss: () -> Unit,
+    onPurchase: (String) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.choose_support_amount),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.support_dialog_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Support Options
+                SupportOption(
+                    title = stringResource(R.string.support_option_small_coffee),
+                    description = stringResource(R.string.support_small_coffee_desc),
+                    price = "$1.99", // This would come from billing client
+                    onClick = { onPurchase("small_coffee") }
+                )
+
+                SupportOption(
+                    title = stringResource(R.string.support_option_large_coffee),
+                    description = stringResource(R.string.support_large_coffee_desc),
+                    price = "$4.99",
+                    onClick = { onPurchase("large_coffee") }
+                )
+
+                SupportOption(
+                    title = stringResource(R.string.support_option_premium),
+                    description = stringResource(R.string.support_premium_desc),
+                    price = "$9.99",
+                    onClick = { onPurchase("premium") }
+                )
+
+                SupportOption(
+                    title = stringResource(R.string.support_option_ultimate),
+                    description = stringResource(R.string.support_ultimate_desc),
+                    price = "$19.99",
+                    onClick = { onPurchase("ultimate") }
+                )
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun SupportOption(
+    title: String,
+    description: String,
+    price: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Text(
+                text = price,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
 }
 
 // Data Classes and Enums
