@@ -9,6 +9,9 @@ import kotlinx.serialization.Serializable
 object QuranScreens {
 
     @Serializable
+    object Splash
+
+    @Serializable
     object Home
 
     @Serializable

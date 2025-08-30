@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">تطبيق القرآن</string>
-    <string name="quran_readers">قراء القرآن</string>
+    <string name="app_subtitle">اقرأ، استمع، تعلم</string>
+    <string name="home">الرئيسية</string>
+    <string name="quran_readers">مقرئو القرآن</string>
     <string name="quran">القرآن الكريم</string>
+    <string name="surahs">سور</string>
+    <string name="verses">آيات</string>
     <string name="settings">الإعدادات</string>
     <string name="bookmark">إشارة مرجعية</string>
     <string name="play_ayah">تشغيل الآية</string>
@@ -13,8 +17,81 @@
     <string name="select_riwayat_subtitle">اضغط لاختيار الروايات</string>
     <string name="error_icon_content_description">أيقونة الخطأ</string>
     <string name="error_occurred">حدث خطأ: %s</string>
-    <string name="retry">إعادة المحاولة</string>
+    <string name="retry">أعد المحاولة</string>
     <string name="no_results_icon_content_description">أيقونة لا توجد نتائج</string>
     <string name="no_reciters_found">لم يتم العثور على قراء.</string>
     <string name="no_reciters_matching_search">لم يتم العثور على قراء مطابقين لـ "%s"</string>
+
+    <!-- Settings Screen -->
+    <string name="appearance">المظهر</string>
+    <string name="language">اللغة</string>
+    <string name="support_developer">دعم المطور</string>
+    <string name="feedback_and_suggestions">الملاحظات والاقتراحات</string>
+
+    <!-- Theme -->
+    <string name="light_theme">فاتح</string>
+    <string name="dark_theme">داكن</string>
+    <string name="system_theme">النظام</string>
+
+    <!-- Support -->
+    <string name="support_description">ادعم تطوير هذا التطبيق وساعدنا في إنشاء المزيد من الميزات الرائعة!</string>
+    <string name="support_us">ادعمنا</string>
+
+    <!-- Feedback -->
+    <string name="feedback_description">هل لديك اقتراحات أو وجدت خطأ؟ نحن نحب أن نسمع منك!</string>
+    <string name="send_feedback">إرسال ملاحظات</string>
+    <string name="feedback_dialog_description">شارك أفكارك واقتراحاتك، أو أبلغ عن أي مشاكل واجهتها.</string>
+    <string name="your_feedback">ملاحظاتك</string>
+    <string name="feedback_placeholder">أخبرنا برأيك أو ما يمكن تحسينه...</string>
+    <string name="send">إرسال</string>
+    <string name="cancel">إلغاء</string>
+
+    <!-- Download Service -->
+    <string name="downloading_surah">تحميل السورة</string>
+    <string name="download_completed">اكتمل التحميل</string>
+    <string name="download_failed">فشل التحميل</string>
+
+    <!-- Permissions -->
+    <string name="permission_required">أذونات مطلوبة</string>
+    <string name="permission_notification_rationale">يحتاج هذا التطبيق إلى إذن الإشعارات لعرض تقدم التحميل وعناصر التحكم في التشغيل.</string>
+    <string name="permission_storage_rationale">يحتاج هذا التطبيق إلى إذن التخزين لحفظ والوصول إلى ملفات القرآن الصوتية.</string>
+    <string name="permission_both_rationale">يحتاج هذا التطبيق إلى أذونات الإشعارات والتخزين لتحميل ملفات السور وعرض إشعارات التقدم.</string>
+    <string name="grant_permissions">منح الأذونات</string>
+    <string name="app_settings">إعدادات التطبيق</string>
+
+    <!-- Download Dialog -->
+    <string name="download_required">تحميل مطلوب</string>
+    <string name="download_required_message">لتشغيل التلاوة الصوتية لـ %s، تحتاج إلى تحميلها أولاً. هل تريد تحميلها الآن؟</string>
+    <string name="download_to_play">تحميل للتشغيل</string>
+    <string name="surah_recitation">تلاوة السورة</string>
+    <string name="this_surah">هذه السورة</string>
+    <string name="download">تحميل</string>
+
+    <!-- Enhanced Notifications -->
+    <string name="downloading_reciter_surah">تحميل %1$s - %2$s</string>
+    <string name="download_completed_reciter_surah">تم تحميل %1$s - %2$s</string>
+    <string name="download_failed_reciter_surah">فشل تحميل %1$s - %2$s</string>
+
+    <!-- Azkar Screen -->
+    <string name="azkars_title">الأذكار</string>
+    <string name="azkars">أذكار</string>
+    <string name="categories">التصنيفات</string>
+    <string name="total_azkars">إجمالي الأذكار</string>
+    <string name="total_recitations">إجمالي التسبيحات</string>
+    <string name="progress">التقدم</string>
+    <string name="completed">مكتمل</string>
+    <string name="reset">إعادة تعيين</string>
+    <string name="reset_progress">إعادة تعيين التقدم</string>
+    <string name="share_zikr">مشاركة الذكر</string>
+    <string name="share_zikr_subject">ذكر إسلامي</string>
+
+    <!-- Home Screen -->
+    <string name="welcome_message">مرحباً بكم في رفيقكم الروحي. اقرأوا القرآن واستمعوا إلى التلاوات الجميلة واذكروا الله مع مجموعتنا من الأذكار.</string>
+    <string name="main_features">الميزات الرئيسية</string>
+    <string name="quick_access">الوصول السريع</string>
+    <string name="read_quran">قراءة القرآن</string>
+    <string name="listen_recitation">الاستماع للتلاوة</string>
+    <string name="quran_description">اقرأ واستكشف القرآن الكريم مع النص العربي الجميل والترجمات</string>
+    <string name="reciters_description">استمع إلى التلاوات العذبة من قبل القراء المشهورين من جميع أنحاء العالم</string>
+    <string name="zikrs_description">ذكر الله اليومي مع الأذكار الصحيحة للصباح والمساء والمناسبات الخاصة</string>
 </resources>

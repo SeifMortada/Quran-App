@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.SurahModel
 import com.example.domain.model.VerseModel
+import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
 import androidx.compose.foundation.layout.Row
@@ -53,6 +55,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.seifmortada.applications.quran.core.service.AudioPlayerService
@@ -65,6 +68,7 @@ fun ReciterSurahRecitationRoute(
     surahId: Int,
     server: String,
     onBackClicked: () -> Unit,
+    reciterName: String = "Unknown Reciter",
     viewModel: ReciterSurahRecitationViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,8 +76,15 @@ fun ReciterSurahRecitationRoute(
     val context = LocalContext.current
     val service = rememberAudioService()
 
-    LaunchedEffect(surahId, server) {
-        viewModel.fetchRecitation(server, surahId)
+    LaunchedEffect(surahId, server, reciterName) {
+        viewModel.fetchRecitation(
+            context = context,
+            server = server,
+            surahNumber = surahId,
+            reciterName = reciterName,
+            surahNameEn = null,
+            surahNameAr = null
+        )
     }
 
     LaunchedEffect(service) {
@@ -84,8 +95,8 @@ fun ReciterSurahRecitationRoute(
         state = state,
         events = events,
         audioActions = { action -> viewModel.sendEvent(context, action) },
-        onBackClicked = onBackClicked
-
+        onBackClicked = onBackClicked,
+        onRetryDownload = { viewModel.retryDownload() }
     )
 }
 
@@ -95,12 +106,15 @@ fun ReciterSurahRecitationScreen(
     events: FileDownloadEvent,
     audioActions: (AudioPlayerAction) -> Unit,
     onBackClicked: () -> Unit,
+    onRetryDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showDownloadDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             SearchTopAppBar(
-                title = state.currentSurah?.name ?: "Surah Recitation",
+                title = state.currentSurah?.name ?: stringResource(R.string.surah_recitation),
                 onBackClick = onBackClicked,
                 onSearchClick = {}
             )
@@ -115,19 +129,65 @@ fun ReciterSurahRecitationScreen(
         ) {
 
             when (events) {
-                is FileDownloadEvent.Idle -> Unit
+                is FileDownloadEvent.Idle -> {
+                    if (state.title.isNotEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = state.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
 
                 is FileDownloadEvent.InProgress -> {
                     Column(
-                        Modifier
+                        modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Downloading ${(events.progress * 100).toInt()}%")
+                        Text(
+                            text = state.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "Progress: ${(events.progress * 100).toInt()}%",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         LinearProgressIndicator(
                             progress = { events.progress },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.primary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant
                         )
+
+                        if (state.fileSize > 0) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Size: ${formatFileSize(state.fileSize)}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
 
@@ -137,7 +197,9 @@ fun ReciterSurahRecitationScreen(
                             .weight(1f)
                             .fillMaxSize()
                     ) {
-                        SurahDisplay(surah = state.currentSurah!!)
+                        state.currentSurah?.let { surah ->
+                            SurahDisplay(surah = surah)
+                        }
                     }
                     AudioPlayer(
                         audioPlayerState = state.audioPlayerState,
@@ -146,11 +208,45 @@ fun ReciterSurahRecitationScreen(
                     )
                 }
 
+                is FileDownloadEvent.Cancelled -> {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxSize()
+                    ) {
+                        state.currentSurah?.let { surah ->
+                            SurahDisplay(surah = surah)
+                        }
+                    }
+
+                    AudioPlayerPlaceholder(
+                        onPlayAttempt = { showDownloadDialog = true }
+                    )
+                }
+
                 is FileDownloadEvent.Error -> {
-                    ShowErrorMessage(errorMessage = events.message)
+                    ShowErrorMessage(
+                        errorMessage = events.message,
+                        onRetry = {
+                            onRetryDownload()
+                        }
+                    )
                 }
             }
         }
+    }
+
+    if (showDownloadDialog) {
+        DownloadConfirmationDialog(
+            surahName = state.currentSurah?.name ?: stringResource(R.string.this_surah),
+            onConfirm = {
+                showDownloadDialog = false
+                onRetryDownload()
+            },
+            onDismiss = {
+                showDownloadDialog = false
+            }
+        )
     }
 }
 
@@ -162,7 +258,6 @@ private fun SurahDisplay(surah: SurahModel) {
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
-            // Surah Header
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -203,7 +298,6 @@ private fun SurahDisplay(surah: SurahModel) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Verses list
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 20.dp)
@@ -228,7 +322,6 @@ private fun AyahItem(verse: VerseModel) {
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Verse number inside a circle
             Box(
                 modifier = Modifier
                     .size(28.dp)
@@ -262,10 +355,23 @@ private fun AyahItem(verse: VerseModel) {
     }
 }
 
-
 @Composable
-fun ShowErrorMessage(errorMessage: String) {
-    Text(errorMessage, color = MaterialTheme.colorScheme.primary)
+fun ShowErrorMessage(errorMessage: String, onRetry: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text(
+            text = errorMessage,
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedButton(onClick = onRetry) {
+            Text(stringResource(R.string.retry))
+        }
+    }
 }
 
 @Composable
@@ -354,7 +460,6 @@ fun PlayPauseRow(
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
     ) {
-        // Forward - secondary action
         OutlinedButton(
             onClick = onReplayClicked,
             modifier = Modifier
@@ -365,7 +470,6 @@ fun PlayPauseRow(
             Icon(Icons.Default.Replay10, contentDescription = "Replay 10 seconds")
         }
 
-        // Play / Pause - primary action (expressive)
         ToggleButton(
             checked = isPlaying,
             onCheckedChange = { onPlayClicked() },
@@ -385,7 +489,6 @@ fun PlayPauseRow(
                 contentDescription = if (isPlaying) "Pause" else "Play"
             )
         }
-        // Rewind - secondary action
         OutlinedButton(
             onClick = onFastForwardClicked,
             modifier = Modifier
@@ -402,6 +505,18 @@ fun formatTime(millis: Int): String {
     val minutes = (millis / 1000) / 60
     val seconds = (millis / 1000) % 60
     return String.format("%02d:%02d", minutes, seconds)
+}
+
+fun formatFileSize(size: Long): String {
+    if (size <= 0) return "0 B"
+    val units = arrayOf("B", "KB", "MB", "GB", "TB")
+    var i = 0
+    var sizeTemp = size
+    while (sizeTemp > 1024 && i < units.size - 1) {
+        sizeTemp /= 1024
+        i++
+    }
+    return String.format("%.2f %s", sizeTemp.toDouble(), units[i])
 }
 
 @Composable
@@ -434,6 +549,83 @@ fun rememberAudioService(): AudioPlayerService? {
     return service
 }
 
+@Composable
+fun AudioPlayerPlaceholder(
+    onPlayAttempt: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
+            .padding(horizontal = 2.dp, vertical = 2.dp)
+    ) {
+        // Disabled progress bar
+        Slider(
+            value = 0f,
+            onValueChange = { },
+            enabled = false,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("00:00", style = MaterialTheme.typography.bodySmall)
+            Text("--:--", style = MaterialTheme.typography.bodySmall)
+        }
+
+        // Placeholder play button that triggers download dialog
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            OutlinedButton(
+                onClick = onPlayAttempt,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.PlayArrow, contentDescription = "Download to play")
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(R.string.download_to_play))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DownloadConfirmationDialog(
+    surahName: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.download_required),
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.download_required_message, surahName),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        confirmButton = {
+            androidx.compose.material3.Button(onClick = onConfirm) {
+                Text(stringResource(R.string.download))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @LanguagePreviews

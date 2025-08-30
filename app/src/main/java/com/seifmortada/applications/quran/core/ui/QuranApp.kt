@@ -9,6 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,45 +35,69 @@ fun QuranApp(modifier: Modifier = Modifier) {
     val currentBackStack by navController.currentBackStackEntryFlow.collectAsStateWithLifecycle(null)
     var selectedItemIndex = when (currentBackStack?.destination?.route) {
         QuranScreens.Home::class.simpleName -> 0
-        QuranScreens.Reciters::class.simpleName -> 1
-        QuranScreens.Settings::class.simpleName -> 2
+        QuranScreens.QuranChapters::class.simpleName -> 1
+        QuranScreens.Reciters::class.simpleName -> 2
+        QuranScreens.Settings::class.simpleName -> 3
         else -> -1
     }
+    val context = LocalContext.current
     val isRtl = Locale.getDefault().layoutDirection == android.util.LayoutDirection.RTL
-    CompositionLocalProvider(LocalLayoutDirection provides /*if (isRtl)*/ LayoutDirection.Rtl /*else LayoutDirection.Ltr*/) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Scaffold(
-                bottomBar = {
-                    NavigationBar {
-                        topLevelDestinations.forEachIndexed { index, topLevelDestination ->
-                            NavigationBarItem(
-                                selected = selectedItemIndex == index,
-                                onClick = {
-                                    selectedItemIndex = index
-                                    navController.navigate(topLevelDestination.route)
-                                },
-                                label = { Text(text = topLevelDestination.title) },
-                                icon = {
-                                    Icon(
-                                        imageVector = if (selectedItemIndex == index) topLevelDestination.selectedIcon else topLevelDestination.unSelectedIcon,
-                                        contentDescription = topLevelDestination.title,
-                                        tint = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }) { innerPadding ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Scaffold(
+            bottomBar = {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 ) {
-                    QuranAppNavGraph(navController = navController)
+                    topLevelDestinations.forEachIndexed { index, topLevelDestination ->
+                        NavigationBarItem(
+                            selected = selectedItemIndex == index,
+                            onClick = {
+                                selectedItemIndex = index
+                                navController.navigate(topLevelDestination.route)
+                            },
+                            label = {
+                                Text(
+                                    text = context.getString(topLevelDestination.titleRes),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = if (selectedItemIndex == index)
+                                        MaterialTheme.colorScheme.primary
+                                    else
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = if (selectedItemIndex == index) topLevelDestination.selectedIcon else topLevelDestination.unSelectedIcon,
+                                    contentDescription = context.getString(topLevelDestination.titleRes),
+                                    tint = if (selectedItemIndex == index)
+                                        MaterialTheme.colorScheme.primary
+                                    else
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                indicatorColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                            )
+                        )
+                    }
                 }
+            }
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                QuranAppNavGraph(navController = navController)
             }
         }
     }

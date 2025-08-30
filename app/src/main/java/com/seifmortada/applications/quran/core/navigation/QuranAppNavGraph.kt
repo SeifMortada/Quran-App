@@ -12,6 +12,7 @@ import com.seifmortada.applications.quran.core.navigation.sections.recitersSecti
 import com.seifmortada.applications.quran.core.navigation.sections.zikrSection
 import com.seifmortada.applications.quran.features.home.HomeRoute
 import com.seifmortada.applications.quran.features.settings.SettingsRoute
+import com.seifmortada.applications.quran.features.splash.SplashScreen
 
 @Composable
 fun QuranAppNavGraph(
@@ -20,9 +21,20 @@ fun QuranAppNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = QuranScreens.Home,
+        startDestination = QuranScreens.Splash,
         modifier = modifier
     ) {
+        composable<QuranScreens.Splash> {
+            SplashScreen(
+                onSplashFinished = {
+                    navController.navigate(QuranScreens.Home) {
+                        // Clear splash screen from back stack
+                        popUpTo(QuranScreens.Splash) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable<QuranScreens.Home> {
             HomeRoute(
                 onZikrClick = { navController.navigate(QuranScreens.Azkars){

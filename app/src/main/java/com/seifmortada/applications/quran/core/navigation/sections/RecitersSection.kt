@@ -68,6 +68,7 @@ fun NavGraphBuilder.recitersSection(
             ReciterSurahRecitationRoute(
                 surahId = args.surahAndReciter.surahId,
                 server = args.surahAndReciter.moshaf.server,
+                reciterName = args.surahAndReciter.moshaf.name,
                 onBackClicked = onBackClick
             )
         }

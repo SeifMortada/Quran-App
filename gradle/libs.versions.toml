@@ -29,6 +29,7 @@ composeNavigation="2.8.8"
 serialization = "1.6.3"
 composeMaterial3 = "1.5.0-rc02"
 jetbrainsKotlinJvm = "2.0.20"
+datastore = "1.1.1"
 
 [libraries]
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
@@ -49,6 +50,7 @@ androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref="composeActivity" }
+androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

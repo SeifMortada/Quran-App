@@ -69,26 +69,15 @@ class SurahViewModel(
         }
     }
 
-    fun getAyahRecitation(surahNumber: String, ayahNumber: String) {
-        viewModelScope.launch {
-            val globalAyahNumber =
-                calculateGlobalAyahNumber(surahNumber.toInt(), ayahNumber.toInt())
-            _uiState.update { it.copy(isLoading = true) }
-
+    suspend fun getAyahAudioUrl(surahNumber: Int, ayahNumber: Int): String? {
+        return try {
+            val globalAyahNumber = calculateGlobalAyahNumber(surahNumber, ayahNumber)
             when (val response = fetchAyahRecitationUseCase(globalAyahNumber)) {
-                is NetworkResult.Success -> {
-                    _uiState.update { it.copy(surahAudioUrl = response.data) }
-                }
-
-                is NetworkResult.Error -> {
-                    _uiState.update { it.copy(userMessage = response.errorMessage) }
-                }
-
-                NetworkResult.Loading -> {
-                    _uiState.update { it.copy(isLoading = true) }
-                }
+                is NetworkResult.Success -> response.data
+                else -> null
             }
-            _uiState.update { it.copy(isLoading = false) }
+        } catch (e: Exception) {
+            null
         }
     }
 

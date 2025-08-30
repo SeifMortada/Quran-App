@@ -6,8 +6,7 @@ data class ReciterSurahRecitationUiState(
     val fileSize: Long = 0L,
     val title: String = "",
     val currentSurah: SurahModel? = null,
-    val audioPlayerState: AudioPlayerState = AudioPlayerState(),
-    val searchQuery: String = ""
+    val audioPlayerState: AudioPlayerState = AudioPlayerState()
 )
 
 data class AudioPlayerState(
@@ -20,5 +19,7 @@ data class AudioPlayerState(
 data class Audio(
     val title: String,
     val path: String,
-    val duration: Int
+    val duration: Int,
+    val reciterName: String = "",
+    val surahInfo: String = ""
 )

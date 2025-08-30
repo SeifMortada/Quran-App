@@ -5,45 +5,55 @@ import android.content.Intent
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.domain.model.AzkarModel
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import com.example.domain.model.AzkarItemModel
+import com.example.domain.model.AzkarModel
 import com.seifmortada.applications.quran.R
-import com.seifmortada.applications.quran.utils.ButtonIcon
 import com.seifmortada.applications.quran.utils.FunctionsUtils
 import com.seifmortada.applications.quran.utils.SearchToolbar
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
@@ -54,7 +64,6 @@ fun ZikrRoute(zikr: AzkarModel, onBackClicked: () -> Unit) {
         zikr = zikr,
         onBackButtonClicked = onBackClicked
     )
-
 }
 
 @Composable
@@ -63,13 +72,24 @@ fun ZikrScreen(
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     var searchQuery by remember { mutableStateOf("") }
-    var filterdAzkars = zikr.array.filter {
+    val filteredAzkars = zikr.array.filter {
         FunctionsUtils.normalizeTextForFiltering(it.text)
             .contains(searchQuery, ignoreCase = true)
     }
     var isSearch by remember { mutableStateOf(false) }
+
+    // Track completion state
+    var completedCounts by remember {
+        mutableStateOf(filteredAzkars.associateWith { 0 })
+    }
+
+    val totalRecitations = filteredAzkars.sumOf { it.count }
+    val completedRecitations = completedCounts.values.sum()
+    val progressPercentage = if (totalRecitations > 0) {
+        (completedRecitations.toFloat() / totalRecitations) * 100
+    } else 0f
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -78,7 +98,7 @@ fun ZikrScreen(
                     searchQuery = searchQuery,
                     onSearchQueryChanged = { newQuery -> searchQuery = newQuery },
                     onSearchTriggered = { isSearch = false },
-                    onBackClick = onBackButtonClicked
+                    onBackClick = { isSearch = false }
                 )
             } else {
                 SearchTopAppBar(
@@ -87,164 +107,345 @@ fun ZikrScreen(
                     onSearchClick = { isSearch = it }
                 )
             }
-        }) { padding ->
-        LazyColumn(
+        },
+        floatingActionButton = {
+            if (completedRecitations > 0) {
+                FloatingActionButton(
+                    onClick = {
+                        completedCounts = filteredAzkars.associateWith { 0 }
+                    },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.reset_progress)
+                    )
+                }
+            }
+        }
+    ) { padding ->
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            items(filterdAzkars) { zikr ->
-                AzkarCard(
-                    zikr
+            // Progress Header
+            if (totalRecitations > 0) {
+                ProgressHeader(
+                    completedRecitations = completedRecitations,
+                    totalRecitations = totalRecitations,
+                    progressPercentage = progressPercentage
                 )
+            }
+
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(filteredAzkars) { zikrItem ->
+                    val completedCount = completedCounts[zikrItem] ?: 0
+                    EnhancedAzkarCard(
+                        zikrItem = zikrItem,
+                        completedCount = completedCount,
+                        onZikrTapped = {
+                            if (completedCount < zikrItem.count) {
+                                completedCounts = completedCounts.toMutableMap().apply {
+                                    this[zikrItem] = (this[zikrItem] ?: 0) + 1
+                                }
+                            }
+                        },
+                        onResetClicked = {
+                            completedCounts = completedCounts.toMutableMap().apply {
+                                this[zikrItem] = 0
+                            }
+                        }
+                    )
+                }
             }
         }
     }
-
 }
 
 @Composable
-private fun AzkarCard(
-    zikr: AzkarItemModel, modifier: Modifier = Modifier
+private fun ProgressHeader(
+    completedRecitations: Int,
+    totalRecitations: Int,
+    progressPercentage: Float
 ) {
-    val context = LocalContext.current
-    val vibrator = context.getSystemService(Vibrator::class.java)
-
-    var zikrCount by remember { mutableStateOf(zikr.count) }
     Card(
-        modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(10.dp)
-            .clickable(
-                enabled = true,
-                onClick = {
-                    if (zikrCount > 0) {
-                        vibrate(vibrator = vibrator)
-                        zikrCount--
-                    }
-                }
-            )
-
+            .padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
     ) {
         Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            val filteredZikr =
-                zikr.text.replace("(", "").replace(")", "").replace("]", "").replace("[", "")
-            Text(
-                text = filteredZikr,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(10.dp),
-                textAlign = TextAlign.Center
-            )
-            Row(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    contentAlignment = Alignment.Center, modifier = Modifier.padding(start = 10.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.progress),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                {
-                    if (zikrCount > 0) {
-                        Icon(
-                            modifier = Modifier
-                                .size(40.dp), painter = painterResource(R.drawable.ic_ayah),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-
-                        Text(
-                            text = zikrCount.toString(),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                    } else {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                tint = colorResource(R.color.md_theme_primary),
-                                modifier = Modifier.size(25.dp),
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }
-                Row(
-                    horizontalArrangement = Arrangement.Absolute.Right,
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.Bottom
-                ) {
-
-                    ButtonIcon(
-                        onClick = {},
-                        iconId = R.drawable.ic_bookmark
-                    )
-                    ButtonIcon(onClick = {
-                        shareZikr(context = context, zikr = zikr.text)
-                    }, iconId = R.drawable.ic_share)
-                }
+                Text(
+                    text = "$completedRecitations / $totalRecitations",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
-        }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LinearProgressIndicator(
+                progress = { progressPercentage / 100f },
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "${progressPercentage.toInt()}% ${stringResource(R.string.completed)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
+@Composable
+private fun EnhancedAzkarCard(
+    zikrItem: AzkarItemModel,
+    completedCount: Int,
+    onZikrTapped: () -> Unit,
+    onResetClicked: () -> Unit
+) {
+    val context = LocalContext.current
+    val vibrator = context.getSystemService(Vibrator::class.java)
+    val remainingCount = (zikrItem.count - completedCount).coerceAtLeast(0)
+    val isCompleted = remainingCount == 0
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = !isCompleted) {
+                vibrate(vibrator)
+                onZikrTapped()
+            },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isCompleted) {
+                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        ),
+        elevation = CardDefaults.cardElevation(if (isCompleted) 2.dp else 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+            // Zikr Text
+            Text(
+                text = cleanZikrText(zikrItem.text),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 20.sp,
+                    lineHeight = 32.sp
+                ),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                color = if (isCompleted) {
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Bottom row with count and actions
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Share button
+                IconButton(
+                    onClick = { shareZikr(context, zikrItem.text) },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = stringResource(R.string.share),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Count indicator
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isCompleted) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.primaryContainer
+                            }
+                        )
+                        .clickable(enabled = isCompleted) { onResetClicked() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isCompleted) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = stringResource(R.string.completed),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    } else {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = remainingCount.toString(),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                            if (zikrItem.count > 1) {
+                                Text(
+                                    text = "/ ${zikrItem.count}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Reset button (visible when completed)
+                if (isCompleted) {
+                    IconButton(
+                        onClick = onResetClicked,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = stringResource(R.string.reset),
+                            tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                } else {
+                    // Spacer to maintain layout
+                    Spacer(modifier = Modifier.size(40.dp))
+                }
+            }
+
+            // Progress indicator for individual zikr
+            if (zikrItem.count > 1) {
+                Spacer(modifier = Modifier.height(12.dp))
+                LinearProgressIndicator(
+                    progress = { completedCount.toFloat() / zikrItem.count },
+                    modifier = Modifier.fillMaxWidth(),
+                    color = if (isCompleted) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.secondary
+                    },
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            }
+        }
+    }
+}
+
+private fun cleanZikrText(text: String): String {
+    return text.replace("(", "")
+        .replace(")", "")
+        .replace("]", "")
+        .replace("[", "")
+        .trim()
+}
 
 private fun vibrate(vibrator: Vibrator) {
     if (vibrator.hasVibrator()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(50, 100))
+            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
-            vibrator.vibrate(50)
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(100)
         }
     }
 }
 
 private fun shareZikr(context: Context, zikr: String) {
+    val cleanedZikr = cleanZikrText(zikr)
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, zikr)
+        putExtra(Intent.EXTRA_TEXT, cleanedZikr)
+        putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_zikr_subject))
     }
     context.startActivity(
-        Intent.createChooser(intent, "Share Zikr")
+        Intent.createChooser(intent, context.getString(R.string.share_zikr))
     )
 }
 
-@Preview(name = "AzkarScreen Preview", showBackground = false)
+@Preview(name = "ZikrScreen Preview", showBackground = true)
 @Composable
-private fun AzkarScreenPreview() {
+private fun ZikrScreenPreview() {
     val fakeAzkarItems = listOf(
         AzkarItemModel(
-            audio = "https://example.com/audio1.mp3",
+            audio = "",
             count = 3,
-            filename = "azkar_morning.mp3",
+            filename = "",
             id = 1,
-            text = "أَصْـبَحْنا وَأَصْـبَحَ المُـلْكُ لله وَالحَمدُ لله ، لا إلهَ إلاّ اللّهُ وَحدَهُ لا شَريكَ لهُ، لهُ المُـلكُ ولهُ الحَمْـد، وهُوَ على كلّ شَيءٍ قدير ، رَبِّ أسْـأَلُـكَ خَـيرَ ما في هـذا اليوم وَخَـيرَ ما بَعْـدَه ، وَأَعـوذُ بِكَ مِنْ شَـرِّ ما في هـذا اليوم وَشَرِّ ما بَعْـدَه، رَبِّ أَعـوذُبِكَ مِنَ الْكَسَـلِ وَسـوءِ الْكِـبَر ، رَبِّ أَعـوذُ بِكَ مِنْ عَـذابٍ في النّـارِ وَعَـذابٍ في القَـبْر."
+            text = "أَصْـبَحْنا وَأَصْـبَحَ المُـلْكُ لله وَالحَمدُ لله ، لا إلهَ إلاّ اللّهُ وَحدَهُ لا شَريكَ لهُ، لهُ المُـلكُ ولهُ الحَمْـد، وهُوَ على كلّ شَيءٍ قدير"
         ),
         AzkarItemModel(
-            audio = "https://example.com/audio2.mp3",
-            count = 5,
-            filename = "azkar_evening.mp3",
-            id = 2,
-            text = "الحمد لله"
-        ),
-        AzkarItemModel(
-            audio = "https://example.com/audio3.mp3",
+            audio = "",
             count = 1,
-            filename = "azkar_night.mp3",
-            id = 3,
-            text = "الله أكبر"
+            filename = "",
+            id = 2,
+            text = "الحمد لله رب العالمين"
         )
     )
 
     val fakeAzkarModel = AzkarModel(
         array = fakeAzkarItems,
-        audio = "https://example.com/main_audio.mp3",
-        category = "Morning Azkar",
-        filename = "azkar_collection.mp3",
-        id = 101
+        audio = "",
+        category = "أذكار الصباح",
+        filename = "",
+        id = 1
     )
 
-
+    ZikrScreen(
+        zikr = fakeAzkarModel,
+        onBackButtonClicked = {}
+    )
 }

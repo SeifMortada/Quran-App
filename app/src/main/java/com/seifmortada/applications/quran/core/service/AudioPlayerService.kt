@@ -1,20 +1,17 @@
 package com.seifmortada.applications.quran.core.service
 
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.app.CHANNEL_ID
 import com.seifmortada.applications.quran.features.reciter_tilawah_recitation.Audio
@@ -27,7 +24,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.toString
 
 const val REWIND = "rewind"
 const val FORWARD = "forward"
@@ -49,7 +45,8 @@ class AudioPlayerService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Quran App")
             .setContentText("Preparing audio...")
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.quran_app_logo))
             .build()
     }
 
@@ -59,7 +56,7 @@ class AudioPlayerService : Service() {
 
     private var mediaPlayer = MediaPlayer()
 
-    val currentAudio = MutableStateFlow(Audio("", "", 0))
+    val currentAudio = MutableStateFlow(Audio("", "", 0, "", ""))
     val maxDuration = MutableStateFlow(0)
     val currentDuration = MutableStateFlow(0)
     val isPlaying = MutableStateFlow(false)
@@ -88,13 +85,15 @@ class AudioPlayerService : Service() {
                 AUDIO_LOAD -> {
                     val path = intent.getStringExtra("AUDIO_PATH")
                     val title = intent.getStringExtra("AUDIO_TITLE") ?: "Unknown Title"
+                    val reciterName = intent.getStringExtra("AUDIO_RECITER") ?: "Unknown Reciter"
+                    val surahInfo = intent.getStringExtra("AUDIO_SURAH_INFO") ?: ""
 
-                    if (!path.isNullOrEmpty()) prepareAndPlay(path, title)
+                    if (!path.isNullOrEmpty()) prepareAndPlay(path, title, reciterName, surahInfo)
                 }
 
                 else -> {
                     val audio = currentAudio.value
-                    prepareAndPlay(audio.path)
+                    prepareAndPlay(audio.path, audio.title, audio.reciterName, audio.surahInfo)
                 }
             }
         }
@@ -118,7 +117,12 @@ class AudioPlayerService : Service() {
         sendNotification(currentAudio.value)
     }
 
-    private fun prepareAndPlay(path: String, title: String = "") {
+    private fun prepareAndPlay(
+        path: String,
+        title: String = "",
+        reciterName: String = "",
+        surahInfo: String = ""
+    ) {
         try {
             mediaPlayer.reset()
             mediaPlayer.setDataSource(path)
@@ -127,7 +131,9 @@ class AudioPlayerService : Service() {
                 val audio = Audio(
                     path = path,
                     title = title,
-                    duration = it.duration
+                    duration = it.duration,
+                    reciterName = reciterName,
+                    surahInfo = surahInfo
                 )
                 currentAudio.value = audio
                 maxDuration.value = it.duration
@@ -170,6 +176,7 @@ class AudioPlayerService : Service() {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setStyle(style)
             .setContentTitle(audio.title)
+            .setSubText("${audio.reciterName} - ${audio.surahInfo}")
             .addAction(R.drawable.ic_fast_rewind, "Rewind", createActionIntent(REWIND))
             .addAction(
                 if (mediaPlayer.isPlaying) R.drawable.ic_pause else R.drawable.ic_play,
@@ -177,8 +184,8 @@ class AudioPlayerService : Service() {
                 createActionIntent(PLAYPAUSE)
             )
             .addAction(R.drawable.ic_fast_forward, "Forward", createActionIntent(FORWARD))
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_koran))
+            .setSmallIcon(R.drawable.ic_notification)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.quran_app_logo))
             .build()
 
         val notificationManager =

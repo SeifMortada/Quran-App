@@ -100,4 +100,9 @@ dependencies {
 
     implementation( libs.androidx.media)
 
+    // DataStore for settings persistence
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    // LocalBroadcastManager for download progress broadcasts
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
+
 }
