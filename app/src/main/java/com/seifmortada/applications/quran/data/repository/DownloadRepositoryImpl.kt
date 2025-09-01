@@ -30,6 +30,9 @@ class DownloadRepositoryImpl(
 
     private val localBroadcastManager = LocalBroadcastManager.getInstance(context)
 
+    // Track if there's an active download to avoid unnecessary service starts
+    private var hasActiveDownload = false
+
     override fun startSurahDownload(downloadRequest: DownloadRequest): Flow<DownloadStatus> =
         callbackFlow {
 
@@ -43,15 +46,25 @@ class DownloadRepositoryImpl(
             }
         }
 
-        val receiver = object : BroadcastReceiver() {
+            // Check if there's an active download
+            if (hasActiveDownload) {
+                trySend(DownloadStatus.Failed("Another download is in progress"))
+                close()
+                return@callbackFlow
+            }
+
+            val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 handleBroadcastReceived(intent) { status ->
                     trySend(status)
-                    // Close flow for terminal states
+                    // Close flow for terminal states and reset tracking
                     when (status) {
                         is DownloadStatus.Completed,
                         is DownloadStatus.Failed,
-                        is DownloadStatus.Cancelled -> close()
+                        is DownloadStatus.Cancelled -> {
+                            hasActiveDownload = false
+                            close()
+                        }
                         else -> {} // Continue for ongoing states
                     }
                 }
@@ -64,21 +77,25 @@ class DownloadRepositoryImpl(
         // Start the download using new helper
         try {
             trySend(DownloadStatus.Starting)
+            hasActiveDownload = true
 
             val success = DownloadServiceHelper.startSurahDownload(context, downloadRequest)
             if (!success) {
+                hasActiveDownload = false
                 trySend(DownloadStatus.Failed("Could not start download. Check permissions."))
                 close()
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Failed to start download", e)
+            hasActiveDownload = false
             trySend(DownloadStatus.Failed("Failed to start download: ${e.message}"))
             close()
         }
 
         awaitClose {
             localBroadcastManager.unregisterReceiver(receiver)
+            hasActiveDownload = false
         }
     }
 
@@ -104,10 +121,12 @@ class DownloadRepositoryImpl(
 
     override fun cancelDownload() {
         DownloadServiceHelper.cancelCurrentDownload(context)
+        hasActiveDownload = false
     }
 
     override fun cancelDownload(downloadId: String) {
         DownloadServiceHelper.cancelDownload(context, downloadId)
+        hasActiveDownload = false
     }
 
     override fun getCurrentDownloadStatus(): Flow<DownloadStatus> {
