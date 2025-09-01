@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalLayoutDirection
-import com.example.domain.model.main.MainItem
+import com.seifmortada.applications.quran.core.domain.model.main.MainItem
 import com.seifmortada.applications.quran.R
 import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 

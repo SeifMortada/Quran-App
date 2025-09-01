@@ -6,13 +6,22 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.seifmortada.applications.quran.core.navigation.destinations.QuranScreens
-import com.seifmortada.applications.quran.core.navigation.sections.quranSection
-import com.seifmortada.applications.quran.core.navigation.sections.recitersSection
-import com.seifmortada.applications.quran.core.navigation.sections.zikrSection
+import com.seifmortada.applications.quran.core.navigation.destinations.Home
+import com.seifmortada.applications.quran.core.navigation.destinations.Splash
 import com.seifmortada.applications.quran.features.home.HomeRoute
-import com.seifmortada.applications.quran.features.settings.SettingsRoute
+import com.seifmortada.applications.quran.features.quran.QuranChapters
+import com.seifmortada.applications.quran.features.quran.Surah
+import com.seifmortada.applications.quran.features.quran.quranSection
+import com.seifmortada.applications.quran.features.reciter.ReciterTilawahChapters
+import com.seifmortada.applications.quran.features.reciter.ReciterTilawahDetail
+import com.seifmortada.applications.quran.features.reciter.ReciterTilawahRecitation
+import com.seifmortada.applications.quran.features.reciter.Reciters
+import com.seifmortada.applications.quran.features.reciter.recitersSection
+import com.seifmortada.applications.quran.features.settings.settingsSection
 import com.seifmortada.applications.quran.features.splash.SplashScreen
+import com.seifmortada.applications.quran.features.zikr.Azkars
+import com.seifmortada.applications.quran.features.zikr.Zikr
+import com.seifmortada.applications.quran.features.zikr.zikrSection
 
 @Composable
 fun QuranAppNavGraph(
@@ -21,64 +30,63 @@ fun QuranAppNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = QuranScreens.Splash,
+        startDestination = Splash,
         modifier = modifier
     ) {
-        composable<QuranScreens.Splash> {
+        composable<Splash> {
             SplashScreen(
                 onSplashFinished = {
-                    navController.navigate(QuranScreens.Home) {
-                        // Clear splash screen from back stack
-                        popUpTo(QuranScreens.Splash) { inclusive = true }
+                    navController.navigate(Home) {
+                        popUpTo(Splash) { inclusive = true }
                     }
                 }
             )
         }
 
-        composable<QuranScreens.Home> {
+        composable<Home> {
             HomeRoute(
-                onZikrClick = { navController.navigate(QuranScreens.Azkars){
-                    popUpTo(QuranScreens.Home) { inclusive = false }
+                onZikrClick = { navController.navigate(Azkars){
+                    popUpTo(Home) { inclusive = false }
                     launchSingleTop = true
                     restoreState = true
                 } },
-                onQuranClick = { navController.navigate(QuranScreens.QuranChapters){
-                    popUpTo(QuranScreens.Home) { inclusive = false }
+                onQuranClick = { navController.navigate(QuranChapters){
+                    popUpTo(Home) { inclusive = false }
                     launchSingleTop = true
                     restoreState = true
                 } },
-                onReciterClick = { navController.navigate(QuranScreens.Reciters){
-                    popUpTo(QuranScreens.Home) { inclusive = false }
+                onReciterClick = { navController.navigate(Reciters){
+                    popUpTo(Home) { inclusive = false }
                     launchSingleTop = true
                     restoreState = true
                 } }
             )
         }
-        composable<QuranScreens.Settings> {
-            SettingsRoute()
-        }
+
+        settingsSection()
+
         quranSection(
             onBackClick = { navController.navigateUp() },
             onChapterClick = { surahId ->
-                navController.navigate(QuranScreens.Surah(surahId))
+                navController.navigate(Surah(surahId))
             }
         )
         zikrSection(
             onBackClick = { navController.navigateUp() },
             onZikrClicked = { zikr ->
-                navController.navigate(QuranScreens.Zikr(zikr))
+                navController.navigate(Zikr(zikr))
             }
         )
         recitersSection(
             onBackClick = { navController.navigateUp() },
             onReciterClick = { reciter ->
-                navController.navigate(QuranScreens.ReciterTilawahDetail(reciter))
+                navController.navigate(ReciterTilawahDetail(reciter))
             },
             onTelawahClick = { tilawah ->
-                navController.navigate(QuranScreens.ReciterTilawahChapters(tilawah))
+                navController.navigate(ReciterTilawahChapters(tilawah))
             },
             onSurahClicked = { surahAndTelawah ->
-                navController.navigate(QuranScreens.ReciterTilawahRecitation(surahAndTelawah))
+                navController.navigate(ReciterTilawahRecitation(surahAndTelawah))
             }
         )
 
