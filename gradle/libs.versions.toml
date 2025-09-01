@@ -30,8 +30,17 @@ serialization = "1.6.3"
 composeMaterial3 = "1.5.0-rc02"
 jetbrainsKotlinJvm = "2.0.20"
 datastore = "1.1.1"
+androidTools = "31.6.0"
 
 [libraries]
+# Build-logic dependencies
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+
+# Compose BOM and core libraries
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
@@ -52,31 +61,98 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref="composeActivity" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
+# Testing libraries
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
+# Android libraries
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+# Koin
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
+# Networking
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
+okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version.ref = "okhttpUrlconnection" }
 
+# Room
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
+# Other libraries
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
-okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version.ref = "okhttpUrlconnection" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 androidx-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeMaterial3" }
+
+[bundles]
+# Core Android
+android-core = [
+    "androidx-core-ktx",
+    "androidx-appcompat",
+    "material"
+]
+
+# Compose UI
+compose-ui = [
+    "androidx-ui",
+    "androidx-ui-graphics",
+    "androidx-ui-tooling-preview",
+    "androidx-runtime",
+    "androidx-material-icons-extended"
+]
+
+# Compose Navigation & DI
+compose-integration = [
+    "navigation-compose",
+    "koin-androidx-compose",
+    "compose-activity",
+    "kotlinx-serialization-json"
+]
+
+# Networking
+networking = [
+    "retrofit",
+    "retrofit-converter-gson",
+    "okhttp",
+    "logging-interceptor"
+]
+
+# Room Database  
+room = [
+    "room-runtime",
+    "room-ktx"
+]
+
+# Koin DI
+koin = [
+    "koin-core",
+    "koin-android"
+]
+
+# Media
+media = [
+    "androidx-media",
+    "androidx-media3-exoplayer",
+    "androidx-media3-ui",
+    "androidx-media3-common"
+]
+
+# Testing
+testing = [
+    "junit",
+    "androidx-junit",
+    "androidx-espresso-core"
+]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -86,3 +162,12 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+
+# Build-logic convention plugins
+quran-android-application = { id = "quran.android.application", version = "unspecified" }
+quran-android-application-compose = { id = "quran.android.application.compose", version = "unspecified" }
+quran-android-library = { id = "quran.android.library", version = "unspecified" }
+quran-android-library-compose = { id = "quran.android.library.compose", version = "unspecified" }
+quran-android-feature = { id = "quran.android.feature", version = "unspecified" }
+quran-android-koin = { id = "quran.android.koin", version = "unspecified" }
+quran-kotlin-library = { id = "quran.kotlin.library", version = "unspecified" }

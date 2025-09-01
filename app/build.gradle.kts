@@ -1,11 +1,7 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-parcelize")
+    alias(libs.plugins.quran.android.application)
+    alias(libs.plugins.quran.android.application.compose)
     alias(libs.plugins.google.devtools.ksp)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.compose)
-
 }
 
 android {
@@ -20,8 +16,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-
     }
 
     buildTypes {
@@ -43,10 +37,9 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
-
     }
     composeOptions {
-        kotlinCompilerExtensionVersion =  "1.5.15"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -56,7 +49,6 @@ android {
 }
 
 dependencies {
-
     // Core modules
     implementation(project(":core:domain"))
     implementation(project(":core:di"))
@@ -69,52 +61,14 @@ dependencies {
     implementation(project(":features:reciter"))
     implementation(project(":features:settings"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    // App-specific libraries (not covered by conventions)
+    implementation(libs.androidx.media)
+    implementation(libs.androidx.datastore)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-  // implementation(libs.androidx.compose.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    // Core Compose Dependencies
-    implementation(platform(libs.androidx.compose.bom))
-
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-   // implementation(libs.androidx.material3)
-    // Material Theme Expressive
-    implementation("androidx.compose.material3:material3-android:1.5.0-alpha02")
-    implementation(libs.androidx.runtime)
-    implementation(libs.androidx.runtime.livedata)
-    implementation(libs.androidx.ui.tooling)
-    implementation(libs.androidx.ui.tooling.preview)
-
-    // Navigation for Compose
-    implementation(libs.navigation.compose)
-    implementation (libs.androidx.material)
-    implementation(libs.kotlinx.serialization.json)
-    // Hilt Navigation for compose
-    implementation (libs.koin.androidx.compose)
-
-    // Integration with Activity
-    implementation(libs.compose.activity)
-
-    // ViewPager2
     implementation(libs.androidx.viewpager2)
 
-    // Extended icons
-    implementation (libs.androidx.material.icons.extended)
-
-    implementation( libs.androidx.media)
-
-    // DataStore for settings persistence
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
-    // LocalBroadcastManager for download progress broadcasts
+    // External libraries not in TOML
     implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
-
-    // Google Play Billing for in-app purchases
     implementation("com.android.billingclient:billing-ktx:7.1.1")
 }
