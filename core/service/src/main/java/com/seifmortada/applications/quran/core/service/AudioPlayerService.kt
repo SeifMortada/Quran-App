@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +27,14 @@ class AudioPlayerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        val defaultNotification = createDefaultNotification()
-        startForeground(1, defaultNotification)
+
+        try {
+            val defaultNotification = createDefaultNotification()
+            startForeground(1, defaultNotification)
+        } catch (e: Exception) {
+            // Log error but don't expose internal details
+            throw RuntimeException("Failed to start audio service", e)
+        }
     }
 
     private fun createDefaultNotification(): Notification {

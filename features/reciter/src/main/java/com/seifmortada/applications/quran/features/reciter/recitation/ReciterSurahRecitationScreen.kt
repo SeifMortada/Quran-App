@@ -97,7 +97,8 @@ fun ReciterSurahRecitationRoute(
         events = events,
         audioActions = { action -> viewModel.sendEvent(context, action) },
         onBackClicked = onBackClicked,
-        onRetryDownload = { viewModel.retryDownload() }
+        onRetryDownload = { viewModel.retryDownload() },
+        onCancelDownload = { viewModel.cancelDownload() }
     )
 }
 
@@ -108,6 +109,7 @@ fun ReciterSurahRecitationScreen(
     audioActions: (AudioPlayerAction) -> Unit,
     onBackClicked: () -> Unit,
     onRetryDownload: () -> Unit,
+    onCancelDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDownloadDialog by remember { mutableStateOf(false) }
@@ -151,6 +153,31 @@ fun ReciterSurahRecitationScreen(
                     }
                 }
 
+                is FileDownloadEvent.Starting -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = state.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Initializing download...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
                 is FileDownloadEvent.InProgress -> {
                     Column(
                         modifier = Modifier
@@ -166,14 +193,31 @@ fun ReciterSurahRecitationScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(
-                            text = "Progress: ${(events.progress * 100).toInt()}%",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        // Progress percentage and size info
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = events.getFormattedProgress(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            if (events.totalBytes > 0) {
+                                Text(
+                                    text = events.getFormattedSize(),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
 
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Progress bar
                         LinearProgressIndicator(
                             progress = { events.progress },
                             modifier = Modifier.fillMaxWidth(),
@@ -181,13 +225,40 @@ fun ReciterSurahRecitationScreen(
                             trackColor = MaterialTheme.colorScheme.surfaceVariant
                         )
 
-                        if (state.fileSize > 0) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Size: ${formatFileSize(state.fileSize)}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Speed and time remaining info
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (events.downloadSpeed > 0) {
+                                Text(
+                                    text = "Speed: ${events.getFormattedSpeed()}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            } else {
+                                Spacer(modifier = Modifier.width(1.dp))
+                            }
+
+                            if (events.estimatedTimeRemaining > 0) {
+                                Text(
+                                    text = "Time left: ${events.getFormattedTimeRemaining()}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        // Cancel button
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OutlinedButton(
+                            onClick = onCancelDownload,
+                            modifier = Modifier.fillMaxWidth(0.5f)
+                        ) {
+                            Text("Cancel Download")
                         }
                     }
                 }

@@ -1,7 +1,8 @@
 package com.seifmortada.applications.quran.core.service
 
-const val AUDIO_CHANNEL_ID = "audio_player_channel"
-const val DOWNLOAD_CHANNEL_ID = "download_channel"
+// FIXED: Use the same channel ID as Application class
+const val AUDIO_CHANNEL_ID = "quran_app_channel"
+const val DOWNLOAD_CHANNEL_ID = "quran_app_channel" // Also use same channel for consistency
 
 // Audio player actions
 const val REWIND = "rewind"

@@ -6,15 +6,19 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.seifmortada.applications.quran.core.domain.repository.DownloadRepository
-import com.seifmortada.applications.quran.core.domain.repository.DownloadStatus
-import com.seifmortada.applications.quran.core.service.DownloadHelper
-import com.seifmortada.applications.quran.service.DownloadService
+import com.seifmortada.applications.quran.core.domain.repository.*
+import com.seifmortada.applications.quran.core.service.DownloadServiceConstants
+import com.seifmortada.applications.quran.core.service.download.DownloadServiceHelper
 import com.seifmortada.applications.quran.core.ui.QuranFileManager
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOf
 
+/**
+ * Updated DownloadRepository implementation using the new clean architecture service
+ * Maintains backward compatibility while providing clean architecture benefits
+ */
 class DownloadRepositoryImpl(
     private val context: Context,
     private val fileManager: QuranFileManager
@@ -24,33 +28,14 @@ class DownloadRepositoryImpl(
         private const val TAG = "DownloadRepositoryImpl"
     }
 
-    override fun startSurahDownload(
-        downloadUrl: String,
-        reciterName: String,
-        surahNumber: Int,
-        surahNameAr: String?,
-        surahNameEn: String?,
-        serverUrl: String
-    ): Flow<DownloadStatus> = callbackFlow {
+    private val localBroadcastManager = LocalBroadcastManager.getInstance(context)
 
-        // Check if file is already downloaded using DownloadHelper
-        if (DownloadHelper.isSurahDownloaded(
-                context = context,
-                reciterName = reciterName,
-                serverUrl = serverUrl,
-                surahNumber = surahNumber,
-                surahNameAr = surahNameAr,
-                surahNameEn = surahNameEn
-            )
-        ) {
-            val filePath = DownloadHelper.getSurahFilePath(
-                context = context,
-                reciterName = reciterName,
-                serverUrl = serverUrl,
-                surahNumber = surahNumber,
-                surahNameAr = surahNameAr,
-                surahNameEn = surahNameEn
-            )
+    override fun startSurahDownload(downloadRequest: DownloadRequest): Flow<DownloadStatus> =
+        callbackFlow {
+
+        // Check if file is already downloaded using new helper
+        if (DownloadServiceHelper.isSurahDownloaded(context, downloadRequest)) {
+            val filePath = DownloadServiceHelper.getSurahFilePath(context, downloadRequest)
             if (filePath != null) {
                 trySend(DownloadStatus.Completed(filePath))
                 close()
@@ -58,65 +43,29 @@ class DownloadRepositoryImpl(
             }
         }
 
-        val localBroadcastManager = LocalBroadcastManager.getInstance(context)
-
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                when (intent?.action) {
-                    DownloadService.BROADCAST_DOWNLOAD_PROGRESS -> {
-                        val progress = intent.getFloatExtra(DownloadService.EXTRA_PROGRESS, 0f)
-                        val downloadedBytes =
-                            intent.getLongExtra(DownloadService.EXTRA_DOWNLOADED_BYTES, 0L)
-                        val totalBytes = intent.getLongExtra(DownloadService.EXTRA_TOTAL_BYTES, 0L)
-
-                        trySend(DownloadStatus.InProgress(progress, downloadedBytes, totalBytes))
-                    }
-
-                    DownloadService.BROADCAST_DOWNLOAD_COMPLETED -> {
-                        val filePath = intent.getStringExtra(DownloadService.EXTRA_FILE_PATH) ?: ""
-                        trySend(DownloadStatus.Completed(filePath))
-                        close()
-                    }
-
-                    DownloadService.BROADCAST_DOWNLOAD_FAILED -> {
-                        val errorMessage =
-                            intent.getStringExtra(DownloadService.EXTRA_ERROR_MESSAGE)
-                                ?: "Download failed"
-                        trySend(DownloadStatus.Failed(errorMessage))
-                        close()
-                    }
-
-                    DownloadService.BROADCAST_DOWNLOAD_CANCELLED -> {
-                        trySend(DownloadStatus.Cancelled)
-                        close()
+                handleBroadcastReceived(intent) { status ->
+                    trySend(status)
+                    // Close flow for terminal states
+                    when (status) {
+                        is DownloadStatus.Completed,
+                        is DownloadStatus.Failed,
+                        is DownloadStatus.Cancelled -> close()
+                        else -> {} // Continue for ongoing states
                     }
                 }
             }
         }
 
-        val intentFilter = IntentFilter().apply {
-            addAction(DownloadService.BROADCAST_DOWNLOAD_PROGRESS)
-            addAction(DownloadService.BROADCAST_DOWNLOAD_COMPLETED)
-            addAction(DownloadService.BROADCAST_DOWNLOAD_FAILED)
-            addAction(DownloadService.BROADCAST_DOWNLOAD_CANCELLED)
-        }
-
+        val intentFilter = IntentFilter(DownloadServiceConstants.BROADCAST_DOWNLOAD_STATUS_CHANGED)
         localBroadcastManager.registerReceiver(receiver, intentFilter)
 
-        // Start the download using the proven DownloadHelper
+        // Start the download using new helper
         try {
             trySend(DownloadStatus.Starting)
 
-            val success = DownloadHelper.startSurahDownload(
-                context = context,
-                downloadUrl = downloadUrl,
-                reciterName = reciterName,
-                surahNumber = surahNumber,
-                surahNameAr = surahNameAr,
-                surahNameEn = surahNameEn,
-                serverUrl = serverUrl
-            )
-
+            val success = DownloadServiceHelper.startSurahDownload(context, downloadRequest)
             if (!success) {
                 trySend(DownloadStatus.Failed("Could not start download. Check permissions."))
                 close()
@@ -133,41 +82,138 @@ class DownloadRepositoryImpl(
         }
     }
 
-    override fun cancelDownload() {
-        DownloadHelper.cancelCurrentDownload(context)
+    // Backward compatibility method - convert old parameters to new DownloadRequest
+    fun startSurahDownloadLegacy(
+        downloadUrl: String,
+        reciterName: String,
+        surahNumber: Int,
+        surahNameAr: String?,
+        surahNameEn: String?,
+        serverUrl: String
+    ): Flow<DownloadStatus> {
+        val downloadRequest = DownloadRequest(
+            downloadUrl = downloadUrl,
+            reciterName = reciterName,
+            surahNumber = surahNumber,
+            surahNameAr = surahNameAr,
+            surahNameEn = surahNameEn,
+            serverUrl = serverUrl
+        )
+        return startSurahDownload(downloadRequest)
     }
 
-    override fun isSurahDownloaded(
+    override fun cancelDownload() {
+        DownloadServiceHelper.cancelCurrentDownload(context)
+    }
+
+    override fun cancelDownload(downloadId: String) {
+        DownloadServiceHelper.cancelDownload(context, downloadId)
+    }
+
+    override fun getCurrentDownloadStatus(): Flow<DownloadStatus> {
+        // For now, return idle. This could be enhanced with persistent status tracking
+        return flowOf(DownloadStatus.Idle)
+    }
+
+    override fun isSurahDownloaded(downloadRequest: DownloadRequest): Boolean {
+        return DownloadServiceHelper.isSurahDownloaded(context, downloadRequest)
+    }
+
+    // Backward compatibility method
+    fun isSurahDownloadedLegacy(
         reciterName: String,
         serverUrl: String,
         surahNumber: Int,
         surahNameAr: String?,
         surahNameEn: String?
     ): Boolean {
-        return DownloadHelper.isSurahDownloaded(
-            context = context,
+        val downloadRequest = DownloadRequest(
+            downloadUrl = "",
             reciterName = reciterName,
-            serverUrl = serverUrl,
             surahNumber = surahNumber,
             surahNameAr = surahNameAr,
-            surahNameEn = surahNameEn
+            surahNameEn = surahNameEn,
+            serverUrl = serverUrl
         )
+        return DownloadServiceHelper.isSurahDownloaded(context, downloadRequest)
     }
 
-    override fun getSurahFilePath(
+    override fun getSurahFilePath(downloadRequest: DownloadRequest): String? {
+        return DownloadServiceHelper.getSurahFilePath(context, downloadRequest)
+    }
+
+    // Backward compatibility method
+    fun getSurahFilePathLegacy(
         reciterName: String,
         serverUrl: String,
         surahNumber: Int,
         surahNameAr: String?,
         surahNameEn: String?
     ): String? {
-        return DownloadHelper.getSurahFilePath(
-            context = context,
+        val downloadRequest = DownloadRequest(
+            downloadUrl = "",
             reciterName = reciterName,
-            serverUrl = serverUrl,
             surahNumber = surahNumber,
             surahNameAr = surahNameAr,
-            surahNameEn = surahNameEn
+            surahNameEn = surahNameEn,
+            serverUrl = serverUrl
         )
+        return DownloadServiceHelper.getSurahFilePath(context, downloadRequest)
+    }
+
+    override fun getActiveDownloads(): Flow<List<DownloadInfo>> {
+        // For now, return empty. This could be enhanced with download tracking
+        return flowOf(emptyList())
+    }
+
+    /**
+     * Handles broadcast received from the download service
+     * Updated to work with the new service's broadcast format
+     */
+    private fun handleBroadcastReceived(intent: Intent?, onStatus: (DownloadStatus) -> Unit) {
+        if (intent == null) return
+
+        val statusType = intent.getStringExtra("status_type") ?: return
+
+        val status = when (statusType) {
+            "starting" -> DownloadStatus.Starting
+
+            "progress" -> {
+                val progress = intent.getFloatExtra("progress", 0f)
+                val downloadedBytes = intent.getLongExtra("downloaded_bytes", 0L)
+                val totalBytes = intent.getLongExtra("total_bytes", 0L)
+                val downloadSpeed = intent.getLongExtra("download_speed", 0L)
+
+                val downloadProgress = DownloadProgress(
+                    progress = progress,
+                    downloadedBytes = downloadedBytes,
+                    totalBytes = totalBytes,
+                    downloadSpeed = downloadSpeed
+                )
+                DownloadStatus.InProgress(downloadProgress)
+            }
+
+            "completed" -> {
+                val filePath = intent.getStringExtra("file_path") ?: ""
+                DownloadStatus.Completed(filePath)
+            }
+
+            "failed" -> {
+                val errorMessage = intent.getStringExtra("error_message") ?: "Download failed"
+                val errorCodeName = intent.getStringExtra("error_code") ?: "UNKNOWN"
+                val errorCode = try {
+                    DownloadErrorCode.valueOf(errorCodeName)
+                } catch (e: Exception) {
+                    DownloadErrorCode.UNKNOWN
+                }
+                DownloadStatus.Failed(errorMessage, errorCode)
+            }
+
+            "cancelled" -> DownloadStatus.Cancelled
+
+            else -> DownloadStatus.Idle
+        }
+
+        onStatus(status)
     }
 }

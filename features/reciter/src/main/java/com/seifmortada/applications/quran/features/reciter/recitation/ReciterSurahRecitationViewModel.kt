@@ -6,7 +6,7 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.seifmortada.applications.quran.core.domain.repository.DownloadStatus
+import com.seifmortada.applications.quran.core.domain.repository.*
 import com.seifmortada.applications.quran.core.domain.usecase.GetSurahByIdUseCase
 import com.seifmortada.applications.quran.core.domain.usecase.GetSurahRecitationUseCase
 import com.seifmortada.applications.quran.core.domain.usecase.DownloadSurahUseCase
@@ -20,6 +20,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Enhanced ViewModel using the new clean architecture download service
+ * Provides better download progress tracking and error handling
+ */
 class ReciterSurahRecitationViewModel(
     private val getSurahByIdUseCase: GetSurahByIdUseCase,
     private val getSurahRecitationUseCase: GetSurahRecitationUseCase,
@@ -36,6 +40,9 @@ class ReciterSurahRecitationViewModel(
     private var serviceCollectJob: Job? = null
     private var downloadJob: Job? = null
 
+    // Store current download request for better state management
+    private var currentDownloadRequest: DownloadRequest? = null
+
     // Store download parameters for retry functionality
     private var lastDownloadParams: DownloadParams? = null
 
@@ -49,7 +56,7 @@ class ReciterSurahRecitationViewModel(
     )
 
     /**
-     * Enhanced method to fetch recitation with proper download management
+     * Enhanced method to fetch recitation with new clean architecture
      */
     fun fetchRecitation(
         context: Context,
@@ -66,24 +73,19 @@ class ReciterSurahRecitationViewModel(
             val effectiveSurahNameEn = surahNameEn ?: currentSurah?.name
             val effectiveSurahNameAr = surahNameAr ?: currentSurah?.name
 
-            // Check if file is already downloaded
-            val isDownloaded = downloadSurahUseCase.isSurahDownloaded(
+            // Create download request for better state management
+            val downloadRequest = DownloadRequest(
+                downloadUrl = "", // Will be populated when we get the URL
                 reciterName = reciterName,
-                serverUrl = server,
                 surahNumber = surahNumber,
                 surahNameAr = effectiveSurahNameAr,
-                surahNameEn = effectiveSurahNameEn
+                surahNameEn = effectiveSurahNameEn,
+                serverUrl = server
             )
 
-            if (isDownloaded) {
-                val filePath = downloadSurahUseCase.getSurahFilePath(
-                    reciterName = reciterName,
-                    serverUrl = server,
-                    surahNumber = surahNumber,
-                    surahNameAr = effectiveSurahNameAr,
-                    surahNameEn = effectiveSurahNameEn
-                )
-
+            // Check if file is already downloaded using new approach
+            if (downloadSurahUseCase.isSurahDownloaded(downloadRequest)) {
+                val filePath = downloadSurahUseCase.getSurahFilePath(downloadRequest)
                 if (filePath != null) {
                     _event.send(FileDownloadEvent.Finished(filePath))
                     _uiState.update { it.copy(title = "Ready to play") }
@@ -107,17 +109,13 @@ class ReciterSurahRecitationViewModel(
             getSurahRecitationUseCase(server, surahNumber.toString())
                 .collect { progress ->
                     if (progress.localPath != null) {
-                        // We got the download URL, now start the proper download
+                        // We got the download URL, now start the enhanced download
                         val downloadUrl = progress.localPath!!
 
-                        startDownload(
-                            downloadUrl = downloadUrl,
-                            reciterName = reciterName,
-                            surahNumber = surahNumber,
-                            surahNameAr = effectiveSurahNameAr,
-                            surahNameEn = effectiveSurahNameEn,
-                            serverUrl = server
-                        )
+                        // Update the download request with the URL
+                        currentDownloadRequest = downloadRequest.copy(downloadUrl = downloadUrl)
+
+                        startDownload(currentDownloadRequest!!)
                         return@collect
                     }
                 }
@@ -129,37 +127,51 @@ class ReciterSurahRecitationViewModel(
         }
     }
 
-    private fun startDownload(
-        downloadUrl: String,
-        reciterName: String,
-        surahNumber: Int,
-        surahNameAr: String?,
-        surahNameEn: String?,
-        serverUrl: String
-    ) {
+    /**
+     * Enhanced download method with better progress tracking
+     */
+    private fun startDownload(downloadRequest: DownloadRequest) {
         downloadJob = viewModelScope.launch {
-            downloadSurahUseCase(
-                downloadUrl = downloadUrl,
-                reciterName = reciterName,
-                surahNumber = surahNumber,
-                surahNameAr = surahNameAr,
-                surahNameEn = surahNameEn,
-                serverUrl = serverUrl
-            ).collect { status ->
+            downloadSurahUseCase(downloadRequest).collect { status ->
                 when (status) {
+                    is DownloadStatus.Idle -> {
+                        _uiState.update { it.copy(title = "Preparing download...") }
+                    }
+
                     is DownloadStatus.Starting -> {
                         _uiState.update { it.copy(title = "Download starting...") }
+                        _event.send(FileDownloadEvent.Starting)
                     }
 
                     is DownloadStatus.InProgress -> {
-                        val progressPercent = (status.progress * 100).toInt()
+                        val progress = status.downloadProgress
+                        val progressPercent = progress.progressPercentage
+
+                        // Enhanced title with speed and time information
+                        val speedText = if (progress.downloadSpeed > 0) {
+                            " • ${formatDownloadSpeed(progress.downloadSpeed)}"
+                        } else ""
+
+                        val timeText = if (progress.estimatedTimeRemaining > 0) {
+                            " • ${formatTime(progress.estimatedTimeRemaining)}"
+                        } else ""
+
                         _uiState.update {
                             it.copy(
-                                fileSize = status.totalBytes,
-                                title = "Downloading $progressPercent%"
+                                fileSize = progress.totalBytes,
+                                title = "Downloading $progressPercent%$speedText$timeText"
                             )
                         }
-                        _event.send(FileDownloadEvent.InProgress(status.progress))
+
+                        _event.send(
+                            FileDownloadEvent.InProgress(
+                                progress = progress.progress,
+                                downloadedBytes = progress.downloadedBytes,
+                                totalBytes = progress.totalBytes,
+                                downloadSpeed = progress.downloadSpeed,
+                                estimatedTimeRemaining = progress.estimatedTimeRemaining
+                            )
+                        )
                     }
 
                     is DownloadStatus.Completed -> {
@@ -168,22 +180,36 @@ class ReciterSurahRecitationViewModel(
                     }
 
                     is DownloadStatus.Failed -> {
+                        val errorMessage = "${status.error} (${status.errorCode})"
                         _uiState.update { it.copy(title = "Download failed") }
-                        _event.send(FileDownloadEvent.Error(status.error))
+                        _event.send(FileDownloadEvent.Error(errorMessage))
                     }
 
                     is DownloadStatus.Cancelled -> {
                         _uiState.update { it.copy(title = "Download cancelled") }
                         _event.send(FileDownloadEvent.Cancelled)
                     }
+
+                    is DownloadStatus.Paused -> {
+                        _uiState.update { it.copy(title = "Download paused") }
+                        // Could add a paused event if needed
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Enhanced cancel method with specific download ID support
+     */
     fun cancelDownload() {
         downloadJob?.cancel()
-        downloadSurahUseCase.cancelDownload()
+
+        currentDownloadRequest?.let { request ->
+            downloadSurahUseCase.cancelDownload(request.downloadId)
+        } ?: run {
+            downloadSurahUseCase.cancelDownload() // Fallback to cancel all
+        }
     }
 
     fun retryDownload() {
@@ -277,6 +303,31 @@ class ReciterSurahRecitationViewModel(
         }
     }
 
+    /**
+     * Formats download speed for display
+     */
+    private fun formatDownloadSpeed(bytesPerSecond: Long): String {
+        return when {
+            bytesPerSecond < 1024 -> "${bytesPerSecond}B/s"
+            bytesPerSecond < 1024 * 1024 -> "${bytesPerSecond / 1024}KB/s"
+            else -> "${bytesPerSecond / (1024 * 1024)}MB/s"
+        }
+    }
+
+    /**
+     * Formats time duration for display
+     */
+    private fun formatTime(milliseconds: Long): String {
+        val seconds = milliseconds / 1000
+        val minutes = seconds / 60
+        val remainingSeconds = seconds % 60
+        return if (minutes > 0) {
+            "${minutes}m ${remainingSeconds}s"
+        } else {
+            "${remainingSeconds}s"
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         cleanResources()
@@ -288,6 +339,7 @@ class ReciterSurahRecitationViewModel(
         downloadSurahUseCase.cancelDownload()
         audioService?.stopPlayback()
         audioService = null
+        currentDownloadRequest = null
         _uiState.value = ReciterSurahRecitationUiState()
         _event.close()
     }
