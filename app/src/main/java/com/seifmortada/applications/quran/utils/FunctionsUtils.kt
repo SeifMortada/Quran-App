@@ -1,7 +1,7 @@
 package com.seifmortada.applications.quran.utils
 
 
-import com.example.domain.model.SurahAyahNumber
+import com.seifmortada.applications.quran.core.domain.model.SurahAyahNumber
 import java.text.Normalizer
 import java.util.regex.Pattern
 

@@ -1,20 +1,23 @@
 package com.seifmortada.applications.quran.app
 
 import android.app.Application
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.di.repositoryModule
-import com.example.di.serviceModule
-import com.example.di.usecaseModule
+import com.seifmortada.applications.quran.core.di.repositoryModule
+import com.seifmortada.applications.quran.core.di.serviceModule
+import com.seifmortada.applications.quran.core.di.usecaseModule
 import com.seifmortada.applications.quran.di.koin.viewModelModule
+import com.seifmortada.applications.quran.di.koin.appRepositoryModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
 const val CHANNEL_ID = "quran_app_channel"
+const val BACKUP_CHANNEL_ID = "quran_downloads_v2"  // Backup channel ID
 const val CHANNEL_NAME = "Quran App"
 
 class QuranApp : Application() {
@@ -33,6 +36,7 @@ class QuranApp : Application() {
                     usecaseModule,
                     repositoryModule,
                     serviceModule,
+                    appRepositoryModule,
                 )
             )
         }
@@ -40,11 +44,46 @@ class QuranApp : Application() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW
-        )
-        val notificationManager=getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+        try {
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            // Create the main notification channel
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description =
+                    "Notifications for Quran app services including downloads and audio playback"
+                setSound(null, null)
+                enableVibration(false)
+                enableLights(false)
+                setShowBadge(false)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
+
+            notificationManager.createNotificationChannel(channel)
+
+            // Create backup channel as well
+            val backupChannel = NotificationChannel(
+                BACKUP_CHANNEL_ID,
+                "$CHANNEL_NAME Backup",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Backup notifications for Quran app services"
+                setSound(null, null)
+                enableVibration(false)
+                enableLights(false)
+                setShowBadge(false)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
+
+            notificationManager.createNotificationChannel(backupChannel)
+
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to create notification channels")
+        }
     }
 
     companion object {

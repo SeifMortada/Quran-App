@@ -57,8 +57,18 @@ android {
 
 dependencies {
 
-    implementation(project(":domain"))
-    implementation(project(":di"))
+    // Core modules
+    implementation(project(":core:domain"))
+    implementation(project(":core:di"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:service"))
+
+    // Feature modules
+    implementation(project(":features:quran"))
+    implementation(project(":features:zikr"))
+    implementation(project(":features:reciter"))
+    implementation(project(":features:settings"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

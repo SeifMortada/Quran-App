@@ -21,6 +21,16 @@ dependencyResolutionManagement {
 
 rootProject.name = "Quran App"
 include(":app")
-include(":data")
-include(":domain")
-include(":di")
+
+// Core modules
+include(":core:data")
+include(":core:domain")
+include(":core:di")
+include(":core:ui")
+include(":core:service")
+
+// Feature modules
+include(":features:quran")
+include(":features:zikr")
+include(":features:reciter")
+include(":features:settings")

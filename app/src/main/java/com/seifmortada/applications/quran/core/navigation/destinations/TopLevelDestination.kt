@@ -10,7 +10,9 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.seifmortada.applications.quran.R
+import com.seifmortada.applications.quran.features.quran.QuranChapters
+import com.seifmortada.applications.quran.features.reciter.Reciters
+import com.seifmortada.applications.quran.features.settings.Settings
 
 data class TopLevelDestination<T : Any>(
     val titleRes: Int,
@@ -24,24 +26,24 @@ val topLevelDestinations = listOf(
         titleRes = com.seifmortada.applications.quran.R.string.home,
         selectedIcon = Icons.Filled.Home,
         unSelectedIcon = Icons.Outlined.Home,
-        route = QuranScreens.Home
+        route = Home
     ),
     TopLevelDestination(
         titleRes = com.seifmortada.applications.quran.R.string.quran,
         selectedIcon = Icons.Filled.Book,
         unSelectedIcon = Icons.Outlined.Book,
-        route = QuranScreens.QuranChapters
+        route = QuranChapters
     ),
     TopLevelDestination(
         titleRes = com.seifmortada.applications.quran.R.string.quran_readers,
         selectedIcon = Icons.Filled.RecordVoiceOver,
         unSelectedIcon = Icons.Outlined.RecordVoiceOver,
-        route = QuranScreens.Reciters
+        route = Reciters
     ),
     TopLevelDestination(
         titleRes = com.seifmortada.applications.quran.R.string.settings,
         selectedIcon = Icons.Filled.Settings,
         unSelectedIcon = Icons.Outlined.Settings,
-        route = QuranScreens.Settings
+        route = Settings
     )
 )
