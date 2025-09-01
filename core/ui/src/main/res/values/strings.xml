@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quran App</string>
+    <string name="app_subtitle">Read, Listen, Learn</string>
+    <string name="home">Home</string>
+    <string name="quran_readers">Quran Reciters</string>
+    <string name="quran">The Holy Quran</string>
+    <string name="surahs">Surahs</string>
+    <string name="verses">Verses</string>
+    <string name="settings">Settings</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="play_ayah">Play Ayah</string>
+    <string name="share">Share</string>
+    <string name="zikrs">Azkar</string>
+    <string name="azkars_title">الأذكار</string>
+    <string name="azkars">Azkars</string>
+    <string name="categories">Categories</string>
+    <string name="total_azkars">Total Azkars</string>
+    <string name="total_recitations">Total Recitations</string>
+    <string name="progress">Progress</string>
+    <string name="completed">Completed</string>
+    <string name="reset">Reset</string>
+    <string name="reset_progress">Reset Progress</string>
+    <string name="share_zikr">Share Zikr</string>
+    <string name="share_zikr_subject">Islamic Zikr</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reciter_icon_content_description">Reciter icon</string>
+    <string name="select_riwayat_subtitle">Tap to select narrations</string>
+    <string name="error_icon_content_description">Error icon</string>
+    <string name="error_occurred">An error occurred: %s</string>
+    <string name="retry">Retry</string>
+    <string name="no_results_icon_content_description">No results icon</string>
+    <string name="no_reciters_found">No reciters found.</string>
+    <string name="no_reciters_matching_search">No reciters found matching "%s"</string>
+
+    <!-- Settings Screen -->
+    <string name="appearance">Appearance</string>
+    <string name="language">Language</string>
+    <string name="support_developer">Support Developer</string>
+    <string name="feedback_and_suggestions">Feedback &amp; Suggestions</string>
+
+    <!-- Theme -->
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
+    <string name="system_theme">System</string>
+
+    <!-- Support -->
+    <string name="support_description">Support the development of this app and help us create more amazing features!</string>
+    <string name="support_us">Support Us</string>
+    <string name="support_dialog_description">Your support helps us continue developing and improving this app. Choose from the options below to show your appreciation!</string>
+    <string name="purchase">Purchase</string>
+
+    <!-- In-App Purchase Support -->
+    <string name="choose_support_amount">Choose Support Amount</string>
+    <string name="support_option_small_coffee">Small Coffee ☕</string>
+    <string name="support_option_large_coffee">Large Coffee ☕☕</string>
+    <string name="support_option_premium">Premium Support 🌟</string>
+    <string name="support_option_ultimate">Ultimate Support 🚀</string>
+    <string name="support_small_coffee_desc">Buy me a small coffee to keep coding!</string>
+    <string name="support_large_coffee_desc">Buy me a large coffee for extra energy!</string>
+    <string name="support_premium_desc">Premium support for continued development</string>
+    <string name="support_ultimate_desc">Ultimate support - you\'re amazing!</string>
+    <string name="purchase_processing">Processing purchase...</string>
+    <string name="purchase_success">Thank you for your support! 🙏</string>
+    <string name="purchase_cancelled">Purchase cancelled</string>
+    <string name="purchase_error">Purchase failed: %s</string>
+    <string name="billing_not_available">In-app purchases not available</string>
+
+    <!-- Feedback -->
+    <string name="feedback_description">Have suggestions or found a bug? We\'d love to hear from you!</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="feedback_dialog_description">Share your thoughts, suggestions, or report any issues you\'ve encountered.</string>
+    <string name="your_feedback">Your Feedback</string>
+    <string name="feedback_placeholder">Tell us what you think or what could be improved...</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Download Service -->
+    <string name="downloading_surah">Downloading Surah</string>
+    <string name="download_completed">Download Completed</string>
+    <string name="download_failed">Download Failed</string>
+
+    <!-- Permissions -->
+    <string name="permission_required">Permissions Required</string>
+    <string name="permission_notification_rationale">This app needs notification permission to show download progress and playback controls.</string>
+    <string name="permission_storage_rationale">This app needs storage permission to save and access Quran audio files.</string>
+    <string name="permission_both_rationale">This app needs notification and storage permissions to download Surah files and show progress notifications.</string>
+    <string name="grant_permissions">Grant Permissions</string>
+    <string name="app_settings">App Settings</string>
+
+    <!-- Download Dialog -->
+    <string name="download_required">Download Required</string>
+    <string name="download_required_message">To play the audio recitation of %s, you need to download it first. Would you like to download it now?</string>
+    <string name="download_to_play">Download to Play</string>
+    <string name="surah_recitation">Surah Recitation</string>
+    <string name="this_surah">this Surah</string>
+    <string name="download">Download</string>
+
+    <!-- Enhanced Notifications -->
+    <string name="downloading_reciter_surah">Downloading %1$s - %2$s</string>
+    <string name="download_completed_reciter_surah">%1$s - %2$s Downloaded</string>
+    <string name="download_failed_reciter_surah">Failed to Download %1$s - %2$s</string>
+
+    <!-- Home Screen -->
+    <string name="welcome_message">Welcome to your spiritual companion. Read the Quran, listen to beautiful recitations, and remember Allah with our collection of Azkar.</string>
+    <string name="main_features">Main Features</string>
+    <string name="quick_access">Quick Access</string>
+    <string name="read_quran">Read Quran</string>
+    <string name="listen_recitation">Listen Recitation</string>
+    <string name="quran_description">Read and explore the Holy Quran with beautiful Arabic text and translations</string>
+    <string name="reciters_description">Listen to melodious recitations by renowned Quranic reciters from around the world</string>
+    <string name="zikrs_description">Daily remembrance of Allah with authentic Azkar for morning, evening, and special occasions</string>
+    <string name="reciters_available">reciters available</string>
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="no_search_results">No results found for "%s"</string>
+    <string name="loading_reciters">Loading reciters...</string>
+    <string name="no_reciters_description">Check your internet connection and try again.</string>
+</resources>
