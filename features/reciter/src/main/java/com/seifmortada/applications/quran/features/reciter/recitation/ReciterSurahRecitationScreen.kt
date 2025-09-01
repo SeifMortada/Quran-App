@@ -57,7 +57,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.seifmortada.applications.quran.core.service.AudioPlayerService
+import com.seifmortada.applications.quran.core.service.audio.AudioPlayerService
 import com.seifmortada.applications.quran.core.ui.composables.ForceRightOrLeft
 import com.seifmortada.applications.quran.core.ui.composables.LanguagePreviews
 import com.seifmortada.applications.quran.core.ui.composables.ShowErrorMessage

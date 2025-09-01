@@ -3,12 +3,11 @@ package com.seifmortada.applications.quran.core.service.download
 import android.content.Context
 import android.util.Log
 import com.seifmortada.applications.quran.core.domain.repository.*
-import com.seifmortada.applications.quran.core.service.DownloadServiceConstants
+import com.seifmortada.applications.quran.core.service.utils.DownloadServiceConstants
 import com.seifmortada.applications.quran.core.ui.QuranFileManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL

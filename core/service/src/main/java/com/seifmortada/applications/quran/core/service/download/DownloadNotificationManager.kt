@@ -1,16 +1,14 @@
 package com.seifmortada.applications.quran.core.service.download
 
 import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.seifmortada.applications.quran.core.domain.repository.*
-import com.seifmortada.applications.quran.core.service.DownloadServiceConstants
+import com.seifmortada.applications.quran.core.service.utils.DownloadServiceConstants
 
 /**
  * Manages notifications for the download service

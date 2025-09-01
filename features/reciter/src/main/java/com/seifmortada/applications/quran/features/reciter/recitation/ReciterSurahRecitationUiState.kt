@@ -1,7 +1,7 @@
 package com.seifmortada.applications.quran.features.reciter.recitation
 
 import com.seifmortada.applications.quran.core.domain.model.SurahModel
-import com.seifmortada.applications.quran.core.service.Audio
+import com.seifmortada.applications.quran.core.service.audio.Audio
 
 data class ReciterSurahRecitationUiState(
     val fileSize: Long = 0L,

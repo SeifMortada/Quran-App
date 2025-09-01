@@ -26,7 +26,7 @@ import com.seifmortada.applications.quran.features.reciter.Reciters
 import com.seifmortada.applications.quran.features.settings.Settings
 
 @Composable
-fun QuranApp(modifier: Modifier = Modifier) {
+fun QuranApp() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryFlow.collectAsStateWithLifecycle(null)
     var selectedItemIndex = when (currentBackStack?.destination?.route) {

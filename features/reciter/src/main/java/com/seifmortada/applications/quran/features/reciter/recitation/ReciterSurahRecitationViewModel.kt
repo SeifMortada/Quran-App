@@ -10,7 +10,7 @@ import com.seifmortada.applications.quran.core.domain.repository.*
 import com.seifmortada.applications.quran.core.domain.usecase.GetSurahByIdUseCase
 import com.seifmortada.applications.quran.core.domain.usecase.GetSurahRecitationUseCase
 import com.seifmortada.applications.quran.core.domain.usecase.DownloadSurahUseCase
-import com.seifmortada.applications.quran.core.service.AudioPlayerService
+import com.seifmortada.applications.quran.core.service.audio.AudioPlayerService
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.seifmortada.applications.quran.core.domain.repository.DownloadRequest
-import com.seifmortada.applications.quran.core.service.DownloadServiceConstants
+import com.seifmortada.applications.quran.core.service.utils.DownloadServiceConstants
 import com.seifmortada.applications.quran.core.ui.QuranFileManager
 
 /**

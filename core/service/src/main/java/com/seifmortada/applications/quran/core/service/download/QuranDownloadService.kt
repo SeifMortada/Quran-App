@@ -12,7 +12,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.seifmortada.applications.quran.core.domain.repository.*
-import com.seifmortada.applications.quran.core.service.DownloadServiceConstants
+import com.seifmortada.applications.quran.core.service.utils.DownloadServiceConstants
 import com.seifmortada.applications.quran.core.ui.QuranFileManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
