@@ -62,21 +62,24 @@ object DownloadServiceHelper {
     }
 
     /**
-     * Cancels the current download
+     * Cancels the current download - only if there's an active download
      */
     fun cancelCurrentDownload(context: Context) {
+        // Don't start service just to cancel - this could cause crashes
+        // The service will handle cancellation if it's already running
         try {
             val intent = Intent(context, QuranDownloadService::class.java).apply {
                 action = DownloadServiceConstants.ACTION_CANCEL_DOWNLOAD
             }
-            startServiceSafely(context, intent)
+            // Use regular startService instead of startForegroundService for cancellation
+            context.startService(intent)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to cancel download", e)
+            Log.e(TAG, "Failed to send cancel request", e)
         }
     }
 
     /**
-     * Cancels a specific download by ID
+     * Cancels a specific download by ID - only if there's an active download
      */
     fun cancelDownload(context: Context, downloadId: String) {
         try {
@@ -84,7 +87,8 @@ object DownloadServiceHelper {
                 action = DownloadServiceConstants.ACTION_CANCEL_DOWNLOAD_BY_ID
                 putExtra(DownloadServiceConstants.EXTRA_DOWNLOAD_ID, downloadId)
             }
-            startServiceSafely(context, intent)
+            // Use regular startService instead of startForegroundService for cancellation
+            context.startService(intent)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to cancel download by ID: $downloadId", e)
         }

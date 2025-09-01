@@ -336,7 +336,16 @@ class ReciterSurahRecitationViewModel(
     private fun cleanResources() {
         serviceCollectJob?.cancel()
         downloadJob?.cancel()
-        downloadSurahUseCase.cancelDownload()
+
+        // Only try to cancel download if there's an active download job
+        if (downloadJob?.isActive == true) {
+            try {
+                downloadSurahUseCase.cancelDownload()
+            } catch (e: Exception) {
+                // Ignore cancellation errors during cleanup
+            }
+        }
+
         audioService?.stopPlayback()
         audioService = null
         currentDownloadRequest = null

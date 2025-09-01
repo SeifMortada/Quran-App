@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.seifmortada.applications.quran.core.service.download
 
 import android.app.NotificationManager
@@ -15,6 +17,7 @@ import com.seifmortada.applications.quran.core.ui.QuranFileManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 
 /**
  * Clean architecture-based Download Service
@@ -63,7 +66,7 @@ class QuranDownloadService : Service() {
             }
 
             else -> {
-                Log.w(TAG, "Unknown action: ${intent?.action}")
+                Timber.tag(TAG).w("Unknown action: ${intent?.action}")
             }
         }
 
@@ -105,28 +108,22 @@ class QuranDownloadService : Service() {
                     systemNotificationManager.getNotificationChannel(DownloadServiceConstants.NOTIFICATION_CHANNEL_ID)
 
                 if (channel == null) {
-                    Log.e(TAG, "CRITICAL: Notification channel does not exist!")
-                    Log.e(
-                        TAG,
-                        "Expected channel ID: ${DownloadServiceConstants.NOTIFICATION_CHANNEL_ID}"
-                    )
-                    Log.e(TAG, "This will cause startForeground to fail. Stopping service.")
+                    Timber.tag(TAG).e("CRITICAL: Notification channel does not exist!")
+                    Timber.tag(TAG)
+                        .e("Expected channel ID: ${DownloadServiceConstants.NOTIFICATION_CHANNEL_ID}")
+                    Timber.tag(TAG).e("This will cause startForeground to fail. Stopping service.")
                     stopSelf()
                     return
                 }
 
                 if (channel.importance < NotificationManager.IMPORTANCE_DEFAULT) {
-                    Log.w(
-                        TAG,
-                        "WARNING: Channel importance (${channel.importance}) is below required level (${NotificationManager.IMPORTANCE_DEFAULT})"
-                    )
-                    Log.w(TAG, "This may cause startForeground to fail on Android 13+")
+                    Timber.tag(TAG)
+                        .w("WARNING: Channel importance (${channel.importance}) is below required level (${NotificationManager.IMPORTANCE_DEFAULT})")
+                    Timber.tag(TAG).w("This may cause startForeground to fail on Android 13+")
                 }
 
-                Log.d(
-                    TAG,
-                    "Channel verification passed: ${channel.id}, importance: ${channel.importance}"
-                )
+                Timber.tag(TAG)
+                    .d("Channel verification passed: ${channel.id}, importance: ${channel.importance}")
             }
 
             // Start as foreground service with initial notification
@@ -147,7 +144,7 @@ class QuranDownloadService : Service() {
                     )
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to start foreground service", e)
+                Timber.tag(TAG).e(e, "Failed to start foreground service")
                 stopSelf()
                 return
             }
@@ -161,7 +158,7 @@ class QuranDownloadService : Service() {
                 .launchIn(serviceScope)
 
         } catch (e: Exception) {
-            Log.e(TAG, "Error handling start download", e)
+            Timber.tag(TAG).e(e, "Error handling start download")
             stopSelf()
         }
     }
@@ -170,6 +167,12 @@ class QuranDownloadService : Service() {
      * Handles canceling the current download
      */
     private fun handleCancelDownload() {
+        // If there's no active download, just stop the service without starting foreground
+        if (currentDownloadRequest == null || currentDownloadJob?.isActive != true) {
+            stopSelf()
+            return
+        }
+
         currentDownloadJob?.cancel()
         downloadManager.cancelAllDownloads()
 
@@ -186,11 +189,13 @@ class QuranDownloadService : Service() {
      * Handles canceling a specific download by ID
      */
     private fun handleCancelDownloadById(downloadId: String) {
-        if (currentDownloadRequest?.downloadId == downloadId) {
-            handleCancelDownload()
-        } else {
-            downloadManager.cancelDownload(downloadId)
+        // If there's no active download or it doesn't match, just stop
+        if (currentDownloadRequest?.downloadId != downloadId) {
+            stopSelf()
+            return
         }
+
+        handleCancelDownload()
     }
 
     /**
@@ -298,7 +303,7 @@ class QuranDownloadService : Service() {
 
             downloadRequest ?: extractLegacyDownloadRequest(intent)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to extract DownloadRequest, trying legacy approach", e)
+            Timber.tag(TAG).e(e, "Failed to extract DownloadRequest, trying legacy approach")
             // Fallback to legacy individual parameters for backward compatibility
             extractLegacyDownloadRequest(intent)
         }
@@ -330,7 +335,7 @@ class QuranDownloadService : Service() {
                 null
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to extract legacy download request", e)
+            Timber.tag(TAG).e(e, "Failed to extract legacy download request")
             null
         }
     }
