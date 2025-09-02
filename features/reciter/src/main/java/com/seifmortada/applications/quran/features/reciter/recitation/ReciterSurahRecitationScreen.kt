@@ -19,12 +19,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -44,12 +46,7 @@ import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Replay10
-import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -498,7 +495,6 @@ fun ProgressBarSlider(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayPauseRow(
     onReplayClicked: () -> Unit,
@@ -511,45 +507,31 @@ fun PlayPauseRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedButton(
             onClick = onReplayClicked,
-            modifier = Modifier
-                .weight(1f)
-                .semantics { role = Role.Button },
-            shape = ButtonGroupDefaults.connectedLeadingButtonShape,
+            modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Default.Replay10, contentDescription = "Replay 10 seconds")
         }
 
-        ToggleButton(
-            checked = isPlaying,
-            onCheckedChange = { onPlayClicked() },
-            modifier = Modifier
-                .weight(1.5f)
-                .semantics { role = Role.Button },
-            shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
-            colors = ToggleButtonDefaults.toggleButtonColors(
-                checkedContainerColor = MaterialTheme.colorScheme.primary,
-                checkedContentColor = MaterialTheme.colorScheme.onPrimary,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
+        Button(
+            onClick = onPlayClicked,
+            modifier = Modifier.weight(1.5f)
         ) {
             Icon(
                 if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = if (isPlaying) "Pause" else "Play"
             )
         }
+
         OutlinedButton(
             onClick = onFastForwardClicked,
-            modifier = Modifier
-                .weight(1f)
-                .semantics { role = Role.Button },
-            shape = ButtonGroupDefaults.connectedTrailingButtonShape,
+            modifier = Modifier.weight(1f)
         ) {
-            Icon(Icons.Default.Forward10, contentDescription = "Rewind")
+            Icon(Icons.Default.Forward10, contentDescription = "Forward 10 seconds")
         }
     }
 }
@@ -680,7 +662,6 @@ fun DownloadConfirmationDialog(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @LanguagePreviews
 @ThemePreviews
 @Composable
@@ -692,9 +673,7 @@ private fun PreviewReciterSurahRecitationScreen() {
                 .fillMaxWidth()
                 .size(50.dp),
             color = ProgressIndicatorDefaults.linearColor,
-
             trackColor = ProgressIndicatorDefaults.linearTrackColor,
-            strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
         )
     }
 }

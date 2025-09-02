@@ -1,7 +1,9 @@
 plugins {
-    alias(libs.plugins.quran.android.application)
-    alias(libs.plugins.quran.android.application.compose)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -49,6 +51,20 @@ android {
 }
 
 dependencies {
+    // Compose BOM - ensures all Compose libraries use compatible versions
+    implementation(platform(libs.androidx.compose.bom))
+
+    // Compose UI bundles (includes Material3)
+    implementation(libs.bundles.compose.ui)
+    implementation(libs.bundles.compose.integration)
+
+    // Explicit Material3 and Google Material Design dependencies
+    implementation(libs.androidx.material3)
+    implementation(libs.material)
+
+    // AppCompat for compatibility
+    implementation(libs.androidx.appcompat)
+
     // Core modules
     implementation(project(":core:domain"))
     implementation(project(":core:di"))

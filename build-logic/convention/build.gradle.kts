@@ -6,16 +6,15 @@ plugins {
 
 group = "com.seifmortada.applications.quran.buildlogic"
 
-// Configure the build-logic plugins to target JDK 11
-// This matches the minimum JDK required by AGP 8.6.0, and is not related to what is running on device.
+// Configure the build-logic plugins to target JDK 1.8 to match the app
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 

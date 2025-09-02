@@ -1,5 +1,5 @@
 pluginManagement {
-    includeBuild("build-logic")
+    // includeBuild("build-logic")  // Temporarily disabled to fix build issues
     repositories {
         google {
             content {

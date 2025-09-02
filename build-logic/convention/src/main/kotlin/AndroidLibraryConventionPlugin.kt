@@ -16,7 +16,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 compileSdk = QuranBuildConstants.COMPILE_SDK
 
                 // Auto-generate namespace based on module path
-                namespace = getModuleNamespace(target.path)
+                namespace = "${QuranBuildConstants.APPLICATION_ID}${target.path.replace(":", ".")}"
 
                 defaultConfig {
                     minSdk = QuranBuildConstants.MIN_SDK

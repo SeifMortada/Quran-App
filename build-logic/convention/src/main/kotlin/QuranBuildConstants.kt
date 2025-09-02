@@ -19,9 +19,3 @@ object QuranBuildConstants {
     const val COMPOSE_COMPILER_EXTENSION = "1.5.15"
 }
 
-/**
- * Common namespace generator for modules
- */
-fun getModuleNamespace(modulePath: String): String {
-    return "${QuranBuildConstants.APPLICATION_ID}.${modulePath.replace(":", ".")}"
-}

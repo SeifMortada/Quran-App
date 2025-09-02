@@ -17,9 +17,10 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", project(":core:di"))
                 add("implementation", project(":core:ui"))
 
-                // Testing
-                add("testImplementation", libs.findBundle("testing").get())
-                add("androidTestImplementation", libs.findBundle("testing").get())
+                // Basic testing dependencies
+                add("testImplementation", "junit:junit:4.13.2")
+                add("androidTestImplementation", "androidx.test.ext:junit:1.2.1")
+                add("androidTestImplementation", "androidx.test.espresso:espresso-core:3.6.1")
             }
         }
     }

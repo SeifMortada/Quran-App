@@ -20,16 +20,24 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                val bom = libs.findLibrary("androidx.compose.bom").get()
-                add("implementation", platform(bom))
-                add("implementation", libs.findBundle("compose.ui").get())
-                add("implementation", libs.findBundle("compose.integration").get())
+                add("implementation", platform("androidx.compose:compose-bom:2024.08.00"))
 
-                // Material3 (using specific version as in original)
-                add("implementation", "androidx.compose.material3:material3-android:1.5.0-alpha02")
+                // Compose UI core
+                add("implementation", "androidx.compose.ui:ui")
+                add("implementation", "androidx.compose.ui:ui-graphics")
+                add("implementation", "androidx.compose.ui:ui-tooling-preview")
+                add("implementation", "androidx.compose.runtime:runtime")
+                add("implementation", "androidx.compose.material:material-icons-extended")
 
-                add("implementation", libs.findLibrary("androidx.material").get())
-                add("implementation", libs.findLibrary("androidx.ui.tooling").get())
+                // Navigation and integration
+                add("implementation", "androidx.navigation:navigation-compose:2.8.8")
+                add("implementation", "io.insert-koin:koin-androidx-compose:3.2.2")
+                add("implementation", "androidx.activity:activity-compose:1.9.1")
+                add("implementation", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+                // Material3
+                add("implementation", "androidx.compose.material3:material3")
+                add("implementation", "androidx.compose.ui:ui-tooling")
             }
         }
     }
