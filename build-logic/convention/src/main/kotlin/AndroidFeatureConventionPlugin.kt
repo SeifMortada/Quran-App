@@ -12,12 +12,10 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                // Core modules - common to all features
                 add("implementation", project(":core:domain"))
                 add("implementation", project(":core:di"))
                 add("implementation", project(":core:ui"))
 
-                // Basic testing dependencies
                 add("testImplementation", "junit:junit:4.13.2")
                 add("androidTestImplementation", "androidx.test.ext:junit:1.2.1")
                 add("androidTestImplementation", "androidx.test.espresso:espresso-core:3.6.1")

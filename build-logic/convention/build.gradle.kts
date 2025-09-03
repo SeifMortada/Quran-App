@@ -6,24 +6,29 @@ plugins {
 
 group = "com.seifmortada.applications.quran.buildlogic"
 
-// Configure the build-logic plugins to target JDK 1.8 to match the app
+repositories {
+    google()
+    mavenCentral()
+    gradlePluginPortal()
+}
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
 dependencies {
-    compileOnly(libs.android.gradlePlugin)
-    compileOnly(libs.android.tools.common)
-    compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.ksp.gradlePlugin)
-    compileOnly(libs.compose.gradlePlugin)
+    compileOnly("com.android.tools.build:gradle:8.6.0")
+    compileOnly("com.android.tools:common:31.6.0")
+    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.20")
+    compileOnly("com.google.devtools.ksp:symbol-processing-gradle-plugin:2.0.20-1.0.24")
+    compileOnly("org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.0.20")
 }
 
 tasks {

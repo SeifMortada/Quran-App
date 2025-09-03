@@ -1,3 +1,5 @@
+import QuranBuildConstants.JAVA_VERSION
+import QuranBuildConstants.JVM_TARGET
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -39,8 +41,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 }
 
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_1_8
-                    targetCompatibility = JavaVersion.VERSION_1_8
+                    sourceCompatibility = JAVA_VERSION
+                    targetCompatibility = JAVA_VERSION
                 }
 
                 packaging {
@@ -52,6 +54,10 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 buildFeatures {
                     viewBinding = true
                 }
+            }
+
+            extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension> {
+                jvmToolchain(JVM_TARGET.toInt())
             }
         }
     }

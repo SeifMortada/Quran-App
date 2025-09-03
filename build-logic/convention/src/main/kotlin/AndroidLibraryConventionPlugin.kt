@@ -1,3 +1,5 @@
+import QuranBuildConstants.JAVA_VERSION
+import QuranBuildConstants.JVM_TARGET
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -15,7 +17,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 compileSdk = QuranBuildConstants.COMPILE_SDK
 
-                // Auto-generate namespace based on module path
                 namespace = "${QuranBuildConstants.APPLICATION_ID}${target.path.replace(":", ".")}"
 
                 defaultConfig {
@@ -35,9 +36,13 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 }
 
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_1_8
-                    targetCompatibility = JavaVersion.VERSION_1_8
+                    sourceCompatibility = JAVA_VERSION
+                    targetCompatibility = JAVA_VERSION
                 }
+            }
+
+            extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension> {
+                jvmToolchain(JVM_TARGET.toInt())
             }
         }
     }

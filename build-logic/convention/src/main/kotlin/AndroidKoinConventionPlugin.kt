@@ -6,8 +6,9 @@ class AndroidKoinConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             dependencies {
-                add("implementation", libs.findBundle("koin").get())
-                add("implementation", libs.findLibrary("koin.androidx.compose").get())
+                add("implementation", "io.insert-koin:koin-core:3.2.2")
+                add("implementation", "io.insert-koin:koin-android:3.2.2")
+                add("implementation", "io.insert-koin:koin-androidx-compose:3.2.2")
             }
         }
     }

@@ -1,6 +1,5 @@
-/**
- * Shared build constants for Quran app modules
- */
+import org.gradle.api.JavaVersion
+
 object QuranBuildConstants {
     const val COMPILE_SDK = 35
     const val MIN_SDK = 24
@@ -11,8 +10,8 @@ object QuranBuildConstants {
 
     const val APPLICATION_ID = "com.seifmortada.applications.quran"
 
-    const val JVM_TARGET = "1.8"
-    const val JAVA_VERSION = "VERSION_1_8"
+    const val JVM_TARGET = "17"
+     val JAVA_VERSION = JavaVersion.VERSION_17
 
     const val TEST_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
 

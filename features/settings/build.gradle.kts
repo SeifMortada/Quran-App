@@ -1,71 +1,9 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.serialization)
-}
-
-android {
-    namespace = "com.seifmortada.applications.quran.features.settings"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
+    alias(libs.plugins.quran.android.feature)
 }
 
 dependencies {
-    // Core modules
-    implementation(project(":core:domain"))
     implementation(project(":core:data"))
-    implementation(project(":core:di"))
-    implementation(project(":core:ui"))
-
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation("androidx.compose.material3:material3-android:1.5.0-alpha02")
-    implementation(libs.androidx.runtime)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material.icons.extended)
-
-    // Navigation
-    implementation(libs.navigation.compose)
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.kotlinx.serialization.json)
-
-    // Activity
-    implementation(libs.compose.activity)
-
-    // DataStore for settings persistence
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
-
-    // Google Play Billing for in-app purchases (if needed for donations)
+    implementation(libs.androidx.datastore)
     implementation("com.android.billingclient:billing-ktx:7.1.1")
 }
