@@ -1,8 +1,5 @@
 package com.seifmortada.applications.quran.core.service.utils
 
-/**
- * Constants for the Download Service following clean architecture principles
- */
 object DownloadServiceConstants {
 
     // Service Actions
@@ -24,17 +21,7 @@ object DownloadServiceConstants {
     const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notifications for Quran app services"
 
     // Download Configuration
-    const val DOWNLOAD_BUFFER_SIZE = 8 * 1024 // 8KB buffer
-    const val PROGRESS_UPDATE_INTERVAL = 1000L // Update progress every 1 second
-    const val PROGRESS_NOTIFICATION_INTERVAL = 5 // Update notification every 5%
-    const val CONNECTION_TIMEOUT = 30_000 // 30 seconds
-    const val READ_TIMEOUT = 30_000 // 30 seconds
-
-    // Error Messages
-    const val ERROR_MSG_PERMISSION_DENIED = "Storage permission is required for downloads"
-    const val ERROR_MSG_NETWORK_UNAVAILABLE = "Network connection is not available"
-    const val ERROR_MSG_INVALID_URL = "Invalid download URL provided"
-    const val ERROR_MSG_FILE_EXISTS = "File already exists"
-    const val ERROR_MSG_STORAGE_FULL = "Insufficient storage space"
-    const val ERROR_MSG_UNKNOWN = "An unknown error occurred"
+    const val CONNECTION_TIMEOUT = 30_000
+    const val BUFFER_SIZE = 8 * 1024
+    const val PROGRESS_UPDATE_INTERVAL = 1000L
 }

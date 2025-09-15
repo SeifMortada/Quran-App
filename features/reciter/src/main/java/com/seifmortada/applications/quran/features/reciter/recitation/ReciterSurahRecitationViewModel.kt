@@ -121,7 +121,6 @@ class ReciterSurahRecitationViewModel(
                 }
 
         } catch (e: Exception) {
-            Log.e("ReciterSurahRecitation", "Failed to start download", e)
             _event.send(FileDownloadEvent.Error("Failed to start download: ${e.message}"))
             _uiState.update { it.copy(title = "Download failed") }
         }

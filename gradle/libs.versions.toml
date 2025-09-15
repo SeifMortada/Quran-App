@@ -164,10 +164,10 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
 # Build-logic convention plugins
-quran-android-application = { id = "quran.android.application", version = "unspecified" }
-quran-android-application-compose = { id = "quran.android.application.compose", version = "unspecified" }
-quran-android-library = { id = "quran.android.library", version = "unspecified" }
-quran-android-library-compose = { id = "quran.android.library.compose", version = "unspecified" }
-quran-android-feature = { id = "quran.android.feature", version = "unspecified" }
-quran-android-koin = { id = "quran.android.koin", version = "unspecified" }
-quran-kotlin-library = { id = "quran.kotlin.library", version = "unspecified" }
+quran-android-application = { id = "quran.android.application" }
+quran-android-application-compose = { id = "quran.android.application.compose" }
+quran-android-library = { id = "quran.android.library"}
+quran-android-library-compose = { id = "quran.android.library.compose"}
+quran-android-feature = { id = "quran.android.feature"}
+quran-android-koin = { id = "quran.android.koin"}
+quran-kotlin-library = { id = "quran.kotlin.library"}

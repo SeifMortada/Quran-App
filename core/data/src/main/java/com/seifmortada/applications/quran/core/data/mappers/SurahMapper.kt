@@ -2,13 +2,12 @@ package com.seifmortada.applications.quran.core.data.mappers
 
 import com.seifmortada.applications.quran.core.data.local.room.entities.quran.SurahEntity
 import com.seifmortada.applications.quran.core.domain.model.SurahModel
-import timber.log.Timber
 
 fun SurahEntity.toDomain(): SurahModel {
     if (this.verses.isNullOrEmpty()) {
-        Timber.e( "SurahEntity with id ${this.id} has null or empty verses")
+        throw IllegalStateException("SurahEntity with id ${this.id} has null or empty verses")
     }
-    val versesDomain = this.verses?.map { it.toVerseDomain() } ?: emptyList()
+    val versesDomain = this.verses.map { it.toVerseDomain() }
     return SurahModel(
         id = this.id,
         name = this.name,

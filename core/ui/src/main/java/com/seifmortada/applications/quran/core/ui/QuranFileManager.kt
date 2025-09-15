@@ -31,7 +31,9 @@ class QuranFileManager(private val context: Context) {
 
         if (!baseDir.exists()) {
             val created = baseDir.mkdirs()
-            Log.d(TAG, "Created Quran audio directory: $created - ${baseDir.absolutePath}")
+            if (!created) {
+                Log.e(TAG, "Failed to create Quran audio directory: ${baseDir.absolutePath}")
+            }
         }
 
         return baseDir
@@ -180,10 +182,11 @@ class QuranFileManager(private val context: Context) {
         val file = getSurahFilePath(reciterName, serverUrl, surahNumber, surahNameAr, surahNameEn)
         return if (file.exists()) {
             val deleted = file.delete()
-            Log.d(TAG, "Deleted Surah file: $deleted - ${file.absolutePath}")
+            if (!deleted) {
+                Log.e(TAG, "Failed to delete Surah file: ${file.absolutePath}")
+            }
             deleted
         } else {
-            Log.w(TAG, "Surah file not found for deletion: ${file.absolutePath}")
             false
         }
     }
@@ -195,7 +198,9 @@ class QuranFileManager(private val context: Context) {
         val reciterDir = getReciterDirectory(reciterName, serverUrl)
         return if (reciterDir.exists()) {
             val deleted = reciterDir.deleteRecursively()
-            Log.d(TAG, "Deleted reciter directory: $deleted - ${reciterDir.absolutePath}")
+            if (!deleted) {
+                Log.e(TAG, "Failed to delete reciter directory: ${reciterDir.absolutePath}")
+            }
             deleted
         } else {
             true // Already doesn't exist

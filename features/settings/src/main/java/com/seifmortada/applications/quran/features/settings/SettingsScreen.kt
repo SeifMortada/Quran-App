@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.seifmortada.applications.quran.core.domain.model.settings.Language
 import com.seifmortada.applications.quran.core.domain.model.settings.Theme
-import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -33,7 +31,6 @@ fun SettingsRoute(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
 
-    // Handle effects
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -114,7 +111,7 @@ fun SettingsScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Header
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -129,7 +126,7 @@ fun SettingsScreen(
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "Settings", // This will be replaced with string resource from app
+                text = "Settings",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -138,9 +135,9 @@ fun SettingsScreen(
             )
         }
 
-        // Theme Settings Section
+
         SettingsSection(
-            title = "Appearance", // This will be replaced with string resource
+            title = "Appearance",
             icon = Icons.Default.Palette
         ) {
             ThemeSelector(
@@ -149,9 +146,9 @@ fun SettingsScreen(
             )
         }
 
-        // Language Settings Section
+
         SettingsSection(
-            title = "Language", // This will be replaced with string resource
+            title = "Language",
             icon = Icons.Default.Language
         ) {
             LanguageSelector(
@@ -160,9 +157,9 @@ fun SettingsScreen(
             )
         }
 
-        // Support Section
+
         SettingsSection(
-            title = "Support Developer", // This will be replaced with string resource
+            title = "Support Developer",
             icon = Icons.Default.Favorite
         ) {
             SupportSection(
@@ -170,9 +167,8 @@ fun SettingsScreen(
             )
         }
 
-        // Feedback Section
         SettingsSection(
-            title = "Feedback & Suggestions", // This will be replaced with string resource
+            title = "Feedback & Suggestions",
             icon = Icons.Default.Feedback
         ) {
             FeedbackSection(
@@ -180,16 +176,16 @@ fun SettingsScreen(
             )
         }
 
-        // About Section
+
         SettingsSection(
-            title = "About", // This will be replaced with string resource
+            title = "About",
             icon = Icons.Default.Info
         ) {
             AboutSection()
         }
     }
 
-    // Feedback Dialog
+
     if (state.showFeedbackDialog) {
         FeedbackDialog(
             onDismiss = { onIntent(SettingsContract.Intent.HideFeedbackDialog) },
@@ -197,7 +193,7 @@ fun SettingsScreen(
         )
     }
 
-    // Support Dialog
+
     if (state.showSupportDialog) {
         SupportDialog(
             onDismiss = { onIntent(SettingsContract.Intent.HideSupportDialog) },
@@ -255,7 +251,7 @@ private fun ThemeSelector(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // First row with Light and Dark themes
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -298,7 +294,7 @@ private fun ThemeSelector(
             )
         }
 
-        // Second row with System theme
+
         FilterChip(
             onClick = { onThemeChange(Theme.SYSTEM) },
             label = {
@@ -506,7 +502,7 @@ private fun SupportDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // Support Options
+
                 SupportOption(
                     title = "Small Coffee",
                     description = "A small coffee to show your appreciation.",

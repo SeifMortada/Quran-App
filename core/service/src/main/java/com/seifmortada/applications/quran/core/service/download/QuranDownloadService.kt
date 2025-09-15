@@ -108,22 +108,16 @@ class QuranDownloadService : Service() {
                     systemNotificationManager.getNotificationChannel(DownloadServiceConstants.NOTIFICATION_CHANNEL_ID)
 
                 if (channel == null) {
-                    Timber.tag(TAG).e("CRITICAL: Notification channel does not exist!")
-                    Timber.tag(TAG)
-                        .e("Expected channel ID: ${DownloadServiceConstants.NOTIFICATION_CHANNEL_ID}")
-                    Timber.tag(TAG).e("This will cause startForeground to fail. Stopping service.")
+                    Timber.tag(TAG).e("Notification channel does not exist - stopping service")
                     stopSelf()
                     return
                 }
 
                 if (channel.importance < NotificationManager.IMPORTANCE_DEFAULT) {
                     Timber.tag(TAG)
-                        .w("WARNING: Channel importance (${channel.importance}) is below required level (${NotificationManager.IMPORTANCE_DEFAULT})")
-                    Timber.tag(TAG).w("This may cause startForeground to fail on Android 13+")
+                        .w("Channel importance below required level for Android 13+")
                 }
 
-                Timber.tag(TAG)
-                    .d("Channel verification passed: ${channel.id}, importance: ${channel.importance}")
             }
 
             // Start as foreground service with initial notification

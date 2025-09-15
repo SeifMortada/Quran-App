@@ -119,19 +119,3 @@ class SettingsViewModel(
         _effect.close()
     }
 }
-
-// Legacy methods for backward compatibility - can be removed after migration
-fun SettingsViewModel.updateTheme(theme: Theme) =
-    handleIntent(SettingsContract.Intent.UpdateTheme(theme))
-
-fun SettingsViewModel.updateLanguage(language: Language) =
-    handleIntent(SettingsContract.Intent.UpdateLanguage(language))
-
-fun SettingsViewModel.sendFeedback(feedback: String) =
-    handleIntent(SettingsContract.Intent.SendFeedback(feedback))
-
-data class SettingsUiState(
-    val theme: Theme = Theme.SYSTEM,
-    val language: Language = Language.ENGLISH,
-    val isLoading: Boolean = false
-)

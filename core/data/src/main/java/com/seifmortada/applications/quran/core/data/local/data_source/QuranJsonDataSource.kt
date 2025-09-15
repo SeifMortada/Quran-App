@@ -3,7 +3,6 @@ import android.content.res.AssetManager
 import com.seifmortada.applications.quran.core.data.local.room.entities.quran.SurahEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import timber.log.Timber
 
 class QuranJsonDataSource(private val assetManager: AssetManager) {
 
@@ -19,7 +18,6 @@ class QuranJsonDataSource(private val assetManager: AssetManager) {
 
             // Ensure `vers` is never null in each SurahEntity
             surahs.forEach { surah ->
-                Timber.d("SURAHS ARE $surahs")
                 if (surah.verses == null) {
                     surah.verses = emptyList() // Default to empty list if `vers` is null
                 }

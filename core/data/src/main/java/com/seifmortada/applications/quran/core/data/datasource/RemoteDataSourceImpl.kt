@@ -20,7 +20,6 @@ class RemoteDataSourceImpl(private val recitersApiService: RecitersApi) : Remote
             // Construct the full URL: https://server8.mp3quran.net/ahmad_huth/001.mp3
             val url = "${normalizedServer}${formattedSurahNumber}.mp3"
 
-            // Test the URL validity
             val response = recitersApiService.getSurahRecitation(url)
             return if (response.isSuccessful && response.body() != null) {
                 Result.success(url)

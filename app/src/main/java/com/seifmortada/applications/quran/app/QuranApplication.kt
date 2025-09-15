@@ -24,7 +24,6 @@ class QuranApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        Timber.plant(Timber.DebugTree())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }

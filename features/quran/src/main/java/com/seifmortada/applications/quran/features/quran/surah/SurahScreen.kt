@@ -405,7 +405,7 @@ private fun EnhancedAyahCard(
 
                     // Bookmark button
                     IconButton(
-                        onClick = { /* TODO: Implement bookmark */ },
+                        onClick = { /* Bookmark functionality not yet implemented */ },
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
@@ -418,7 +418,7 @@ private fun EnhancedAyahCard(
 
                     // Share button
                     IconButton(
-                        onClick = { /* TODO: Implement share */ },
+                        onClick = { /* Share functionality not yet implemented */ },
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
