@@ -3,10 +3,9 @@ package com.seifmortada.applications.quran.features.reciter.recitation
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.seifmortada.applications.quran.core.domain.repository.*
+import com.seifmortada.applications.quran.core.domain.model.download.*
 import com.seifmortada.applications.quran.core.domain.usecase.GetSurahByIdUseCase
 import com.seifmortada.applications.quran.core.domain.usecase.GetSurahRecitationUseCase
 import com.seifmortada.applications.quran.core.domain.usecase.DownloadSurahUseCase
@@ -20,16 +19,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * Enhanced ViewModel using the new clean architecture download service
- * Provides better download progress tracking and error handling
- */
 class ReciterSurahRecitationViewModel(
     private val getSurahByIdUseCase: GetSurahByIdUseCase,
     private val getSurahRecitationUseCase: GetSurahRecitationUseCase,
     private val downloadSurahUseCase: DownloadSurahUseCase
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(ReciterSurahRecitationUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -55,9 +49,6 @@ class ReciterSurahRecitationViewModel(
         val surahNameAr: String?
     )
 
-    /**
-     * Enhanced method to fetch recitation with new clean architecture
-     */
     fun fetchRecitation(
         context: Context,
         server: String,
@@ -108,7 +99,7 @@ class ReciterSurahRecitationViewModel(
             // Get download URL using the existing use case
             getSurahRecitationUseCase(server, surahNumber.toString())
                 .collect { progress ->
-                    if (progress.localPath != null) {
+/*                    if (progress.progress != null) {
                         // We got the download URL, now start the enhanced download
                         val downloadUrl = progress.localPath!!
 
@@ -117,7 +108,7 @@ class ReciterSurahRecitationViewModel(
 
                         startDownload(currentDownloadRequest!!)
                         return@collect
-                    }
+                    }*/
                 }
 
         } catch (e: Exception) {
@@ -126,9 +117,6 @@ class ReciterSurahRecitationViewModel(
         }
     }
 
-    /**
-     * Enhanced download method with better progress tracking
-     */
     private fun startDownload(downloadRequest: DownloadRequest) {
         downloadJob = viewModelScope.launch {
             downloadSurahUseCase(downloadRequest).collect { status ->
@@ -198,9 +186,6 @@ class ReciterSurahRecitationViewModel(
         }
     }
 
-    /**
-     * Enhanced cancel method with specific download ID support
-     */
     fun cancelDownload() {
         downloadJob?.cancel()
 
@@ -302,9 +287,6 @@ class ReciterSurahRecitationViewModel(
         }
     }
 
-    /**
-     * Formats download speed for display
-     */
     private fun formatDownloadSpeed(bytesPerSecond: Long): String {
         return when {
             bytesPerSecond < 1024 -> "${bytesPerSecond}B/s"
@@ -313,9 +295,6 @@ class ReciterSurahRecitationViewModel(
         }
     }
 
-    /**
-     * Formats time duration for display
-     */
     private fun formatTime(milliseconds: Long): String {
         val seconds = milliseconds / 1000
         val minutes = seconds / 60

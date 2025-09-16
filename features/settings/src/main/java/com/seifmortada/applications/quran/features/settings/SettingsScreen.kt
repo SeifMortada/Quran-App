@@ -59,22 +59,6 @@ fun SettingsRoute(
                     }
                     context.startActivity(Intent.createChooser(intent, "Send Feedback"))
                 }
-
-                is SettingsContract.Effect.PurchaseSuccess -> {
-                    android.widget.Toast.makeText(
-                        context,
-                        "Purchase successful: ${effect.productId}",
-                        android.widget.Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                is SettingsContract.Effect.PurchaseError -> {
-                    android.widget.Toast.makeText(
-                        context,
-                        "Purchase failed: ${effect.error}",
-                        android.widget.Toast.LENGTH_LONG
-                    ).show()
-                }
             }
         }
     }
@@ -92,8 +76,6 @@ fun SettingsScreen(
     onIntent: (SettingsContract.Intent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var feedbackText by remember { mutableStateOf("") }
-
     if (state.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -135,7 +117,6 @@ fun SettingsScreen(
             )
         }
 
-
         SettingsSection(
             title = "Appearance",
             icon = Icons.Default.Palette
@@ -146,7 +127,6 @@ fun SettingsScreen(
             )
         }
 
-
         SettingsSection(
             title = "Language",
             icon = Icons.Default.Language
@@ -154,16 +134,6 @@ fun SettingsScreen(
             LanguageSelector(
                 currentLanguage = state.language,
                 onLanguageChange = { onIntent(SettingsContract.Intent.UpdateLanguage(it)) }
-            )
-        }
-
-
-        SettingsSection(
-            title = "Support Developer",
-            icon = Icons.Default.Favorite
-        ) {
-            SupportSection(
-                onSupportClick = { onIntent(SettingsContract.Intent.ShowSupportDialog) }
             )
         }
 
@@ -176,7 +146,6 @@ fun SettingsScreen(
             )
         }
 
-
         SettingsSection(
             title = "About",
             icon = Icons.Default.Info
@@ -185,19 +154,10 @@ fun SettingsScreen(
         }
     }
 
-
     if (state.showFeedbackDialog) {
         FeedbackDialog(
             onDismiss = { onIntent(SettingsContract.Intent.HideFeedbackDialog) },
             onSendFeedback = { onIntent(SettingsContract.Intent.SendFeedback(it)) }
-        )
-    }
-
-
-    if (state.showSupportDialog) {
-        SupportDialog(
-            onDismiss = { onIntent(SettingsContract.Intent.HideSupportDialog) },
-            onPurchase = { onIntent(SettingsContract.Intent.PurchaseProduct(it)) }
         )
     }
 }
@@ -351,37 +311,6 @@ private fun LanguageSelector(
 }
 
 @Composable
-private fun SupportSection(
-    onSupportClick: () -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = "Support us by purchasing a product or making a donation.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        OutlinedButton(
-            onClick = onSupportClick,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = null,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Support Us")
-        }
-    }
-}
-
-@Composable
 private fun FeedbackSection(
     onFeedbackClick: () -> Unit
 ) {
@@ -469,127 +398,6 @@ private fun FeedbackDialog(
 }
 
 @Composable
-private fun SupportDialog(
-    onDismiss: () -> Unit,
-    onPurchase: (String) -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Choose Support Amount",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-            }
-        },
-        text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "Support us by purchasing a product or making a donation.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-
-                SupportOption(
-                    title = "Small Coffee",
-                    description = "A small coffee to show your appreciation.",
-                    price = "$1.99",
-                    onClick = { onPurchase("small_coffee") }
-                )
-
-                SupportOption(
-                    title = "Large Coffee",
-                    description = "A large coffee to show your appreciation.",
-                    price = "$4.99",
-                    onClick = { onPurchase("large_coffee") }
-                )
-
-                SupportOption(
-                    title = "Premium",
-                    description = "Get premium features and support the developer.",
-                    price = "$9.99",
-                    onClick = { onPurchase("premium") }
-                )
-
-                SupportOption(
-                    title = "Ultimate",
-                    description = "Get all features and support the developer.",
-                    price = "$19.99",
-                    onClick = { onPurchase("ultimate") }
-                )
-            }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
-}
-
-@Composable
-private fun SupportOption(
-    title: String,
-    description: String,
-    price: String,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Text(
-                text = price,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
-@Composable
 private fun AboutSection() {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -608,7 +416,6 @@ private fun AboutSection() {
     }
 }
 
-
 @Preview
 @Composable
 private fun SettingsScreenPreview() {
@@ -617,8 +424,7 @@ private fun SettingsScreenPreview() {
             theme = Theme.SYSTEM,
             language = Language.ENGLISH,
             isLoading = false,
-            showFeedbackDialog = false,
-            showSupportDialog = false
+            showFeedbackDialog = false
         )
         SettingsScreen(
             state = state,

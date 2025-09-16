@@ -3,6 +3,7 @@ package com.seifmortada.applications.quran.core.domain.usecase
 import android.content.Context
 import android.util.Log
 import com.seifmortada.applications.quran.core.domain.model.NetworkResult
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadProgress
 import com.seifmortada.applications.quran.core.domain.repository.reciters.surah_recitation.SurahRecitationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,9 +25,3 @@ class GetSurahRecitationUseCase(
         return surahRecitationRepository.getSurahRecitation(server, surahNumber)
     }
 }
-data class DownloadProgress(
-    val downloadedBytes: Long,
-    val totalBytes: Long,
-    val progress: Float ,
-    val localPath: String? = null
-)

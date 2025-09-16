@@ -1,4 +1,4 @@
-package com.example.data.datasource
+package com.seifmortada.applications.quran.core.data.datasource
 
 import com.seifmortada.applications.quran.core.data.datasource.RemoteDataSource
 import com.seifmortada.applications.quran.core.data.rest.apis.RecitersApi

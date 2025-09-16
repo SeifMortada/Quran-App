@@ -1,4 +1,4 @@
-package com.example.domain.utils
+package com.seifmortada.applications.quran.core.domain.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

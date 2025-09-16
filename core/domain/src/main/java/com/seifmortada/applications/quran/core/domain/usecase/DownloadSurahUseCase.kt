@@ -1,5 +1,6 @@
 package com.seifmortada.applications.quran.core.domain.usecase
 
+import com.seifmortada.applications.quran.core.domain.model.download.*
 import com.seifmortada.applications.quran.core.domain.repository.*
 import kotlinx.coroutines.flow.Flow
 

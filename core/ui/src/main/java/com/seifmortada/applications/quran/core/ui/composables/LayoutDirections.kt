@@ -6,9 +6,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 
-// Right to left composable
 @Composable
-fun ForceRightOrLeft(forceRight:Boolean,modifier: Modifier = Modifier,content: @Composable () -> Unit) {
+fun ForceRightOrLeft(
+    forceRight: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
     CompositionLocalProvider(LocalLayoutDirection provides if (forceRight) LayoutDirection.Rtl else LayoutDirection.Ltr) {
         content()
     }

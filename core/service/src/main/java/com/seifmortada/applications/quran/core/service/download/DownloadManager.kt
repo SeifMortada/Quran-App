@@ -2,6 +2,11 @@ package com.seifmortada.applications.quran.core.service.download
 
 import android.content.Context
 import android.util.Log
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadErrorCode
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadInfo
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadProgress
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadRequest
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadStatus
 import com.seifmortada.applications.quran.core.domain.repository.*
 import com.seifmortada.applications.quran.core.service.utils.DownloadServiceConstants
 import com.seifmortada.applications.quran.core.ui.QuranFileManager
@@ -13,10 +18,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * Core download manager that handles download operations
- * Follows clean architecture principles with proper separation of concerns
- */
 class DownloadManager(
     private val context: Context,
     private val fileManager: QuranFileManager
@@ -34,13 +35,9 @@ class DownloadManager(
         val job: Job
     )
 
-    /**
-     * Starts a new download
-     */
     fun startDownload(downloadRequest: DownloadRequest): Flow<DownloadStatus> = callbackFlow {
         val downloadId = downloadRequest.downloadId
 
-        // Check if already downloading
         if (activeDownloads.containsKey(downloadId)) {
             trySend(
                 DownloadStatus.Failed(
@@ -52,7 +49,6 @@ class DownloadManager(
             return@callbackFlow
         }
 
-        // Check if file already exists
         if (isFileAlreadyDownloaded(downloadRequest)) {
             val filePath = getExistingFilePath(downloadRequest)
             if (filePath != null) {
@@ -104,9 +100,6 @@ class DownloadManager(
         }
     }
 
-    /**
-     * Cancels all downloads
-     */
     fun cancelAllDownloads() {
         activeDownloads.values.forEach { it.job.cancel() }
         activeDownloads.clear()
@@ -114,28 +107,16 @@ class DownloadManager(
         downloadStatusFlow.value = DownloadStatus.Cancelled
     }
 
-    /**
-     * Cancels a specific download
-     */
     fun cancelDownload(downloadId: String) {
         activeDownloads[downloadId]?.job?.cancel()
         activeDownloads.remove(downloadId)
         updateActiveDownloadsList()
     }
 
-    /**
-     * Gets the current download status
-     */
     fun getCurrentDownloadStatus(): Flow<DownloadStatus> = downloadStatusFlow.asStateFlow()
 
-    /**
-     * Gets all active downloads
-     */
     fun getActiveDownloads(): Flow<List<DownloadInfo>> = activeDownloadsFlow.asStateFlow()
 
-    /**
-     * Checks if a file is already downloaded
-     */
     fun isFileAlreadyDownloaded(downloadRequest: DownloadRequest): Boolean {
         return fileManager.surahFileExists(
             downloadRequest.reciterName,
@@ -146,9 +127,6 @@ class DownloadManager(
         )
     }
 
-    /**
-     * Gets the file path for an already downloaded file
-     */
     fun getExistingFilePath(downloadRequest: DownloadRequest): String? {
         val file = fileManager.getSurahFilePath(
             downloadRequest.reciterName,
@@ -172,7 +150,6 @@ class DownloadManager(
             downloadRequest.surahNameEn
         )
 
-        // Ensure parent directory exists
         outputFile.parentFile?.mkdirs()
 
         val connection = withContext(Dispatchers.IO) {
@@ -208,7 +185,7 @@ class DownloadManager(
                     var lastProgressPercent = 0
 
                     while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                        ensureActive() // Check for cancellation
+                        ensureActive()
 
                         outputStream.write(buffer, 0, bytesRead)
                         downloadedBytes += bytesRead
@@ -217,7 +194,6 @@ class DownloadManager(
                         val progress = downloadedBytes.toFloat() / totalBytes
                         val progressPercent = (progress * 100).toInt()
 
-                        // Update progress based on time interval or percentage change
                         if (currentTime - lastUpdateTime >= DownloadServiceConstants.PROGRESS_UPDATE_INTERVAL ||
                             progressPercent != lastProgressPercent
                         ) {
@@ -251,7 +227,6 @@ class DownloadManager(
 
         connection.disconnect()
 
-        // Verify file was downloaded correctly
         if (!outputFile.exists() || outputFile.length() != totalBytes) {
             outputFile.delete()
             throw Exception("Download verification failed")

@@ -260,27 +260,3 @@ private fun SearchTextField(
         focusRequester.requestFocus()
     }
 }
-
-@Preview
-@Composable
-private fun SearchToolBarPreview() {
-    SearchToolbar(
-        "Search Query Test",
-        onSearchQueryChanged = {},
-        onSearchTriggered = { "" },
-        onBackClick = {}
-    )
-}
-
-@Preview
-@Composable
-private fun SearchTopAppBarPreview() {
-    SearchTopAppBar(title = "Title Test", onBackClick = {}, {})
-}
-
-@Preview
-@Composable
-private fun BackTopAppBarPreview() {
-    BackTopAppBar(title = "Title Test", onBackClick = {})
-
-}

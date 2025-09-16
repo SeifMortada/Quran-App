@@ -4,62 +4,40 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import androidx.compose.runtime.Composable
-import org.koin.androidx.compose.koinViewModel
 import android.os.IBinder
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.runtime.*
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.seifmortada.applications.quran.core.domain.model.SurahModel
-import com.seifmortada.applications.quran.core.domain.model.VerseModel
-import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
-import com.seifmortada.applications.quran.core.ui.R
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Replay10
-import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.seifmortada.applications.quran.core.domain.model.SurahModel
+import com.seifmortada.applications.quran.core.domain.model.VerseModel
 import com.seifmortada.applications.quran.core.service.audio.AudioPlayerService
+import com.seifmortada.applications.quran.core.ui.R
 import com.seifmortada.applications.quran.core.ui.composables.ForceRightOrLeft
 import com.seifmortada.applications.quran.core.ui.composables.LanguagePreviews
 import com.seifmortada.applications.quran.core.ui.composables.ShowErrorMessage
 import com.seifmortada.applications.quran.core.ui.composables.ThemePreviews
+import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 import com.seifmortada.applications.quran.utils.SearchTopAppBar
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ReciterSurahRecitationRoute(
@@ -469,7 +447,6 @@ fun AudioPlayer(
         )
     }
 }
-
 
 @Composable
 fun ProgressBarSlider(

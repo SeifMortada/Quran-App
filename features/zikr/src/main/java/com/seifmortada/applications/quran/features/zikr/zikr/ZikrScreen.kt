@@ -1,13 +1,9 @@
 package com.seifmortada.applications.quran.features.zikr.zikr
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -81,7 +77,6 @@ fun ZikrScreen(
     }
     var isSearch by remember { mutableStateOf(false) }
 
-    // Track completion state
     var completedCounts by remember {
         mutableStateOf(filteredAzkars.associateWith { 0 })
     }
@@ -131,7 +126,6 @@ fun ZikrScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Progress Header
             if (totalRecitations > 0) {
                 ProgressHeader(
                     completedRecitations = completedRecitations,
@@ -263,7 +257,6 @@ private fun EnhancedAzkarCard(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
-            // Zikr Text
             Text(
                 text = cleanZikrText(zikrItem.text),
                 style = MaterialTheme.typography.bodyLarge.copy(
@@ -282,15 +275,13 @@ private fun EnhancedAzkarCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Bottom row with count and actions
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Share button
                 IconButton(
-                    onClick = { /*shareZikr(context, zikrItem.text)*/ },
+                    onClick = { },
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
@@ -304,7 +295,6 @@ private fun EnhancedAzkarCard(
                     )
                 }
 
-                // Count indicator
                 Box(
                     modifier = Modifier
                         .size(56.dp)
@@ -347,7 +337,6 @@ private fun EnhancedAzkarCard(
                     }
                 }
 
-                // Reset button (visible when completed)
                 if (isCompleted) {
                     IconButton(
                         onClick = onResetClicked,
@@ -364,12 +353,10 @@ private fun EnhancedAzkarCard(
                         )
                     }
                 } else {
-                    // Spacer to maintain layout
                     Spacer(modifier = Modifier.size(40.dp))
                 }
             }
 
-            // Progress indicator for individual zikr
             if (zikrItem.count > 1) {
                 Spacer(modifier = Modifier.height(12.dp))
                 LinearProgressIndicator(
@@ -406,18 +393,6 @@ private fun vibrate(vibrator: Vibrator) {
         }
     }
 }
-
-/*private fun shareZikr(context: Context, zikr: String) {
-    val cleanedZikr = cleanZikrText(zikr)
-    val intent = Intent(Intent.ACTION_SEND).apply {
-        Intent.setType = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, cleanedZikr)
-        putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_zikr_subject))
-    }
-    context.startActivity(
-        Intent.createChooser(intent, context.getString(R.string.share_zikr))
-    )
-}*/
 
 @Preview(name = "ZikrScreen Preview", showBackground = true)
 @Composable

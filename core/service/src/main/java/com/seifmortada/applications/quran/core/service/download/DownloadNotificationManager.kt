@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.seifmortada.applications.quran.core.domain.repository.*
+import com.seifmortada.applications.quran.core.domain.model.download.*
 import com.seifmortada.applications.quran.core.service.utils.DownloadServiceConstants
 
 /**

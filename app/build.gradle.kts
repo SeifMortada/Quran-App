@@ -30,5 +30,4 @@ dependencies {
 
     // External libraries
     implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
-    implementation("com.android.billingclient:billing-ktx:7.1.1")
 }

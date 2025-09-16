@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalLayoutDirection
 import com.seifmortada.applications.quran.core.domain.model.main.MainItem
-import com.seifmortada.applications.quran.R
+import com.seifmortada.applications.quran.core.ui.R
 import com.seifmortada.applications.quran.core.ui.theme.QuranAppTheme
 
 @Composable
@@ -64,9 +64,9 @@ fun HomeRoute(
     val reciters = stringResource(R.string.quran_readers)
     val mainItems = remember {
         listOf(
-            MainItem(zikr, R.drawable.ic_tasbih),
-            MainItem(quran, R.drawable.ic_koran),
-            MainItem(reciters, R.drawable.ic_imam)
+            MainItem(zikr, com.seifmortada.applications.quran.R.drawable.ic_tasbih),
+            MainItem(quran, com.seifmortada.applications.quran.R.drawable.ic_koran),
+            MainItem(reciters, com.seifmortada.applications.quran.R.drawable.ic_imam)
         )
     }
     HomeScreen(
@@ -482,9 +482,9 @@ private fun HomeScreenPreview() {
     QuranAppTheme {
         HomeScreen(
             mainItems = listOf(
-                MainItem("الأذكار", R.drawable.ic_tasbih),
-                MainItem("القرآن الكريم", R.drawable.ic_koran),
-                MainItem("قراء القرآن", R.drawable.ic_imam)
+                MainItem("الأذكار", com.seifmortada.applications.quran.R.drawable.ic_tasbih),
+                MainItem("القرآن الكريم", com.seifmortada.applications.quran.R.drawable.ic_koran),
+                MainItem("قراء القرآن", com.seifmortada.applications.quran.R.drawable.ic_imam)
             ), {}, {}, {}
         )
     }

@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadRequest
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadStatus
 import com.seifmortada.applications.quran.core.domain.repository.*
 import com.seifmortada.applications.quran.core.service.utils.DownloadServiceConstants
 import com.seifmortada.applications.quran.core.ui.QuranFileManager
@@ -19,10 +21,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
-/**
- * Clean architecture-based Download Service
- * Handles Quran audio downloads with proper separation of concerns
- */
 class QuranDownloadService : Service() {
 
     companion object {

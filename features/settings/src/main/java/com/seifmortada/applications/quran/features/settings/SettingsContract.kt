@@ -13,8 +13,7 @@ object SettingsContract {
         val language: Language = Language.ENGLISH,
         val isLoading: Boolean = false,
         val error: String? = null,
-        val showFeedbackDialog: Boolean = false,
-        val showSupportDialog: Boolean = false
+        val showFeedbackDialog: Boolean = false
     )
 
     sealed class Intent {
@@ -23,9 +22,6 @@ object SettingsContract {
         data class SendFeedback(val feedback: String) : Intent()
         object ShowFeedbackDialog : Intent()
         object HideFeedbackDialog : Intent()
-        object ShowSupportDialog : Intent()
-        object HideSupportDialog : Intent()
-        data class PurchaseProduct(val productId: String) : Intent()
         object LoadSettings : Intent()
     }
 
@@ -33,8 +29,6 @@ object SettingsContract {
         data class ShowToast(val message: String) : Effect()
         object FeedbackSent : Effect()
         data class NavigateToEmail(val emailData: EmailData) : Effect()
-        data class PurchaseSuccess(val productId: String) : Effect()
-        data class PurchaseError(val error: String) : Effect()
     }
 
     data class EmailData(

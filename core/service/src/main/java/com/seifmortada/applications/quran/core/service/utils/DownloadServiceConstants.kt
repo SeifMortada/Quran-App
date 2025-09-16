@@ -1,8 +1,5 @@
 package com.seifmortada.applications.quran.core.service.utils
 
-/**
- * Constants for the Download Service following clean architecture principles
- */
 object DownloadServiceConstants {
 
     // Service Actions

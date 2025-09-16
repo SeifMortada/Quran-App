@@ -46,9 +46,6 @@ class SettingsViewModel(
             is SettingsContract.Intent.SendFeedback -> sendFeedback(intent.feedback)
             is SettingsContract.Intent.ShowFeedbackDialog -> showFeedbackDialog()
             is SettingsContract.Intent.HideFeedbackDialog -> hideFeedbackDialog()
-            is SettingsContract.Intent.ShowSupportDialog -> showSupportDialog()
-            is SettingsContract.Intent.HideSupportDialog -> hideSupportDialog()
-            is SettingsContract.Intent.PurchaseProduct -> purchaseProduct(intent.productId)
             is SettingsContract.Intent.LoadSettings -> loadSettings()
         }
     }
@@ -94,23 +91,7 @@ class SettingsViewModel(
         _state.update { it.copy(showFeedbackDialog = false) }
     }
 
-    private fun showSupportDialog() {
-        _state.update { it.copy(showSupportDialog = true) }
-    }
-
-    private fun hideSupportDialog() {
-        _state.update { it.copy(showSupportDialog = false) }
-    }
-
-    private fun purchaseProduct(productId: String) {
-        viewModelScope.launch {
-            // This will be handled by the billing manager
-            _effect.send(SettingsContract.Effect.ShowToast("Processing purchase for $productId"))
-        }
-    }
-
     private fun loadSettings() {
-        // Settings are automatically loaded via the combine flow
         _state.update { it.copy(isLoading = false) }
     }
 

@@ -1,6 +1,6 @@
 package com.seifmortada.applications.quran.core.domain.repository.reciters.surah_recitation
 
-import com.seifmortada.applications.quran.core.domain.usecase.DownloadProgress
+import com.seifmortada.applications.quran.core.domain.model.download.DownloadProgress
 import kotlinx.coroutines.flow.Flow
 
 

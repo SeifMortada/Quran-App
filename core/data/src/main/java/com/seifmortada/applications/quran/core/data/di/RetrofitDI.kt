@@ -3,7 +3,7 @@ package com.seifmortada.applications.quran.core.data.di
 import android.content.Context
 import com.seifmortada.applications.quran.core.data.BuildConfig
 import com.seifmortada.applications.quran.core.data.rest.apis.QuranApi
-import com.example.domain.utils.NetworkUtils.isNetworkAvailable
+import com.seifmortada.applications.quran.core.domain.utils.NetworkUtils.isNetworkAvailable
 import com.seifmortada.applications.quran.core.data.rest.apis.RecitersApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

@@ -77,7 +77,7 @@ fun SplashScreen(
         ) {
             // App Logo
             Image(
-                painter = painterResource(id = R.drawable.quran_app_logo),
+                painter = painterResource(id = com.seifmortada.applications.quran.core.ui.R.drawable.quran_app_logo),
                 contentDescription = "Quran App Logo",
                 modifier = Modifier
                     .size(200.dp)

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File
-import com.seifmortada.applications.quran.core.domain.usecase.DownloadProgress
+import com.seifmortada.applications.quran.core.domain.model.download.*
 
 class SurahRecitationRepositoryImpl(
     private val context: Context,
@@ -19,8 +19,7 @@ class SurahRecitationRepositoryImpl(
         server: String,
         surahNumber: String
     ): Flow<DownloadProgress> = flow {
-        // Note: This method signature needs to be updated to include reciter info
-        // For now, using a fallback approach
+
         val outputFile = provideOutputFile(surahNumber, server)
 
         if (outputFile.exists() && outputFile.length() > 0) {
@@ -28,26 +27,20 @@ class SurahRecitationRepositoryImpl(
                 DownloadProgress(
                     downloadedBytes = outputFile.length(),
                     totalBytes = outputFile.length(),
-                    progress = 1f,
-                    localPath = outputFile.absolutePath
+                    progress = 1f
                 )
             )
             return@flow
         }
 
-        // else download from network
         val result = remote.retrieveSurahRecitation(surahNumber, server)
         if (result.isFailure) throw Exception(result.exceptionOrNull())
         else {
-            val downloadUrl = result.getOrNull()!!
-            // Return the download URL so the ViewModel can use it
-            // We put the URL in the localPath field for the ViewModel to access
             emit(
                 DownloadProgress(
                     downloadedBytes = 0L,
                     totalBytes = 0L,
-                    progress = 0f,
-                    localPath = downloadUrl
+                    progress = 0f
                 )
             )
         }

@@ -237,7 +237,7 @@ fun ReciterScreen(
                 uiState.error != null -> {
                     ErrorState(
                         errorMessage = uiState.error,
-                        onRetryClick = { /* Add retry logic */ }
+                        onRetryClick = { }
                     )
                 }
                 uiState.reciters.isEmpty() && uiState.searchQuery.isNotBlank() -> {
