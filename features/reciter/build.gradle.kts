@@ -5,4 +5,5 @@ plugins {
 dependencies {
     implementation(project(":core:service"))
     implementation(libs.androidx.media)
+    implementation(libs.bundles.networking)
 }

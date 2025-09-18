@@ -9,19 +9,19 @@ import androidx.navigation.compose.rememberNavController
 import com.seifmortada.applications.quran.core.navigation.destinations.Home
 import com.seifmortada.applications.quran.core.navigation.destinations.Splash
 import com.seifmortada.applications.quran.features.home.HomeRoute
-import com.seifmortada.applications.quran.features.quran.QuranChapters
-import com.seifmortada.applications.quran.features.quran.Surah
-import com.seifmortada.applications.quran.features.quran.quranSection
-import com.seifmortada.applications.quran.features.reciter.ReciterTilawahChapters
-import com.seifmortada.applications.quran.features.reciter.ReciterTilawahDetail
-import com.seifmortada.applications.quran.features.reciter.ReciterTilawahRecitation
-import com.seifmortada.applications.quran.features.reciter.Reciters
-import com.seifmortada.applications.quran.features.reciter.recitersSection
-import com.seifmortada.applications.quran.features.settings.settingsSection
+import com.seifmortada.applications.quran.features.quran.navigation.QuranChapters
+import com.seifmortada.applications.quran.features.quran.navigation.Surah
+import com.seifmortada.applications.quran.features.quran.navigation.quranSection
+import com.seifmortada.applications.quran.features.reciter.navigation.ReciterTilawahChapters
+import com.seifmortada.applications.quran.features.reciter.navigation.ReciterTilawahDetail
+import com.seifmortada.applications.quran.features.reciter.navigation.ReciterTilawahRecitation
+import com.seifmortada.applications.quran.features.reciter.navigation.Reciters
+import com.seifmortada.applications.quran.features.reciter.navigation.recitersSection
+import com.seifmortada.applications.quran.features.settings.navigation.settingsSection
 import com.seifmortada.applications.quran.features.splash.SplashScreen
-import com.seifmortada.applications.quran.features.zikr.Azkars
-import com.seifmortada.applications.quran.features.zikr.Zikr
-import com.seifmortada.applications.quran.features.zikr.zikrSection
+import com.seifmortada.applications.quran.features.zikr.navigation.Azkars
+import com.seifmortada.applications.quran.features.zikr.navigation.Zikr
+import com.seifmortada.applications.quran.features.zikr.navigation.zikrSection
 
 @Composable
 fun QuranAppNavGraph(

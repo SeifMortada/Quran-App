@@ -47,10 +47,9 @@ fun SplashScreen(
         label = "alphaAnimation"
     )
 
-    // Start animation when composable is first created
     LaunchedEffect(Unit) {
         startAnimation = true
-        delay(2500) // Show splash for 2.5 seconds
+        delay(2500)
         onSplashFinished()
     }
 
@@ -117,7 +116,6 @@ fun SplashScreen(
             )
         }
 
-        // Islamic/Arabic decorative text at bottom
         Box(
             modifier = Modifier
                 .fillMaxSize()

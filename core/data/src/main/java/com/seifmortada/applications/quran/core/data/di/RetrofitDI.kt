@@ -47,12 +47,12 @@ fun provideOkHttpClient(context: Context): OkHttpClient {
     val interceptor = HttpLoggingInterceptor()
     interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 
-     val cache = provideCache(context)
-     val cacheInterceptor = provideCacheInterceptor(context)
+    val cache = provideCache(context)
+    val cacheInterceptor = provideCacheInterceptor(context)
     val timeoutSeconds = 120L
 
     return OkHttpClient.Builder()
-             .cache(cache)  // Set cache
+        .cache(cache)  // Set cache
         .addInterceptor(interceptor)  // Log responses
         .addInterceptor(cacheInterceptor)  // Handle cache
         .addNetworkInterceptor(provideNetworkCacheInterceptor())  // Caching for online state
@@ -91,4 +91,5 @@ fun provideQuranApi(context: Context): QuranApi =
         .create(QuranApi::class.java)
 
 fun provideRecitersApi(context: Context): RecitersApi =
-    provideRetrofit(context).create(RecitersApi::class.java)
+    provideRetrofit(context)
+        .create(RecitersApi::class.java)

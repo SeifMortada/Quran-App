@@ -10,9 +10,9 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.seifmortada.applications.quran.features.quran.QuranChapters
-import com.seifmortada.applications.quran.features.reciter.Reciters
-import com.seifmortada.applications.quran.features.settings.Settings
+import com.seifmortada.applications.quran.features.quran.navigation.QuranChapters
+import com.seifmortada.applications.quran.features.reciter.navigation.Reciters
+import com.seifmortada.applications.quran.features.settings.navigation.Settings
 
 data class TopLevelDestination<T : Any>(
     val titleRes: Int,

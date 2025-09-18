@@ -21,9 +21,9 @@ import androidx.navigation.compose.rememberNavController
 import com.seifmortada.applications.quran.core.navigation.QuranAppNavGraph
 import com.seifmortada.applications.quran.core.navigation.destinations.Home
 import com.seifmortada.applications.quran.core.navigation.destinations.topLevelDestinations
-import com.seifmortada.applications.quran.features.quran.QuranChapters
-import com.seifmortada.applications.quran.features.reciter.Reciters
-import com.seifmortada.applications.quran.features.settings.Settings
+import com.seifmortada.applications.quran.features.quran.navigation.QuranChapters
+import com.seifmortada.applications.quran.features.reciter.navigation.Reciters
+import com.seifmortada.applications.quran.features.settings.navigation.Settings
 
 @Composable
 fun QuranApp() {

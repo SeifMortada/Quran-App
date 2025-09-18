@@ -19,11 +19,6 @@ android {
             "URL_AYAH_RECITATION",
             "\"https://cdn.islamic.network/quran/audio/64/ar.husary/\""
         )
-        buildConfigField(
-            "String",
-            "URL_FETCH_ALL_RECITERS",
-            "\"https://mp3quran.net/api/v3/reciters\""
-        )
     }
 }
 

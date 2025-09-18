@@ -10,20 +10,23 @@ import androidx.annotation.RequiresApi
 import com.seifmortada.applications.quran.core.di.repositoryModule
 import com.seifmortada.applications.quran.core.di.serviceModule
 import com.seifmortada.applications.quran.core.di.usecaseModule
-import com.seifmortada.applications.quran.di.koin.viewModelModule
-import com.seifmortada.applications.quran.di.koin.appRepositoryModule
+import com.seifmortada.applications.quran.core.service.di.downloadServiceModule
+import com.seifmortada.applications.quran.di.koin.appModule
+import com.seifmortada.applications.quran.features.quran.di.quranModule
+import com.seifmortada.applications.quran.features.reciter.di.reciterModule
+import com.seifmortada.applications.quran.features.settings.di.settingsModule
+import com.seifmortada.applications.quran.features.zikr.di.zikrModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
 const val CHANNEL_ID = "quran_app_channel"
-const val BACKUP_CHANNEL_ID = "quran_downloads_v2"  // Backup channel ID
+const val BACKUP_CHANNEL_ID = "quran_downloads_v2"
 const val CHANNEL_NAME = "Quran App"
 
 class QuranApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        instance = this
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
@@ -31,11 +34,15 @@ class QuranApplication : Application() {
             androidContext(this@QuranApplication)
             modules(
                 listOf(
-                    viewModelModule,
                     usecaseModule,
                     repositoryModule,
                     serviceModule,
-                    appRepositoryModule,
+                    appModule,
+                    downloadServiceModule,
+                    quranModule,
+                    reciterModule,
+                    settingsModule,
+                    zikrModule
                 )
             )
         }
@@ -82,14 +89,6 @@ class QuranApplication : Application() {
 
         } catch (e: Exception) {
             Timber.e(e, "Failed to create notification channels")
-        }
-    }
-
-    companion object {
-        private var instance: QuranApplication? = null
-
-        fun getContext(): Context {
-            return instance!!.applicationContext
         }
     }
 }

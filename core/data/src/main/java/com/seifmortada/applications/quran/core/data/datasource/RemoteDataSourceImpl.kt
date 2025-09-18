@@ -1,7 +1,7 @@
 package com.seifmortada.applications.quran.core.data.datasource
 
 import com.seifmortada.applications.quran.core.data.datasource.RemoteDataSource
-import com.seifmortada.applications.quran.core.data.rest.apis.RecitersApi
+import com.seifmortada.applications.quran.core.domain.api.RecitersApi
 import java.util.Locale
 
 class RemoteDataSourceImpl(private val recitersApiService: RecitersApi) : RemoteDataSource {
@@ -20,13 +20,13 @@ class RemoteDataSourceImpl(private val recitersApiService: RecitersApi) : Remote
             // Construct the full URL: https://server8.mp3quran.net/ahmad_huth/001.mp3
             val url = "${normalizedServer}${formattedSurahNumber}.mp3"
 
-            val response = recitersApiService.getSurahRecitation(url)
-            return if (response.isSuccessful && response.body() != null) {
+            val result = recitersApiService.getSurahRecitation(url)
+            return if (result.isSuccess) {
                 Result.success(url)
             } else {
                 Result.failure(
                     Exception(
-                        "Failed to retrieve recitation from $url: ${response.code()} - ${response.message()}"
+                        "Failed to retrieve recitation from $url: ${result.exceptionOrNull()?.message}"
                     )
                 )
             }
